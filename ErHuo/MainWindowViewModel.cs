@@ -504,6 +504,10 @@ namespace ErHuo
 
         public bool CheckKey(string k)
         {
+            if(keylist == null)
+            {
+                return true;
+            }
             if (k == null || k.Equals(""))
                 return false;
             if (k == key_pause || k == key_start || k == key_stop)
