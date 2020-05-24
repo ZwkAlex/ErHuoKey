@@ -504,19 +504,18 @@ namespace ErHuo
 
         public bool CheckKey(string k)
         {
-            if(keylist == null)
+            if(keylist != null&&keylist.Count != 0)
             {
-                return true;
-            }
-            if (k == null || k.Equals(""))
-                return false;
-            if (k == key_pause || k == key_start || k == key_stop)
-                return false;
-            foreach (var key in keylist)
-            {
-                if (key.Key == k)
-                {
+                if (k == null || k.Equals(""))
                     return false;
+                if (k == key_pause || k == key_start || k == key_stop)
+                    return false;
+                foreach (var key in keylist)
+                {
+                    if (key.Key == k)
+                    {
+                        return false;
+                    }
                 }
             }
             return true;

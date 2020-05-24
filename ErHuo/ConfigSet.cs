@@ -298,7 +298,8 @@ namespace ErHuo
                 key_activate_list.Add(key.Activate);
             }
             Configuration cfa = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            try { 
+            if(cfa.AppSettings.Settings.Count != 0)
+            {
                 cfa.AppSettings.Settings["KeyValue"].Value = string.Join(",", key_list);
                 cfa.AppSettings.Settings["IsActivate"].Value = string.Join(",", key_activate_list);
                 cfa.AppSettings.Settings["Volume"].Value = config.Config_Volume.ToString();
@@ -311,8 +312,8 @@ namespace ErHuo
                 cfa.AppSettings.Settings["Switch"].Value = config.Config_Switch.ToString();
                 cfa.AppSettings.Settings["Driver"].Value = config.Config_Driver.ToString();
                 cfa.AppSettings.Settings["KeyMode"].Value = config.Config_Key_Mode.ToString();
-            }
-            catch
+            }  
+            else
             {
                 cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("KeyValue", string.Join(",", key_list)));
                 cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("IsActivate", string.Join(",", key_activate_list)));
