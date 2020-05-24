@@ -1,0 +1,45 @@
+﻿<Window x:Class="ErHuo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ErHuo"  
+        xmlns:input="clr-namespace:System.Windows.Input;assembly=PresentationCore"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        mc:Ignorable="d"
+        Title="贰货按键" Height="680" Width="450" WindowStartupLocation="CenterScreen"   input:InputMethod.IsInputMethodEnabled="False" ResizeMode="CanMinimize" StateChanged="Window_StateChanged">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Window_Loaded_Command}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding Window_Closing_Command}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="1.3*"/>
+            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="0.1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.8*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox FontSize="20" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="1" Margin="10 10 10 10" ItemTemplate="{DynamicResource KeyData}" ItemsSource="{Binding keylist ,Mode=TwoWay}"  ScrollViewer.HorizontalScrollBarVisibility="Disabled"  IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
+        </ListBox>
+        <local:customTextBox x:Name="virtual" Height="0" Width="0" Visibility="Hidden"/>
+        <local:KeyControl x:Name="keycontrol"  Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"/>
+        <local:customTextBox x:Name="addkeytextbox"  Grid.Row="0" Grid.Column="1" Text="{Binding Key_Add_Text, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="50 10" Padding="0 5" VerticalAlignment="Top"/>
+        <Button Command="{Binding AddKey_Command}" Grid.Row="0" Grid.Column="1" Content="添加按键"  Margin="20 50 20 10" Style="{StaticResource ButtonStyle}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"/>
+        <Button Command="{Binding Stop_Command}" Grid.Row="2" Grid.Column="1" Content="按键关闭"  Margin="120,5,5,50" Style="{StaticResource ButtonStyle}" IsEnabled="{Binding Status,UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"/>
+        <Button Command="{Binding Start_Command}" Grid.Row="2" Grid.Column="1" Content="按键开启"  Margin="20,5,125,50" Style="{StaticResource ButtonStyle}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"/>
+        <Button Command="{Binding UninstallDriver_Command}" Grid.Row="2" Grid.Column="1" Content="卸载驱动"  Margin="20,50,125,5" Style="{StaticResource ButtonStyle}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"/>
+        <Button Command="{Binding SwitchDriver_Command}" Grid.Row="2" Grid.Column="1" Content="切换驱动"  Margin="120,50,5,5" Style="{StaticResource ButtonStyle}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"/>
+        <MediaElement Name="startsound" Source="../../Resources/startsound.wav" Volume="{Binding Volume, Mode=OneWay}"  Style="{StaticResource MeidaStyle}"/>
+        <MediaElement Name="stopsound" Source="../../Resources/stopsound.wav" Volume="{Binding Volume, Mode=OneWay}" Style="{StaticResource MeidaStyle}" />
+        <MediaElement Name="pausesound" Source="../../Resources/pausesound.wav" Volume="{Binding Volume, Mode=OneWay}" Style="{StaticResource MeidaStyle}" />
+        <TextBox Grid.Row ="3" Grid.Column="1" Padding="0 0 10 0" BorderThickness="0"  HorizontalAlignment="Right" Text="贰货按键 By 电八绝代 贰货猪"/>
+    </Grid>
+</Window>
