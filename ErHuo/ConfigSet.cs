@@ -315,21 +315,21 @@ namespace ErHuo
             }  
             else
             {
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("KeyValue", string.Join(",", key_list)));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("IsActivate", string.Join(",", key_activate_list)));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("Volume", config.Config_Volume.ToString()));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("StartKey", config.Config_Key_Start.ToString()));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("StopKey", config.Config_Key_Stop.ToString()));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("PauseKey", config.Config_Key_Pause.ToString()));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("UseSameKey", config.Config_is_Use_Same_Key.ToString()));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("FristTime", config.Config_FristTime.ToString()));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("Frequency", config.Config_Frequency.ToString()));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("Switch", config.Config_Switch.ToString()));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("Driver", config.Config_Driver.ToString()));
-                cfa.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("KeyMode", config.Config_Key_Mode.ToString()));
+                cfa.AppSettings.Settings.Add("KeyValue", string.Join(",", key_list));
+                cfa.AppSettings.Settings.Add("IsActivate", string.Join(",", key_activate_list));
+                cfa.AppSettings.Settings.Add("Volume", config.Config_Volume.ToString());
+                cfa.AppSettings.Settings.Add("StartKey", config.Config_Key_Start.ToString());
+                cfa.AppSettings.Settings.Add("StopKey", config.Config_Key_Stop.ToString());
+                cfa.AppSettings.Settings.Add("PauseKey", config.Config_Key_Pause.ToString());
+                cfa.AppSettings.Settings.Add("UseSameKey", config.Config_is_Use_Same_Key.ToString());
+                cfa.AppSettings.Settings.Add("FristTime", config.Config_FristTime.ToString());
+                cfa.AppSettings.Settings.Add("Frequency", config.Config_Frequency.ToString());
+                cfa.AppSettings.Settings.Add("Switch", config.Config_Switch.ToString());
+                cfa.AppSettings.Settings.Add("Driver", config.Config_Driver.ToString());
+                cfa.AppSettings.Settings.Add("KeyMode", config.Config_Key_Mode.ToString());
             }
             cfa.Save();
-            ConfigurationManager.RefreshSection("ConnectionStrings");
+            ConfigurationManager.RefreshSection("appSettings");
         }
     }
 }
