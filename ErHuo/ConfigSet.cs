@@ -25,15 +25,17 @@ namespace ErHuo
         private int config_key_mode;
         public ConfigSet()
         {
-            List<string> pre_config_key_list = null;
-            List<bool> pre_config_key_activate_list = null;
+            List<string> pre_config_key_list = new List<string>();
+            List<bool> pre_config_key_activate_list = new List<bool>();
             try
             {
                 config_frequency = int.Parse(ConfigurationManager.AppSettings["Frequency"]);
                 config_first_time = bool.Parse(ConfigurationManager.AppSettings["FristTime"]);
-                pre_config_key_list = ConfigurationManager.AppSettings["KeyValue"].Split(',').ToList();
-                pre_config_key_activate_list = StringList2BoolList(ConfigurationManager.AppSettings["IsActivate"].Split(',').ToList());
-                
+                if(!ConfigurationManager.AppSettings["KeyValue"].Equals(""))
+                {
+                    pre_config_key_list = ConfigurationManager.AppSettings["KeyValue"].Split(',').ToList();
+                    pre_config_key_activate_list = StringList2BoolList(ConfigurationManager.AppSettings["IsActivate"].Split(',').ToList());
+                }         
                 config_volume = double.Parse(ConfigurationManager.AppSettings["Volume"]);
                 config_key_start = int.Parse(ConfigurationManager.AppSettings["StartKey"]);
                 config_key_stop = int.Parse(ConfigurationManager.AppSettings["StopKey"]);
@@ -55,8 +57,6 @@ namespace ErHuo
                 config_switch = true;
                 config_driver = 1;
                 config_key_mode = 0;
-                pre_config_key_list = new List<string>();
-                pre_config_key_activate_list = new List<bool>();
             }
             config_key_list = new ObservableCollection<KeyEvent>();
             for (var item = 0; item < pre_config_key_list.Count; item++)
