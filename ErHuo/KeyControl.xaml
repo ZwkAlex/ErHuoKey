@@ -47,9 +47,20 @@
             <ComboBoxItem Content="顺序模式"/>
             <ComboBoxItem Content="按压模式"/>
         </ComboBox>
-        <ComboBox Grid.Row="6" Grid.Column="1" Margin="20 10" FontSize="13" SelectedIndex="{Binding WindowIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{DynamicResource WindowData}" ItemsSource="{Binding windowlist,Mode=TwoWay}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
-            
-        </ComboBox>
+        <Grid Grid.Row="6" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="31*"></ColumnDefinition>
+                <ColumnDefinition Width="9*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <ComboBox Grid.Column="0" Margin="20,10,9.4,10.2" FontSize="13" SelectedIndex="{Binding WindowIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{DynamicResource WindowData}" ItemsSource="{Binding windowlist,Mode=TwoWay}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
+            </ComboBox>
+            <Button  Grid.Column="1" Margin="0,10,5,10" Cursor="Hand" Command="{Binding UpdateAPPList_Command}" ToolTip="刷新列表">
+                <Button.Content>
+                    <Image Source="update.png" Stretch="Fill"/>
+                </Button.Content>
+            </Button>
+        </Grid>
+
         <Slider  Grid.Row="7" Value="{Binding Volume, Mode=TwoWay}"  Grid.Column="1" Margin="20 0" Minimum="0" Maximum="0.8" TickFrequency="0.1"  VerticalAlignment="Center"/>
         <CheckBox Name ="switch"  Grid.Row="8" Grid.Column="1"  VerticalAlignment="Center" Margin="20 10 20 10" IsChecked="{Binding Switch}" />
     </Grid>

@@ -14,6 +14,8 @@ namespace ErHuo
         private static extern int GetWindowTextW(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)]StringBuilder lpString, int nMaxCount);
         [DllImport("user32.dll")]
         private static extern bool EnumWindows(WNDENUMPROC lpEnumFunc, int lParam);
+        [DllImport("user32.dll")]
+        private static extern bool IsWindowVisible(IntPtr hWnd);
         private delegate bool WNDENUMPROC(IntPtr hWnd, int lParam);
 
         public struct WindowInfo
@@ -53,7 +55,7 @@ namespace ErHuo
                 //get window name  
                 GetWindowTextW(hWnd, sb, sb.Capacity);
                 wnd.szWindowName = sb.ToString();
-                if(sb.ToString() == "")
+                if(sb.ToString() == "" || !IsWindowVisible(hWnd))
                 {
                     return true;
                 }

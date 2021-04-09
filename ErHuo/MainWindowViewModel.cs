@@ -226,6 +226,7 @@ namespace ErHuo
         public DelegateCommand UninstallDriver_Command { get; set; }
         public DelegateCommand SwitchDriver_Command { get; set; }
         public DelegateCommand SelectWindow_Command { get; set; }
+        public DelegateCommand UpdateAPPList_Command { get; set; }
 
         public event EventHandler PlayStartRequested;
         public event EventHandler PlayStopRequested;
@@ -254,6 +255,7 @@ namespace ErHuo
             this.Stop_Command = new DelegateCommand();
             this.UninstallDriver_Command = new DelegateCommand();
             this.SwitchDriver_Command = new DelegateCommand();
+            this.UpdateAPPList_Command = new DelegateCommand();
             this.Window_Closing_Command.ExecuteActionWithoutParameter = new Action(this.Closing);
             this.Stop_Command.ExecuteActionWithoutParameter = new Action(()=> { Status = false; });
             this.Start_Command.ExecuteActionWithoutParameter = new Action(() => { Status = true; });
@@ -263,6 +265,7 @@ namespace ErHuo
             this.Window_Loaded_Command.ExecuteActionWithoutParameter = new Action(this.Window_Loaded);
             this.UninstallDriver_Command.ExecuteActionWithoutParameter = new Action(this.Uninstall);
             this.SwitchDriver_Command.ExecuteActionWithoutParameter = new Action(this.SwitchDriver);
+            this.UpdateAPPList_Command.ExecuteActionWithoutParameter = new Action(this.UpdatAPPList);
         }
        
         private void UserControl_Loaded(object parameter)
@@ -523,18 +526,29 @@ namespace ErHuo
 
         private void UpdateWindow()
         {
-            windowlist.Clear();
-            window_obj_list = HwndUtil.GetAllDesktopWindows();
-            foreach (HwndUtil.WindowInfo win in window_obj_list)
-            {
-                windowlist.Add(win.szWindowName);
+            try { 
+                windowlist.Clear();
+                window_obj_list = HwndUtil.GetAllDesktopWindows();
+                foreach (HwndUtil.WindowInfo win in window_obj_list)
+                {
+                    windowlist.Add(win.szWindowName);
+                }
+                WindowIndex = 0;
             }
-            WindowIndex = 0;
+            catch
+            {
+                MessageBox.Show("获取窗口列表失败，可能被杀毒软件拦截，后台按键功能将不可用。");
+            }
+        }
+
+        private void UpdatAPPList()
+        {
+            UpdateWindow();
         }
 
         public void ChangeTargetWindow(int index)
         {
-            if(index != 0)
+            if(index != 0 && index != -1)
             {
                 MessageBox.Show("请勿用于端游！不一定有效，且有封号风险！");
             }

@@ -181,6 +181,8 @@
     <EmbeddedResource Include="Resources\favicon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="update.png" />
+    <None Include="Resources\update.png" />
     <Resource Include="favicon.ico" />
     <None Include="Resources\lw.dll" />
     <None Include="Resources\pausesound.wav" />
