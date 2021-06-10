@@ -23,6 +23,10 @@ namespace ErHuo
         private bool config_switch;
         private int config_driver;
         private int config_key_mode;
+
+        private int config_key_fish_release;
+        private int config_key_fish_collect;
+
         public ConfigSet()
         {
             List<string> pre_config_key_list = new List<string>();
@@ -44,6 +48,8 @@ namespace ErHuo
                 config_switch = bool.Parse(ConfigurationManager.AppSettings["Switch"]);
                 config_driver = int.Parse(ConfigurationManager.AppSettings["Driver"]);
                 config_key_mode = int.Parse(ConfigurationManager.AppSettings["KeyMode"]);
+                config_key_fish_release = int.Parse(ConfigurationManager.AppSettings["FishReleaseKey"]);
+                config_key_fish_collect = int.Parse(ConfigurationManager.AppSettings["FishCollectKey"]);
             }
             catch
             {
@@ -57,6 +63,8 @@ namespace ErHuo
                 config_switch = true;
                 config_driver = 1;
                 config_key_mode = 0;
+                config_key_fish_release = 49;
+                config_key_fish_release = 50;
             }
             config_key_list = new ObservableCollection<KeyEvent>();
             for (var item = 0; item < pre_config_key_list.Count; item++)
@@ -240,6 +248,46 @@ namespace ErHuo
             }
         }
 
+        public int Config_Key_Fish_Release
+        {
+            get { return config_key_fish_release; }
+            set
+            {
+                if (config_key_fish_release != value)
+                {
+                    if (CheckKeyinUse(value))
+                    {
+                        MessageBox.Show("按键有冲突");
+                    }
+                    else
+                    {
+                        this.config_key_fish_release = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        public int Config_Key_Fish_Collect
+        {
+            get { return config_key_fish_collect; }
+            set
+            {
+                if (config_key_fish_collect != value)
+                {
+                    if (CheckKeyinUse(value))
+                    {
+                        MessageBox.Show("按键有冲突");
+                    }
+                    else
+                    {
+                        this.config_key_fish_collect = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]String property = null)
         {
@@ -281,6 +329,15 @@ namespace ErHuo
             return false;
         }
 
+        private bool CheckKeyinUse(int key)
+        {
+            if (key == config_key_start || key == config_key_stop || key == config_key_pause)
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
     public static class ConfigUtil
     {
@@ -312,6 +369,8 @@ namespace ErHuo
                 cfa.AppSettings.Settings["Switch"].Value = config.Config_Switch.ToString();
                 cfa.AppSettings.Settings["Driver"].Value = config.Config_Driver.ToString();
                 cfa.AppSettings.Settings["KeyMode"].Value = config.Config_Key_Mode.ToString();
+                cfa.AppSettings.Settings["FishReleaseKey"].Value = config.Config_Key_Fish_Release.ToString();
+                cfa.AppSettings.Settings["FishCollectKey"].Value = config.Config_Key_Fish_Collect.ToString();
             }  
             else
             {
@@ -326,7 +385,8 @@ namespace ErHuo
                 cfa.AppSettings.Settings.Add("Frequency", config.Config_Frequency.ToString());
                 cfa.AppSettings.Settings.Add("Switch", config.Config_Switch.ToString());
                 cfa.AppSettings.Settings.Add("Driver", config.Config_Driver.ToString());
-                cfa.AppSettings.Settings.Add("KeyMode", config.Config_Key_Mode.ToString());
+                cfa.AppSettings.Settings.Add("FishReleaseKey", config.Config_Key_Fish_Release.ToString());
+                cfa.AppSettings.Settings.Add("FishCollectKey", config.Config_Key_Fish_Collect.ToString());
             }
             cfa.Save();
             ConfigurationManager.RefreshSection("appSettings");

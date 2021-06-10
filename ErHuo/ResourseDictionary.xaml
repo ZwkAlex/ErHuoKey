@@ -33,11 +33,7 @@
         <Setter Property="Opacity" Value="0.8"/>
     </Style>
     <local:InverseBooleanConverter x:Key="boolcoverter"/>
-    <DataTemplate x:Key="WindowData">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding }" FontSize="13"/>
-        </StackPanel>
-    </DataTemplate>
+    
     <DataTemplate x:Key="KeyData">
         <Grid HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>

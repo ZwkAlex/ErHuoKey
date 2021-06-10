@@ -38,23 +38,23 @@
         <TextBlock Grid.Row="6" Grid.Column="0" Text="绑定窗口(后台)" MaxWidth="120" Margin="10 10 0 10" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{DynamicResource TextBlockStyle}"/>
         <TextBlock Grid.Row="7" Grid.Column="0" Text="提示音量" MaxWidth="120" Margin="10 10 0 10" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{DynamicResource TextBlockStyle}"/>
         <TextBlock Grid.Row="8" Grid.Column="0" Text="键盘监听开关" MaxWidth="120" Margin="10 10 0 10" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{DynamicResource TextBlockStyle}"/>
-        <local:customTextBox x:Name="startkey"  Text="{Binding Key_Start ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1"  Margin="20 10 20 10" VerticalAlignment="Center"/>
+        <local:customTextBox x:Name="startkey"  Text="{Binding Key_Start ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1"  Margin="20 10 20 10" VerticalAlignment="Center" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"/>
         <local:customTextBox x:Name="stopkey"  Text="{Binding Key_Stop ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="20 10 20 10" VerticalAlignment="Center" IsEnabled="{Binding ElementName=isusesame, Path=IsChecked, Converter={StaticResource boolcoverter}}"/>
-        <local:customTextBox x:Name="pausekey"  Text="{Binding Key_Pause ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1"  Margin="20 10 20 10" VerticalAlignment="Center"/>
-        <CheckBox Name ="isusesame"  Grid.Row="3" Grid.Column="1"  VerticalAlignment="Center" Margin="20 10 20 10" IsChecked="{Binding Is_Use_Same}" />
-        <TextBox Name="frequency" Grid.Row="4" Text="{Binding Frequency ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Grid.Column="1"  Margin="20 10 20 10" VerticalAlignment="Center" Style="{DynamicResource TextStyle}"/>
+        <local:customTextBox x:Name="pausekey"  Text="{Binding Key_Pause ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1"  Margin="20 10 20 10" VerticalAlignment="Center" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"/>
+        <CheckBox Name ="isusesame"  Grid.Row="3" Grid.Column="1"  VerticalAlignment="Center" Margin="20 10 20 10" IsChecked="{Binding Is_Use_Same}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"/>
+        <TextBox Name="frequency" Grid.Row="4" Text="{Binding Frequency ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Grid.Column="1"  Margin="20 10 20 10" VerticalAlignment="Center" Style="{DynamicResource TextStyle}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"/>
         <ComboBox Grid.Row="5" Grid.Column="1" Margin="20 10" FontSize="13" SelectedIndex="{Binding Key_Mode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
             <ComboBoxItem Content="顺序模式"/>
             <ComboBoxItem Content="按压模式"/>
         </ComboBox>
         <Grid Grid.Row="6" Grid.Column="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="31*"></ColumnDefinition>
-                <ColumnDefinition Width="9*"></ColumnDefinition>
+                <ColumnDefinition Width="25*"></ColumnDefinition>
+                <ColumnDefinition Width="15*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ComboBox Grid.Column="0" Margin="20,10,9.4,10.2" FontSize="13" SelectedIndex="{Binding WindowIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{DynamicResource WindowData}" ItemsSource="{Binding windowlist,Mode=TwoWay}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
+            <ComboBox Grid.Column="0" Margin="20,10,0,10" FontSize="13" SelectedIndex="{Binding WindowIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{DynamicResource WindowData}" ItemsSource="{Binding windowlist,Mode=TwoWay}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
             </ComboBox>
-            <Button  Grid.Column="1" Margin="0,10,5,10" Cursor="Hand" Command="{Binding UpdateAPPList_Command}" ToolTip="刷新列表">
+            <Button  Grid.Column="1" Margin="10,0,10,0"  Cursor="Hand" Command="{Binding UpdateAPPList_Command}" ToolTip="刷新列表" Width="20" Height="20" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
                 <Button.Content>
                     <Image Source="update.png" Stretch="Fill"/>
                 </Button.Content>

@@ -101,7 +101,6 @@
     </ApplicationDefinition>
     <Compile Include="HwndUtil.cs" />
     <Compile Include="LwKey.cs" />
-    <Compile Include="TsKey.cs" />
     <Page Include="customTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

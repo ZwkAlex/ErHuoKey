@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace ErHuo
 {
+
+    public enum STATUS : int
+    {
+        PAUSE = 0,
+        START = 1,
+        STOP = 2
+    }
     public enum DriveCode : int
     {
         no = 0,

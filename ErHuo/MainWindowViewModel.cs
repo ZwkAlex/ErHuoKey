@@ -16,6 +16,8 @@ namespace ErHuo
         public KeyboardHook keyboardHook;
         private ConfigSet config = ConfigUtil.Config;
         private string key_add_text;
+        private string key_fish_release;
+        private string key_fish_collect;
 
         private string key_start;
         private string key_stop;
@@ -28,6 +30,34 @@ namespace ErHuo
         private string prompt_visibility;
         private int window_index;
         private HwndUtil.WindowInfo[] window_obj_list;
+        private int tab_on;
+
+        public string Key_Fish_Release
+        {
+            get
+            {
+                key_fish_release = Enum.GetName(typeof(VK), config.Config_Key_Fish_Release);
+                return key_fish_release;
+            }
+            set
+            {
+                ConfigUtil.Config.Config_Key_Fish_Release = (int)Enum.Parse(typeof(VK), value);
+                OnPropertyChanged();
+            }
+        }
+        public string Key_Fish_Collect
+        {
+            get
+            {
+                key_fish_collect = Enum.GetName(typeof(VK), config.Config_Key_Fish_Collect);
+                return key_fish_collect;
+            }
+            set
+            {
+                ConfigUtil.Config.Config_Key_Fish_Collect = (int)Enum.Parse(typeof(VK), value);
+                OnPropertyChanged();
+            }
+        }
 
         public string Key_Start
         {
@@ -211,6 +241,19 @@ namespace ErHuo
             }
         }
 
+        public int TabOn
+        {
+            get
+            {
+                return tab_on;
+            }
+            set
+            {
+                tab_on = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ObservableCollection<string> windowlist { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<KeyEvent> keylist { get; set; } = ConfigUtil.Config.Config_Key_List;
         public string Key_Add_Text { get { return key_add_text; } set { key_add_text = value; OnPropertyChanged(); } }
@@ -283,16 +326,7 @@ namespace ErHuo
                 keyboardHook.Start();
             }
             UpdateWindow();
-            KeyThread.SetThread(keylist.ToList(), frequency);
             RegFunction((int)DriveCode.lw);
-            if(window_obj_list[window_index].hWnd == IntPtr.Zero)
-            {
-                KeyThread.Init((int)DriveCode.lw);
-            }
-            else
-            {
-                KeyThread.Init((int)DriveCode.lw);
-            }
         }
 
         private void RegFunction(int driver)
@@ -303,11 +337,6 @@ namespace ErHuo
                 case (int)DriveCode.lw:
                     {
                         regResult = LwKey.Register();
-                        break;
-                    }
-                case (int)DriveCode.ts:
-                    {
-                        regResult = TsKey.Register();
                         break;
                     }
             }
@@ -327,19 +356,8 @@ namespace ErHuo
                 }
                 else
                 {
-                    MessageBox.Show("卸载Lw驱动失败 或 并未安装驱动,请重启再次卸载驱动; CanUnload:" + TsKey.CanUnload().ToString());
+                    MessageBox.Show("卸载Lw驱动失败 或 并未安装驱动,请重启再次卸载驱动; CanUnload:" + LwKey.CanUnload().ToString());
                 }
-              
-                if (TsKey.CanUnload()&& TsKey.UnRegister() >= 0)
-                {
-                    MessageBox.Show("Ts卸载驱动成功");
-                }
-                else
-                {
-                    MessageBox.Show("卸载Ts驱动失败 或 并未安装驱动,请重启再次卸载驱动; CanUnload:" + TsKey.CanUnload().ToString());
-                }
-                
-               
             }
   
         }
@@ -409,8 +427,15 @@ namespace ErHuo
 
         public void Start()
         {
-            if (KeyThread.GetStatus() != KeyThread.START) {
-                KeyThread.SetThread(keylist.ToList(),frequency);
+            if (KeyThread.GetStatus() != (int)STATUS.START) {
+                switch (tab_on)
+                {
+                    case 0:
+                        KeyThread.SetKeyList(keylist.ToList());
+                        break;
+                    case 1: break;
+                }
+                KeyThread.Init(window_obj_list[window_index].hWnd, tab_on, frequency);
                 KeyThread.Start();
                 System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                 {
@@ -422,7 +447,7 @@ namespace ErHuo
         
         public void Stop()
         {
-            if (KeyThread.GetStatus() != KeyThread.STOP) {
+            if (KeyThread.GetStatus() != (int)STATUS.STOP) {
                 KeyThread.Stop();
                 System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                 {
@@ -445,7 +470,7 @@ namespace ErHuo
                         }
                         else
                         {
-                            if (KeyThread.GetStatus() != KeyThread.STOP)
+                            if (KeyThread.GetStatus() != (int)STATUS.STOP)
                             {
                                 Status = false;
                             }
@@ -464,7 +489,7 @@ namespace ErHuo
                     }
                     else if (KeyCode == config.Config_Key_Pause)
                     {
-                        if (KeyThread.GetStatus() == KeyThread.PAUSE)
+                        if (KeyThread.GetStatus() == (int)STATUS.PAUSE)
                         {
                             KeyThread.Start();
                             System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
@@ -472,7 +497,7 @@ namespace ErHuo
                                 PlayStartRequested?.Invoke(this, EventArgs.Empty);
                             });
                         }
-                        else if (KeyThread.GetStatus() == KeyThread.START)
+                        else if (KeyThread.GetStatus() == (int)STATUS.START)
                         {
                             KeyThread.Pause();
                             System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
@@ -552,7 +577,6 @@ namespace ErHuo
             {
                 MessageBox.Show("请勿用于端游！不一定有效，且有封号风险！");
             }
-            KeyThread.SetWindowHwnd(window_obj_list[index].hWnd);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
