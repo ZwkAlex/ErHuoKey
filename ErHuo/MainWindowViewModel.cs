@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -18,6 +19,8 @@ namespace ErHuo
         private string key_add_text;
         private string key_fish_release;
         private string key_fish_collect;
+        private bool fish_revive;
+        private string fish_point1, fish_point2, fish_point3;
 
         private string key_start;
         private string key_stop;
@@ -55,6 +58,20 @@ namespace ErHuo
             set
             {
                 ConfigUtil.Config.Config_Key_Fish_Collect = (int)Enum.Parse(typeof(VK), value);
+                OnPropertyChanged();
+            }
+        }
+
+        public bool Fish_Revive
+        {
+            get
+            {
+                fish_revive = config.Config_Fish_Revive;
+                return fish_revive;
+            }
+            set
+            {
+                ConfigUtil.Config.Config_Fish_Revive = value;
                 OnPropertyChanged();
             }
         }
@@ -165,7 +182,7 @@ namespace ErHuo
         {
             get
             {
-                if (KeyThread.GetStatus() == 2)
+                if (KeyThread.GetStatus() == STATUS.STOP)
                 {
                     return false;
                 }
@@ -250,9 +267,55 @@ namespace ErHuo
             set
             {
                 tab_on = value;
+                if(value == 1)
+                {
+                    Fish_Point1 = PointToString(Config.Config_Fish_Point1);
+                    Fish_Point2 = PointToString(Config.Config_Fish_Point2);
+                    Fish_Point3 = PointToString(Config.Config_Fish_Point3);
+                }
                 OnPropertyChanged();
             }
         }
+
+        public string Fish_Point1
+        {
+            get
+            {
+                return fish_point1;
+            }
+            set
+            {
+                fish_point1 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Fish_Point2
+        {
+            get
+            {
+                return fish_point2;
+            }
+            set
+            {
+                fish_point2 = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Fish_Point3
+        {
+            get
+            {
+                return fish_point3;
+            }
+            set
+            {
+                fish_point3 = value;
+                OnPropertyChanged();
+            }
+        }
+
+
 
         public ObservableCollection<string> windowlist { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<KeyEvent> keylist { get; set; } = ConfigUtil.Config.Config_Key_List;
@@ -270,6 +333,8 @@ namespace ErHuo
         public DelegateCommand SwitchDriver_Command { get; set; }
         public DelegateCommand SelectWindow_Command { get; set; }
         public DelegateCommand UpdateAPPList_Command { get; set; }
+        public DelegateCommand Get_Point_Command { get; set; }
+        public DelegateCommand Inform_Command { get; set; }
 
         public event EventHandler PlayStartRequested;
         public event EventHandler PlayStopRequested;
@@ -286,29 +351,33 @@ namespace ErHuo
                 MessageBox.Show("本按键不含任何恶意联网、游戏注入功能，请添加防火墙/杀毒软件信任\n如加载驱动失败，请关闭本按键并用管理员身份开启");
                 ConfigUtil.Config.Config_FristTime = false;
             }
-            this.Load_KeyControl_Command = new DelegateCommand();
-            this.Load_KeyControl_Command.ExecuteAction = new Action<object>(this.UserControl_Loaded);
+            Load_KeyControl_Command = new DelegateCommand();
+            Load_KeyControl_Command.ExecuteAction = new Action<object>(this.UserControl_Loaded);
 
-            this.Window_Closing_Command = new DelegateCommand();
-            this.Window_Loaded_Command = new DelegateCommand();
-            this.AddKey_Command = new DelegateCommand();
-            this.DeleteKey_Command = new DelegateCommand();
-            this.ClickItem_Command = new DelegateCommand();
-            this.Start_Command = new DelegateCommand();
-            this.Stop_Command = new DelegateCommand();
-            this.UninstallDriver_Command = new DelegateCommand();
-            this.SwitchDriver_Command = new DelegateCommand();
-            this.UpdateAPPList_Command = new DelegateCommand();
-            this.Window_Closing_Command.ExecuteActionWithoutParameter = new Action(this.Closing);
-            this.Stop_Command.ExecuteActionWithoutParameter = new Action(()=> { Status = false; });
-            this.Start_Command.ExecuteActionWithoutParameter = new Action(() => { Status = true; });
-            this.ClickItem_Command.ExecuteActionStringParameter = new Action<string>(this.ClickItem);
-            this.DeleteKey_Command.ExecuteActionStringParameter = new Action<string>(this.DeleteKey);
-            this.AddKey_Command.ExecuteActionWithoutParameter = new Action(this.AddKey);
-            this.Window_Loaded_Command.ExecuteActionWithoutParameter = new Action(this.Window_Loaded);
-            this.UninstallDriver_Command.ExecuteActionWithoutParameter = new Action(this.Uninstall);
-            this.SwitchDriver_Command.ExecuteActionWithoutParameter = new Action(this.SwitchDriver);
-            this.UpdateAPPList_Command.ExecuteActionWithoutParameter = new Action(this.UpdatAPPList);
+            Window_Closing_Command = new DelegateCommand();
+            Window_Loaded_Command = new DelegateCommand();
+            AddKey_Command = new DelegateCommand();
+            DeleteKey_Command = new DelegateCommand();
+            ClickItem_Command = new DelegateCommand();
+            Start_Command = new DelegateCommand();
+            Stop_Command = new DelegateCommand();
+            UninstallDriver_Command = new DelegateCommand();
+            SwitchDriver_Command = new DelegateCommand();
+            UpdateAPPList_Command = new DelegateCommand();
+            Get_Point_Command = new DelegateCommand();
+            Inform_Command = new DelegateCommand();
+            Window_Closing_Command.ExecuteActionWithoutParameter = new Action(this.Closing);
+            Stop_Command.ExecuteActionWithoutParameter = new Action(()=> { Status = false; });
+            Start_Command.ExecuteActionWithoutParameter = new Action(() => { Status = true; });
+            ClickItem_Command.ExecuteActionStringParameter = new Action<string>(this.ClickItem);
+            DeleteKey_Command.ExecuteActionStringParameter = new Action<string>(this.DeleteKey);
+            AddKey_Command.ExecuteActionWithoutParameter = new Action(this.AddKey);
+            Window_Loaded_Command.ExecuteActionWithoutParameter = new Action(this.Window_Loaded);
+            UninstallDriver_Command.ExecuteActionWithoutParameter = new Action(this.Uninstall);
+            SwitchDriver_Command.ExecuteActionWithoutParameter = new Action(this.SwitchDriver);
+            UpdateAPPList_Command.ExecuteActionWithoutParameter = new Action(this.UpdatAPPList);
+            Get_Point_Command.ExecuteActionStringParameter = new Action<string>(this.GetPoint);
+            Inform_Command.ExecuteActionWithoutParameter = new Action(this.InformWindow);
         }
        
         private void UserControl_Loaded(object parameter)
@@ -325,7 +394,7 @@ namespace ErHuo
             {
                 keyboardHook.Start();
             }
-            UpdateWindow();
+            UpdatAPPList();
             RegFunction((int)DriveCode.lw);
         }
 
@@ -427,7 +496,7 @@ namespace ErHuo
 
         public void Start()
         {
-            if (KeyThread.GetStatus() != (int)STATUS.START) {
+            if (KeyThread.GetStatus() != STATUS.START) {
                 switch (tab_on)
                 {
                     case 0:
@@ -447,7 +516,7 @@ namespace ErHuo
         
         public void Stop()
         {
-            if (KeyThread.GetStatus() != (int)STATUS.STOP) {
+            if (KeyThread.GetStatus() != STATUS.STOP) {
                 KeyThread.Stop();
                 System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                 {
@@ -470,7 +539,7 @@ namespace ErHuo
                         }
                         else
                         {
-                            if (KeyThread.GetStatus() != (int)STATUS.STOP)
+                            if (KeyThread.GetStatus() != STATUS.STOP)
                             {
                                 Status = false;
                             }
@@ -489,7 +558,7 @@ namespace ErHuo
                     }
                     else if (KeyCode == config.Config_Key_Pause)
                     {
-                        if (KeyThread.GetStatus() == (int)STATUS.PAUSE)
+                        if (KeyThread.GetStatus() == STATUS.PAUSE)
                         {
                             KeyThread.Start();
                             System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
@@ -497,7 +566,7 @@ namespace ErHuo
                                 PlayStartRequested?.Invoke(this, EventArgs.Empty);
                             });
                         }
-                        else if (KeyThread.GetStatus() == (int)STATUS.START)
+                        else if (KeyThread.GetStatus() == STATUS.START)
                         {
                             KeyThread.Pause();
                             System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
@@ -549,7 +618,7 @@ namespace ErHuo
             return true;
         }
 
-        private void UpdateWindow()
+        private void UpdatAPPList()
         {
             try { 
                 windowlist.Clear();
@@ -566,17 +635,62 @@ namespace ErHuo
             }
         }
 
-        private void UpdatAPPList()
-        {
-            UpdateWindow();
-        }
-
         public void ChangeTargetWindow(int index)
         {
             if(index != 0 && index != -1)
             {
                 MessageBox.Show("请勿用于端游！不一定有效，且有封号风险！");
             }
+        }
+
+        public void GetPoint(string info)
+        {
+            switch (info)
+            {
+                case "Point1":
+                    new Thread(()=> {
+                        if (Tool.isProcess()) {
+                            MessageBox.Show("正在进行另一项定点，请先按一次鼠标中键。");
+                            return;
+                        }
+                        Config.Config_Fish_Point1 = Tool.GetPoint();
+                        Fish_Point1 = PointToString(Config.Config_Fish_Point1);
+                    }).Start();
+                    break;
+                case "Point2":
+                    new Thread(() => {
+                        if (Tool.isProcess())
+                        {
+                            MessageBox.Show("正在进行另一项定点，请先按一次鼠标中键。");
+                            return;
+                        }
+                        Config.Config_Fish_Point2 = Tool.GetPoint();
+                        Fish_Point2 = PointToString(Config.Config_Fish_Point2);
+                    }).Start();
+                    break;
+                case "Point3":
+                    new Thread(() => {
+                        if (Tool.isProcess())
+                        {
+                            MessageBox.Show("正在进行另一项定点，请先按一次鼠标中键。");
+                            return;
+                        }
+                        Config.Config_Fish_Point3 = Tool.GetPoint();
+                        Fish_Point3 = PointToString(Config.Config_Fish_Point3);
+                    }).Start();
+                    break;
+            }
+        }
+
+        private string PointToString(Point p)
+        {
+            return p.X + "," + p.Y;
+        }
+
+        private void InformWindow()
+        {
+            Infrom iw = new Infrom();
+            iw.Show();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

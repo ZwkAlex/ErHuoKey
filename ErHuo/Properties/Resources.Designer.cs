@@ -71,6 +71,26 @@ namespace ErHuo.Properties {
         }
         
         /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        public static System.Drawing.Bitmap Inform1 {
+            get {
+                object obj = ResourceManager.GetObject("Inform1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        public static System.Drawing.Bitmap Inform2 {
+            get {
+                object obj = ResourceManager.GetObject("Inform2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
         public static byte[] lw {
@@ -113,16 +133,6 @@ namespace ErHuo.Properties {
         public static byte[] System_Windows_Interactivity {
             get {
                 object obj = ResourceManager.GetObject("System_Windows_Interactivity", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        public static byte[] ts {
-            get {
-                object obj = ResourceManager.GetObject("ts", resourceCulture);
                 return ((byte[])(obj));
             }
         }

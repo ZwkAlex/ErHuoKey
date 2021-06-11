@@ -17,7 +17,6 @@ namespace ErHuo
         public MainWindow()
         {
             ReleaseDLL(Properties.Resources.lw, "lw.dll");
-            //ReleaseDLL(Properties.Resources.ts, "ts.dll");
             ReleaseDLL(Properties.Resources.System_Windows_Interactivity, "System.Windows.Interactivity.dll");
             InitializeComponent();
             vm = new MainWindowViewModel();
@@ -48,7 +47,6 @@ namespace ErHuo
             _notifyIcon.BalloonTipTitle = "贰货按键";
             _notifyIcon.BalloonTipText = "已隐藏至任务栏";
             _notifyIcon.Text = "ErHuo按键";
-            //_notifyIcon.Icon = new System.Drawing.Icon(@"favicon.ico");//程序图标
             _notifyIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);//当前程序图标
 
             MenuItem open = new MenuItem("打开");

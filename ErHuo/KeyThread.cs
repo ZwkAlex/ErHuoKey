@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using donet_ts;
 using lwplug;
 
 namespace ErHuo
 {
     static class KeyThread
     {
-        private static int foobar;
         private static int hwnd;
         private static int key_mode;
         private static lwsoft lw;
         private static int frequency;
         private static List<KeyEvent> key_list;
-        private static int status = 2;
+        private static STATUS status = STATUS.STOP;
         private static ThreadStart threadstart;
         private static Thread keyThread;
 
@@ -45,16 +43,16 @@ namespace ErHuo
             lw = new lwsoft();
             Bind_Window(hwnd);
             lw.SetSimMode(1);
-            lw.DownCpu(80);
+            lw.DownCpu(50);
             while (true)
             {
-                if (status == (int)STATUS.STOP) break;
+                if (status == STATUS.STOP) break;
                 switch (status)
                 {
-                    case (int)STATUS.PAUSE:
+                    case STATUS.PAUSE:
                         Thread.Sleep(50);
                         continue;
-                    case (int)STATUS.START:
+                    case STATUS.START:
                         foreach (KeyEvent key in key_list)
                         {
                             if (key.Activate)
@@ -74,24 +72,62 @@ namespace ErHuo
             lw = new lwsoft();
             Bind_JX3Window();
             lw.SetSimMode(1);
-            lw.DownCpu(80);
-            
+            lw.DownCpu(50);
+            string revive_red = "2d5c4e-030303";
+            string revive_yellow = "c9ab44-030303";
+            string collect_yellow = "7c6324-030303";
+            bool revive = ConfigUtil.Config.Config_Fish_Revive;
+            Point point1 = ConfigUtil.Config.Config_Fish_Point1;
+            Point point2 = ConfigUtil.Config.Config_Fish_Point2;
+            Point point3 = ConfigUtil.Config.Config_Fish_Point3;
             while (true)
             {
-                if (status == (int)STATUS.STOP) break;
+                if (status == STATUS.STOP) break;
                 switch (status)
                 {
-                    case (int)STATUS.PAUSE:
+                    case STATUS.PAUSE:
                         Thread.Sleep(50);
                         continue;
-                    case (int)STATUS.START:
+                    case STATUS.START:
                         int count = 0;
-                        lw.KeyPress((int)VK.KEY_3);
+                        lw.KeyPress(ConfigUtil.Config.Config_Key_Fish_Release);
+                        Thread.Sleep(3000);
                         while (true) {
                             count++;
-                            if (lw.FindColorBlock(850, 650, 1050, 750, 200, 100, "ffff00-03030303") >= 200|| count>=800)
+                            if (revive)
                             {
-                                lw.KeyPress((int)VK.KEY_4);
+                                int num = lw.FindColorBlock(IntRound(point2.X - 30), IntRound(point2.Y - 25), point2.X + 30, point2.Y + 25, 60, 50, revive_red);
+                                //930, 380, 990, 430, 60, 50
+                                if ( num >= 200)
+                                {
+                                    System.Media.SystemSounds.Hand.Play();
+                                    Thread.Sleep(5000);
+                                    while (true) {
+                                        Thread.Sleep(50);
+                                        //800, 500, 1000, 550,
+                                        int locate = lw.FindColor(IntRound(point3.X - 25), IntRound(point3.Y - 10), point3.X + 25, point3.Y + 10, revive_yellow , (float)0.85, 4, 3000);
+                                        if (locate != 0)
+                                        {
+                                            lw.MoveTo(lw.x(), lw.y());
+                                            lw.LeftClick();
+                                        }
+                                        else
+                                        {
+                                            lw.MoveTo(point3.X, point3.Y);
+                                            lw.LeftClick();
+                                        }
+                                        Thread.Sleep(500);
+                                        //930, 380, 990, 430, 60, 50,
+                                        if (lw.FindColorBlock(IntRound(point2.X - 30), IntRound(point2.Y - 25), point2.X + 30, point2.Y + 25, 60, 50, revive_red) < 50)
+                                            break;
+                                    }
+                                    break;
+                                }
+                            }
+                            //850, 650, 1050, 750, 200, 100
+                            if (lw.FindColorBlock(IntRound(point1.X - 100), IntRound(point1.Y - 50), point1.X + 100, point1.Y + 50, 200, 100, collect_yellow) >= 150|| count>=500)
+                            {
+                                lw.KeyPress(ConfigUtil.Config.Config_Key_Fish_Collect);
                                 break;
                             }
                             Thread.Sleep(50);
@@ -112,21 +148,21 @@ namespace ErHuo
 
         }
 
-        public static int GetStatus()
+        public static STATUS GetStatus()
         {
             return status;
         }
         public static void Pause()
         {
-            status = (int)STATUS.PAUSE;
+            status = STATUS.PAUSE;
         }
         public static void Start()
         {
-            status = (int)STATUS.START;
+            status = STATUS.START;
         }
         public static void Stop()
         {
-            status = (int)STATUS.STOP;
+            status = STATUS.STOP;
             try
             {
                 keyThread.Abort();
@@ -149,6 +185,10 @@ namespace ErHuo
                 }
         }
         
+        public static int IntRound(int n)
+        {
+            return n <= 0 ? 0 : n;
+        }
         
         private static void Bind_Window(int hwnd)
         {
@@ -185,5 +225,6 @@ namespace ErHuo
                 lw.BindWindow((int)hwnd, 0, 0, 1);
             }
         }
+
     }
 }

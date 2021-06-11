@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
@@ -26,6 +27,10 @@ namespace ErHuo
 
         private int config_key_fish_release;
         private int config_key_fish_collect;
+        private bool config_fish_revive;
+        private Point config_fish_point1;
+        private Point config_fish_point2;
+        private Point config_fish_point3;
 
         public ConfigSet()
         {
@@ -50,6 +55,10 @@ namespace ErHuo
                 config_key_mode = int.Parse(ConfigurationManager.AppSettings["KeyMode"]);
                 config_key_fish_release = int.Parse(ConfigurationManager.AppSettings["FishReleaseKey"]);
                 config_key_fish_collect = int.Parse(ConfigurationManager.AppSettings["FishCollectKey"]);
+                config_fish_revive = bool.Parse(ConfigurationManager.AppSettings["FishRevive"]);
+                config_fish_point1 = StringToPoint(ConfigurationManager.AppSettings["FishPoint1"]);
+                config_fish_point2 = StringToPoint(ConfigurationManager.AppSettings["FishPoint2"]);
+                config_fish_point3 = StringToPoint(ConfigurationManager.AppSettings["FishPoint3"]);
             }
             catch
             {
@@ -64,7 +73,11 @@ namespace ErHuo
                 config_driver = 1;
                 config_key_mode = 0;
                 config_key_fish_release = 49;
-                config_key_fish_release = 50;
+                config_key_fish_collect = 50;
+                config_fish_revive = false;
+                config_fish_point1 = new Point(0, 0);
+                config_fish_point2 = new Point(0, 0);
+                config_fish_point3 = new Point(0, 0);
             }
             config_key_list = new ObservableCollection<KeyEvent>();
             for (var item = 0; item < pre_config_key_list.Count; item++)
@@ -288,6 +301,44 @@ namespace ErHuo
             }
         }
 
+        public bool Config_Fish_Revive
+        {
+            get { return config_fish_revive; }
+            set
+            {
+                this.config_fish_revive = value;
+                OnPropertyChanged();
+            }
+        }
+
+         public Point Config_Fish_Point1
+        {
+            get {  return config_fish_point1; }
+            set
+            {
+                this.config_fish_point1 = value;
+                OnPropertyChanged();
+            }
+        }
+        public Point Config_Fish_Point2
+        {
+            get { return config_fish_point2; }
+            set
+            {
+                this.config_fish_point2 = value;
+                OnPropertyChanged();
+            }
+        }
+        public Point Config_Fish_Point3
+        {
+            get { return config_fish_point3; }
+            set
+            {
+                this.config_fish_point3 = value;
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]String property = null)
         {
@@ -338,6 +389,20 @@ namespace ErHuo
             return false;
         }
 
+        private static Point StringToPoint(string s)
+        {
+            try
+            {
+                string[] temp = s.Split(',');
+                return new Point(int.Parse(temp[0]), int.Parse(temp[1]));
+            }
+            catch
+            {
+                return new Point(0, 0);
+            }
+            
+        }
+
     }
     public static class ConfigUtil
     {
@@ -346,50 +411,47 @@ namespace ErHuo
 
         public static void SaveConfig()
         {
-
+            Configuration cfa = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             List<int> key_list = new List<int>();
             List<bool> key_activate_list = new List<bool>();
             foreach (var key in config.Config_Key_List)
             {
                 key_list.Add(key.Code);
                 key_activate_list.Add(key.Activate);
-            }
-            Configuration cfa = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            if(cfa.AppSettings.Settings.Count != 0)
-            {
-                cfa.AppSettings.Settings["KeyValue"].Value = string.Join(",", key_list);
-                cfa.AppSettings.Settings["IsActivate"].Value = string.Join(",", key_activate_list);
-                cfa.AppSettings.Settings["Volume"].Value = config.Config_Volume.ToString();
-                cfa.AppSettings.Settings["StartKey"].Value = config.Config_Key_Start.ToString();
-                cfa.AppSettings.Settings["StopKey"].Value = config.Config_Key_Stop.ToString();
-                cfa.AppSettings.Settings["PauseKey"].Value = config.Config_Key_Pause.ToString();
-                cfa.AppSettings.Settings["UseSameKey"].Value = config.Config_is_Use_Same_Key.ToString();
-                cfa.AppSettings.Settings["FristTime"].Value = config.Config_FristTime.ToString();
-                cfa.AppSettings.Settings["Frequency"].Value = config.Config_Frequency.ToString();
-                cfa.AppSettings.Settings["Switch"].Value = config.Config_Switch.ToString();
-                cfa.AppSettings.Settings["Driver"].Value = config.Config_Driver.ToString();
-                cfa.AppSettings.Settings["KeyMode"].Value = config.Config_Key_Mode.ToString();
-                cfa.AppSettings.Settings["FishReleaseKey"].Value = config.Config_Key_Fish_Release.ToString();
-                cfa.AppSettings.Settings["FishCollectKey"].Value = config.Config_Key_Fish_Collect.ToString();
-            }  
-            else
-            {
-                cfa.AppSettings.Settings.Add("KeyValue", string.Join(",", key_list));
-                cfa.AppSettings.Settings.Add("IsActivate", string.Join(",", key_activate_list));
-                cfa.AppSettings.Settings.Add("Volume", config.Config_Volume.ToString());
-                cfa.AppSettings.Settings.Add("StartKey", config.Config_Key_Start.ToString());
-                cfa.AppSettings.Settings.Add("StopKey", config.Config_Key_Stop.ToString());
-                cfa.AppSettings.Settings.Add("PauseKey", config.Config_Key_Pause.ToString());
-                cfa.AppSettings.Settings.Add("UseSameKey", config.Config_is_Use_Same_Key.ToString());
-                cfa.AppSettings.Settings.Add("FristTime", config.Config_FristTime.ToString());
-                cfa.AppSettings.Settings.Add("Frequency", config.Config_Frequency.ToString());
-                cfa.AppSettings.Settings.Add("Switch", config.Config_Switch.ToString());
-                cfa.AppSettings.Settings.Add("Driver", config.Config_Driver.ToString());
-                cfa.AppSettings.Settings.Add("FishReleaseKey", config.Config_Key_Fish_Release.ToString());
-                cfa.AppSettings.Settings.Add("FishCollectKey", config.Config_Key_Fish_Collect.ToString());
-            }
+            } 
+            SettingSave(cfa, "KeyValue", string.Join(",", key_list));
+            SettingSave(cfa, "IsActivate", string.Join(",", key_activate_list));
+            SettingSave(cfa, "Volume",config.Config_Volume.ToString());
+            SettingSave(cfa, "StartKey", config.Config_Key_Start.ToString());
+            SettingSave(cfa, "StopKey", config.Config_Key_Stop.ToString());
+            SettingSave(cfa, "PauseKey", config.Config_Key_Pause.ToString());
+            SettingSave(cfa, "UseSameKey", config.Config_is_Use_Same_Key.ToString());
+            SettingSave(cfa, "FristTime", config.Config_FristTime.ToString());
+            SettingSave(cfa, "Frequency", config.Config_Frequency.ToString());
+            SettingSave(cfa, "Switch", config.Config_Switch.ToString());
+            SettingSave(cfa, "Driver", config.Config_Driver.ToString());
+            SettingSave(cfa, "KeyMode", config.Config_Key_Mode.ToString());
+            SettingSave(cfa, "FishReleaseKey", config.Config_Key_Fish_Release.ToString());
+            SettingSave(cfa, "FishCollectKey", config.Config_Key_Fish_Collect.ToString());
+            SettingSave(cfa, "FishRevive", config.Config_Fish_Revive.ToString());
+            SettingSave(cfa, "FishPoint1", config.Config_Fish_Point1.X+ "," + config.Config_Fish_Point1.Y);
+            SettingSave(cfa, "FishPoint2", config.Config_Fish_Point2.X + "," + config.Config_Fish_Point2.Y);
+            SettingSave(cfa, "FishPoint3", config.Config_Fish_Point3.X + "," + config.Config_Fish_Point3.Y);
             cfa.Save();
             ConfigurationManager.RefreshSection("appSettings");
         }
+        private static void SettingSave(Configuration cfa, string name, string value)
+        {
+            try
+            {
+                cfa.AppSettings.Settings[name].Value = value;
+            }
+            catch
+            {
+                cfa.AppSettings.Settings.Add(name, value);
+            }
+        }
+
+
     }
 }

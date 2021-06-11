@@ -52,11 +52,11 @@
                 <ColumnDefinition Width="25*"></ColumnDefinition>
                 <ColumnDefinition Width="15*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ComboBox Grid.Column="0" Margin="20,10,0,10" FontSize="13" SelectedIndex="{Binding WindowIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{DynamicResource WindowData}" ItemsSource="{Binding windowlist,Mode=TwoWay}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
+            <ComboBox Grid.Column="0" Margin="20,10,0,10" FontSize="13" SelectedIndex="{Binding WindowIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  ItemsSource="{Binding windowlist,Mode=TwoWay}" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
             </ComboBox>
             <Button  Grid.Column="1" Margin="10,0,10,0"  Cursor="Hand" Command="{Binding UpdateAPPList_Command}" ToolTip="刷新列表" Width="20" Height="20" IsEnabled="{Binding Status,Converter={StaticResource boolcoverter},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}">
                 <Button.Content>
-                    <Image Source="update.png" Stretch="Fill"/>
+                    <Image Source="/Resources/update.png" Stretch="Fill"/>
                 </Button.Content>
             </Button>
         </Grid>
