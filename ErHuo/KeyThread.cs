@@ -73,7 +73,7 @@ namespace ErHuo
             Bind_JX3Window();
             lw.SetSimMode(1);
             lw.DownCpu(50);
-            string revive_red = "2d5c4e-030303";
+            string revive_red = "ad5c4d-030303";
             string revive_yellow = "c9ab44-030303";
             string collect_yellow = "7c6324-030303";
             bool revive = ConfigUtil.Config.Config_Fish_Revive;
@@ -100,7 +100,7 @@ namespace ErHuo
                                 //930, 380, 990, 430, 60, 50
                                 if ( num >= 200)
                                 {
-                                    System.Media.SystemSounds.Hand.Play();
+                                    System.Media.SystemSounds.Question.Play();
                                     Thread.Sleep(5000);
                                     while (true) {
                                         Thread.Sleep(50);
