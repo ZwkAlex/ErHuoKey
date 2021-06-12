@@ -24,3 +24,4 @@ E:\c_workspcace\ErHuoKeyboardSimulator\ErHuo\obj\Release\ErHuo.csproj.CoreCompil
 E:\c_workspcace\ErHuoKeyboardSimulator\ErHuo\obj\Release\ErHuo.csproj.CopyComplete
 E:\c_workspcace\ErHuoKeyboardSimulator\ErHuo\obj\Release\ErHuo.exe
 E:\c_workspcace\ErHuoKeyboardSimulator\ErHuo\obj\Release\ErHuo.pdb
+E:\c_workspcace\ErHuoKeyboardSimulator\ErHuo\obj\Release\ErHuo.csprojAssemblyReference.cache
