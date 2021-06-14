@@ -36,7 +36,8 @@
                 <ColumnDefinition Width="0.8*"/>
                 <ColumnDefinition Width="0.2*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock  Style="{DynamicResource TextBlockStyle}" Margin="10 10 10 10" TextWrapping="WrapWithOverflow" Text="【找点完成后不要移动窗口位置】"/>
+            <TextBlock  Style="{DynamicResource TextBlockStyle}" Margin="10 10 10 10" TextWrapping="WrapWithOverflow" Text="【找点完成后不要移动窗口位置】
+                        【使用F交互键】"/>
             <Button Name="Close" FontSize="12" Grid.Column="1" Margin="10 10 10 10" Content="关闭"  Click="CloseInformWindow"/>
         </Grid>
         

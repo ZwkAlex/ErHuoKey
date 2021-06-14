@@ -73,9 +73,9 @@ namespace ErHuo
             Bind_JX3Window();
             lw.SetSimMode(1);
             lw.DownCpu(50);
-            string revive_red = "ad5c4d-030303";
-            string revive_yellow = "c9ab44-030303";
-            string collect_yellow = "7c6324-030303";
+            string revive_red = "ad5c4d-101010";
+            string revive_yellow = "c9ab44-000000";
+            string collect_yellow = "7c6324-000000";
             bool revive = ConfigUtil.Config.Config_Fish_Revive;
             Point point1 = ConfigUtil.Config.Config_Fish_Point1;
             Point point2 = ConfigUtil.Config.Config_Fish_Point2;
@@ -97,14 +97,13 @@ namespace ErHuo
                             if (revive)
                             {
                                 int num = lw.FindColorBlock(IntRound(point2.X - 30), IntRound(point2.Y - 25), point2.X + 30, point2.Y + 25, 60, 50, revive_red);
-                                //930, 380, 990, 430, 60, 50
+                                Console.WriteLine(num);
                                 if ( num >= 200)
                                 {
                                     System.Media.SystemSounds.Question.Play();
                                     Thread.Sleep(5000);
                                     while (true) {
                                         Thread.Sleep(50);
-                                        //800, 500, 1000, 550,
                                         int locate = lw.FindColor(IntRound(point3.X - 25), IntRound(point3.Y - 10), point3.X + 25, point3.Y + 10, revive_yellow , (float)0.85, 4, 3000);
                                         if (locate != 0)
                                         {
@@ -117,15 +116,18 @@ namespace ErHuo
                                             lw.LeftClick();
                                         }
                                         Thread.Sleep(500);
-                                        //930, 380, 990, 430, 60, 50,
                                         if (lw.FindColorBlock(IntRound(point2.X - 30), IntRound(point2.Y - 25), point2.X + 30, point2.Y + 25, 60, 50, revive_red) < 50)
+                                        {
+                                            lw.KeyPress((int)VK.KEY_F);
                                             break;
+                                        }
+                                            
                                     }
                                     break;
                                 }
                             }
-                            //850, 650, 1050, 750, 200, 100
-                            if (lw.FindColorBlock(IntRound(point1.X - 100), IntRound(point1.Y - 50), point1.X + 100, point1.Y + 50, 200, 100, collect_yellow) >= 150|| count>=500)
+                            Console.WriteLine(lw.FindColorBlock(IntRound(point1.X - 100), IntRound(point1.Y - 50), point1.X + 100, point1.Y + 50, 200, 100, collect_yellow));
+                            if (lw.FindColorBlock(IntRound(point1.X - 100), IntRound(point1.Y - 50), point1.X + 100, point1.Y + 50, 200, 100, collect_yellow) >= 500|| count>=500)
                             {
                                 lw.KeyPress(ConfigUtil.Config.Config_Key_Fish_Collect);
                                 break;
