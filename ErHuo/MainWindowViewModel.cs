@@ -434,14 +434,6 @@ namespace ErHuo
         public void Closing()
         {
             KeyThread.Exit();
-            if (LwKey.CanUnload() && LwKey.UnRegister() >= 0)
-            {
-                MessageBox.Show("Lw卸载驱动成功,请手动删除C:\\Windows\\System32\\drivers下的DrvInDKB.sys 与DrvInDMU.sys 以免受到木马攻击");
-            }
-            else
-            {
-                MessageBox.Show("卸载Lw驱动失败 或 并未安装驱动,请重启再次卸载驱动; CanUnload:" + LwKey.CanUnload().ToString());
-            }
             Environment.Exit(0);
         }
 
