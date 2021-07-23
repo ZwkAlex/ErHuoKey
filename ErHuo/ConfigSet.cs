@@ -32,6 +32,9 @@ namespace ErHuo
         private Point config_fish_point2;
         private Point config_fish_point3;
 
+        private Point config_performer_point1;
+        private Point config_performer_point2;
+
         public ConfigSet()
         {
             List<string> pre_config_key_list = new List<string>();
@@ -59,6 +62,8 @@ namespace ErHuo
                 config_fish_point1 = StringToPoint(ConfigurationManager.AppSettings["FishPoint1"]);
                 config_fish_point2 = StringToPoint(ConfigurationManager.AppSettings["FishPoint2"]);
                 config_fish_point3 = StringToPoint(ConfigurationManager.AppSettings["FishPoint3"]);
+                config_performer_point1 = StringToPoint(ConfigurationManager.AppSettings["PerformerPoint1"]);
+                config_performer_point2 = StringToPoint(ConfigurationManager.AppSettings["PerformerPoint2"]);
             }
             catch
             {
@@ -78,6 +83,8 @@ namespace ErHuo
                 config_fish_point1 = new Point(0, 0);
                 config_fish_point2 = new Point(0, 0);
                 config_fish_point3 = new Point(0, 0);
+                config_performer_point1 = new Point(0, 0);
+                config_performer_point2 = new Point(0, 0);
             }
             config_key_list = new ObservableCollection<KeyEvent>();
             for (var item = 0; item < pre_config_key_list.Count; item++)
@@ -339,6 +346,25 @@ namespace ErHuo
             }
         }
 
+        public Point Config_Perfromer_Point1
+        {
+            get { return config_performer_point1; }
+            set
+            {
+                this.config_performer_point1 = value;
+                OnPropertyChanged();
+            }
+        }
+        public Point Config_Perfromer_Point2
+        {
+            get { return config_performer_point2; }
+            set
+            {
+                this.config_performer_point2 = value;
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]String property = null)
         {
@@ -391,12 +417,11 @@ namespace ErHuo
 
         private static Point StringToPoint(string s)
         {
-            try
-            {
+            if(s != null){
                 string[] temp = s.Split(',');
                 return new Point(int.Parse(temp[0]), int.Parse(temp[1]));
             }
-            catch
+            else
             {
                 return new Point(0, 0);
             }
@@ -437,16 +462,18 @@ namespace ErHuo
             SettingSave(cfa, "FishPoint1", config.Config_Fish_Point1.X+ "," + config.Config_Fish_Point1.Y);
             SettingSave(cfa, "FishPoint2", config.Config_Fish_Point2.X + "," + config.Config_Fish_Point2.Y);
             SettingSave(cfa, "FishPoint3", config.Config_Fish_Point3.X + "," + config.Config_Fish_Point3.Y);
+            SettingSave(cfa, "PerformerPoint1", config.Config_Perfromer_Point1.X + "," + config.Config_Perfromer_Point1.Y);
+            SettingSave(cfa, "PerformerPoint2", config.Config_Perfromer_Point2.X + "," + config.Config_Perfromer_Point2.Y);
             cfa.Save();
             ConfigurationManager.RefreshSection("appSettings");
         }
         private static void SettingSave(Configuration cfa, string name, string value)
         {
-            try
+            if(cfa.AppSettings.Settings[name] != null)
             {
                 cfa.AppSettings.Settings[name].Value = value;
             }
-            catch
+            else
             {
                 cfa.AppSettings.Settings.Add(name, value);
             }

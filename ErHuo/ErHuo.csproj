@@ -64,10 +64,6 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="lwplug">
-      <HintPath>.\lwplug.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -190,6 +186,7 @@
     <Resource Include="favicon.ico" />
     <None Include="Resources\lw.dll" />
     <None Include="Resources\pausesound.wav" />
+    <Resource Include="Resources\performer.jpg" />
     <Content Include="Resources\System.Windows.Interactivity.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -203,6 +200,17 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="lw">
+      <Guid>{71175991-9B59-42EA-B712-9ADF3319AC18}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

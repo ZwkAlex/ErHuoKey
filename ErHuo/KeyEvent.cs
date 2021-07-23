@@ -6,10 +6,10 @@ namespace ErHuo
 {
     public class KeyEvent : INotifyPropertyChanged
     {
-        private String key;
+        private string key;
         private int code;
         private bool activate = false;
-        public String Key
+        public string Key
         {
             get { return key; }
             set

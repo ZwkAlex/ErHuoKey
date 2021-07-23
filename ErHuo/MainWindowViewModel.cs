@@ -2,12 +2,10 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 using SlaveClient;
 
 namespace ErHuo
@@ -21,6 +19,7 @@ namespace ErHuo
         private string key_fish_collect;
         private bool fish_revive;
         private string fish_point1, fish_point2, fish_point3;
+        private string performer_point1, performer_point2;
 
         private string key_start;
         private string key_stop;
@@ -272,6 +271,9 @@ namespace ErHuo
                     Fish_Point1 = PointToString(Config.Config_Fish_Point1);
                     Fish_Point2 = PointToString(Config.Config_Fish_Point2);
                     Fish_Point3 = PointToString(Config.Config_Fish_Point3);
+                }else if(value == 2){
+                    Performer_Point1 = PointToString(Config.Config_Perfromer_Point1);
+                    Performer_Point2 = PointToString(Config.Config_Perfromer_Point2);
                 }
                 OnPropertyChanged();
             }
@@ -315,7 +317,31 @@ namespace ErHuo
             }
         }
 
+        public string Performer_Point1
+        {
+            get
+            {
+                return performer_point1;
+            }
+            set
+            {
+                performer_point1 = value;
+                OnPropertyChanged();
+            }
+        }
 
+        public string Performer_Point2
+        {
+            get
+            {
+                return performer_point2;
+            }
+            set
+            {
+                performer_point2 = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ObservableCollection<string> windowlist { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<KeyEvent> keylist { get; set; } = ConfigUtil.Config.Config_Key_List;
@@ -647,7 +673,7 @@ namespace ErHuo
         {
             switch (info)
             {
-                case "Point1":
+                case "1_1":
                     new Thread(()=> {
                         if (Tool.isProcess()) {
                             MessageBox.Show("正在进行另一项定点，请先按一次鼠标中键。");
@@ -657,7 +683,7 @@ namespace ErHuo
                         Fish_Point1 = PointToString(Config.Config_Fish_Point1);
                     }).Start();
                     break;
-                case "Point2":
+                case "1_2":
                     new Thread(() => {
                         if (Tool.isProcess())
                         {
@@ -668,7 +694,7 @@ namespace ErHuo
                         Fish_Point2 = PointToString(Config.Config_Fish_Point2);
                     }).Start();
                     break;
-                case "Point3":
+                case "1_3":
                     new Thread(() => {
                         if (Tool.isProcess())
                         {
@@ -677,6 +703,28 @@ namespace ErHuo
                         }
                         Config.Config_Fish_Point3 = Tool.GetPoint();
                         Fish_Point3 = PointToString(Config.Config_Fish_Point3);
+                    }).Start();
+                    break;
+                case "2_1":
+                    new Thread(() => {
+                        if (Tool.isProcess())
+                        {
+                            MessageBox.Show("正在进行另一项定点，请先按一次鼠标中键。");
+                            return;
+                        }
+                        Config.Config_Perfromer_Point1 = Tool.GetPoint();
+                        Performer_Point1 = PointToString(Config.Config_Perfromer_Point1);
+                    }).Start();
+                    break;
+                case "2_2":
+                    new Thread(() => {
+                        if (Tool.isProcess())
+                        {
+                            MessageBox.Show("正在进行另一项定点，请先按一次鼠标中键。");
+                            return;
+                        }
+                        Config.Config_Perfromer_Point2 = Tool.GetPoint();
+                        Performer_Point2 = PointToString(Config.Config_Perfromer_Point2);
                     }).Start();
                     break;
             }

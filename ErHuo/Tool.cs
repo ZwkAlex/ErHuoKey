@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Windows.Forms;
-using lwplug;
+using lw;
 using System.Drawing;
 using System.Media;
 
@@ -26,7 +26,7 @@ namespace ErHuo
 
     }
 
-    static class Tool
+    public static class Tool
     {
         private static ThreadStart threadstart;
         private static Thread ToolThread;

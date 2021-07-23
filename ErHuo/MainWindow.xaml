@@ -76,7 +76,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Margin="10 10 0 10" Text="钓鱼提示点："/>
                             <TextBlock Grid.Column="1" Margin="0 10 0 10" Text="{Binding Fish_Point1,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                            <Button Grid.Column="2" Margin="5 10 10 10" Content="找点" Command="{Binding Get_Point_Command}" CommandParameter="Point1"/>
+                            <Button Grid.Column="2" Margin="5 10 10 10" Content="找点" Command="{Binding Get_Point_Command}" CommandParameter="1_1"/>
                         </Grid>
                         <Grid Grid.Row="6">
                             <Grid.ColumnDefinitions>
@@ -86,7 +86,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Margin="10 10 0 10" Text="重伤提示点："/>
                             <TextBlock Grid.Column="1" Margin="0 10 0 10" Text="{Binding Fish_Point2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                            <Button Grid.Column="2" Margin="5 10 10 10" Content="找点" Command="{Binding Get_Point_Command}" CommandParameter="Point2" IsEnabled="{Binding Fish_Revive}"/>
+                            <Button Grid.Column="2" Margin="5 10 10 10" Content="找点" Command="{Binding Get_Point_Command}" CommandParameter="1_2" IsEnabled="{Binding Fish_Revive}"/>
                         </Grid>
                         <Grid Grid.Row="7">
                             <Grid.ColumnDefinitions>
@@ -96,11 +96,45 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Margin="10 10 0 10" Text="原地起按钮："/>
                             <TextBlock Grid.Column="1" Margin="0 10 0 10" Text="{Binding Fish_Point3,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                            <Button Grid.Column="2" Margin="5 10 10 10" Content="找点" Command="{Binding Get_Point_Command}" CommandParameter="Point3" IsEnabled="{Binding Fish_Revive}"/>
+                            <Button Grid.Column="2" Margin="5 10 10 10" Content="找点" Command="{Binding Get_Point_Command}" CommandParameter="1_3" IsEnabled="{Binding Fish_Revive}"/>
                         </Grid>
                         <Button Grid.Row="8" Content="找点说明" Margin="10 10 10 10" Command="{Binding Inform_Command}"/>
                     </Grid>
                     <TextBlock Grid.Row="1" TextWrapping="WrapWithOverflow" Text="此页激活钓鱼模式会无视右方按键频率设置，并且为了安全不注入为全前台模式，绑定窗口（后台）设置无效。 设置要求：
+                               分辨率推荐 1920*1080 
+                               推荐使用无边框窗口化。" Margin="10,10.4,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource TextBlockStyle}" Grid.ColumnSpan="2" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="剑三艺人">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.1*"/>
+                        <RowDefinition Height="0.1*"/>
+                        <RowDefinition Height="0.4*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.1*"/>
+                            <RowDefinition Height="0.1*"/>
+                            <RowDefinition Height="0.1*"/>
+                            <!--<RowDefinition Height="0.1*"/>
+                            <RowDefinition Height="0.1*"/>
+                            <RowDefinition Height="0.1*"/>-->
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Margin="10 5 10 5" Text="开启艺人点："/>
+                        <TextBlock Grid.Row="1" Margin="10 5 10 5" FontSize="20" Text="{Binding Performer_Point1,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Grid.Row="2" Margin="50 5 50 5" Content="找点" Command="{Binding Get_Point_Command}" CommandParameter="2_1"/>
+                        
+                        
+                        <!--<TextBlock Grid.Row="3" Margin="10 10 10 10" Text="艺人状态点："/>
+                        <TextBlock Grid.Row="4" Margin="10 10 10 10" Text="{Binding Performer_Point2,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Grid.Row="5" Margin="50 10 50 10" Content="找点" Command="{Binding Get_Point_Command}" CommandParameter="2_2" IsEnabled="{Binding Fish_Revive}"/>-->
+                    </Grid>
+                    <Image Grid.Row="1" Margin="10 10 10 10" Source="/Resources/performer.jpg" />
+                    <TextBlock Grid.Row="2" TextWrapping="WrapWithOverflow" Text="找点说明：
+                               点击找点之后，听见一次提示音，鼠标移至游戏中上图所示点之后按《鼠标中键》再听见一次提示音即为找点结束。
+                               此页激活艺人模式会无视右方按键频率设置，并且为了安全不注入为全前台模式，绑定窗口（后台）设置无效。 设置要求：
                                分辨率推荐 1920*1080 
                                推荐使用无边框窗口化。" Margin="10,10.4,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{DynamicResource TextBlockStyle}" Grid.ColumnSpan="2" />
                 </Grid>
