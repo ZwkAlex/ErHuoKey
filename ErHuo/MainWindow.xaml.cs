@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ErHuo.Utilities;
+using ErHuo.ViewModels;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-using SlaveClient;
 
 namespace ErHuo
 {
@@ -13,21 +14,20 @@ namespace ErHuo
     {
         public KeyboardHook keyboardHook;
         private NotifyIcon _notifyIcon = null;
-        private MainWindowViewModel vm;
+        //private MainWindowViewModel vm;
         public MainWindow()
         {
-            ReleaseDLL(Properties.Resources.lw, "lw.dll");
-            ReleaseDLL(Properties.Resources.System_Windows_Interactivity, "System.Windows.Interactivity.dll");
+            ReleaseDLL(Properties.Resources.op_x64, "op_x64.dll");
             InitializeComponent();
-            vm = new MainWindowViewModel();
-            this.DataContext = vm;
-            vm.PlayStartRequested += PlayStartSound;
-            vm.PlayStopRequested += PlayStopSound;
-            vm.PlayPauseRequested += PlayPauseSound;
-            vm.KeyDownRequested += KeyDownHandler;
-            vm.KeyUpRequested += KeyUpHandler;
-            vm.MinWindowRequested += HideWindow;
-            
+            //vm = new MainWindowViewModel();
+            //this.DataContext = vm;
+            //vm.PlayStartRequested += PlayStartSound;
+            //vm.PlayStopRequested += PlayStopSound;
+            //vm.PlayPauseRequested += PlayPauseSound;
+            //vm.KeyDownRequested += KeyDownHandler;
+            //vm.KeyUpRequested += KeyUpHandler;
+            //vm.MinWindowRequested += HideWindow;
+
             InitIcon();
         }
         void ReleaseDLL(byte[] byDll, string name)
@@ -56,7 +56,7 @@ namespace ErHuo
             MenuItem[] childen = new MenuItem[] { open, exit };
             _notifyIcon.ContextMenu = new ContextMenu(childen);
 
-            _notifyIcon.MouseClick += new MouseEventHandler((sender,e)=> { ShowWindow(sender, e); });
+            _notifyIcon.MouseClick += new MouseEventHandler((sender, e) => { ShowWindow(sender, e); });
         }
 
         private void ShowWindow(object sender, EventArgs e)
@@ -72,7 +72,7 @@ namespace ErHuo
 
         private void Close(object sender, EventArgs e)
         {
-            vm.Closing();
+            Environment.Exit(0);
         }
 
 
@@ -91,30 +91,30 @@ namespace ErHuo
             }
         }
 
-        private void KeyUpHandler(object sender, KeyEventArgs e)
-        {
-            vm.HandleKeyUp(e.KeyValue);
-        }
-        private void KeyDownHandler(object sender, KeyEventArgs e)
-        {
-            vm.HandleKeyDown(e.KeyValue);
-        }
-        private void PlayStartSound(object sender,EventArgs e)
-        {
-            startsound.Stop();
-            startsound.Play();
-        }
+        //private void KeyUpHandler(object sender, KeyEventArgs e)
+        //{
+        //    vm.HandleKeyUp(e.KeyValue);
+        //}
+        //private void KeyDownHandler(object sender, KeyEventArgs e)
+        //{
+        //    vm.HandleKeyDown(e.KeyValue);
+        //}
+        //private void PlayStartSound(object sender, EventArgs e)
+        //{
+        //    startsound.Stop();
+        //    startsound.Play();
+        //}
 
-        private void PlayStopSound(object sender, EventArgs e)
-        {
-            stopsound.Stop();
-            stopsound.Play();
-        }
+        //private void PlayStopSound(object sender, EventArgs e)
+        //{
+        //    stopsound.Stop();
+        //    stopsound.Play();
+        //}
 
-        private void PlayPauseSound(object sender, EventArgs e)
-        {
-            pausesound.Stop();
-            pausesound.Play();
-        }
+        //private void PlayPauseSound(object sender, EventArgs e)
+        //{
+        //    pausesound.Stop();
+        //    pausesound.Play();
+        //}
     }
 }

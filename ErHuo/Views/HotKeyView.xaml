@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="ErHuo.Views.HotKeyView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:vm="clr-namespace:ErHuo.ViewModels"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:view="clr-namespace:ErHuo.Views"
+    xmlns:utils="clr-namespace:ErHuo.Utilities"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:s="https://github.com/canton7/Stylet"
+    mc:Ignorable="d" 
+    d:DesignHeight="500" d:DesignWidth="800"
+    d:DataContext="{d:DesignInstance {x:Type vm:HotKeyViewModel}}">
+    <Border Style="{StaticResource BorderRegion}" BorderBrush="Gray" BorderThickness="1" Margin="5">
+        <Grid>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.4*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.4*"/>
+                    <RowDefinition Height="0.4*"/>
+                    <RowDefinition Height="0.3*"/>
+                </Grid.RowDefinitions>
+                <Grid Margin="0" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="开始热键" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0, 0, 5, 0" Style="{StaticResource TextBlockSubTitle}"/>
+                    <view:customTextBox Grid.Column="1"  Text="{Binding KeyStart}" Margin="10, 0, 10, 0" VerticalAlignment="Center" IsEnabled="{Binding ModifyKey , Mode=OneWay}"/>
+                </Grid>
+
+                <Grid Margin="0" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock  Grid.Column="0" Text="停止热键" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0, 0, 5, 0" Style="{StaticResource TextBlockSubTitle}"/>
+                    <view:customTextBox  Grid.Column="1" Text="{Binding KeyStop}" Margin="10, 0, 10, 0" VerticalAlignment="Center" IsEnabled="{Binding ModifyKey, Mode=OneWay}"/>
+                </Grid>
+                 <ToggleButton Grid.Row ="2"  IsChecked="{Binding ModifyKey}" Command="{s:Action KeyConfigAction}" Style="{StaticResource ToggleButtonCustom}" hc:StatusSwitchElement.HideUncheckedElement="True">
+                    <hc:StatusSwitchElement.CheckedElement>
+                        <Border  Width="100" Height="30" Background="{DynamicResource PrimaryBrush}" CornerRadius="5">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="16" Text="应用" Foreground="{DynamicResource TextIconBrush}"/>
+                        </Border>
+                    </hc:StatusSwitchElement.CheckedElement>
+                    <Border  Width="100" Height="30" Background="{DynamicResource InfoBrush}"  CornerRadius="5">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Text="修改" Foreground="{DynamicResource TextIconBrush}"/>
+                    </Border>
+                </ToggleButton>
+
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.8*"/>
+                    <RowDefinition Height="0.13*"/>
+                </Grid.RowDefinitions>
+                <ToggleButton Grid.Row ="0"  IsChecked="{Binding Idle, Converter={StaticResource InverseBooleanConverter}}" Command="{s:Action Switch}" Style="{StaticResource ToggleButtonCustom}" hc:StatusSwitchElement.HideUncheckedElement="True">
+                    <hc:StatusSwitchElement.CheckedElement>
+                        <Border  Width="150" Height="70" Background="{DynamicResource DangerBrush}" CornerRadius="10">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="20" Text="停止按键" Foreground="{DynamicResource TextIconBrush}"/>
+                        </Border>
+                    </hc:StatusSwitchElement.CheckedElement>
+                    <Border  Width="150" Height="70" Background="{DynamicResource SuccessBrush}"  CornerRadius="10">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Text="开始按键" Foreground="{DynamicResource TextIconBrush}"/>
+                    </Border>
+                </ToggleButton>
+                <TextBlock Grid.Row ="1"  HorizontalAlignment="Right" Margin="0 0 20 0" Text="贰货按键 By 电八绝代 贰货猪"/>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>
