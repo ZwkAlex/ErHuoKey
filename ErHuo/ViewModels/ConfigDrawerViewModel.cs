@@ -1,0 +1,123 @@
+﻿using ErHuo.Plugins;
+using ErHuo.Utilities;
+using Newtonsoft.Json.Linq;
+using Stylet;
+using StyletIoC;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
+
+namespace ErHuo.ViewModels
+{
+    public class ConfigDrawerViewModel : PropertyChangedBase
+    {
+        private bool _drawerSwitch = false;
+        public bool DrawerSwitch
+        {
+            get { return _drawerSwitch; }
+            set
+            {
+                SetAndNotify(ref _drawerSwitch, value);
+                if (value)
+                {
+                    UpdateRegisterState();
+                }
+            }
+        }
+
+        private int _volume = ConfigFactory.GetValue(ConfigKey.Volume, 20);
+        public int Volume
+        {
+            get
+            {
+                return _volume;
+            }
+            set
+            {
+                SetAndNotify(ref _volume, value);
+                SetVolume(value);
+            }
+        }
+
+        public bool MinimizeToTray
+        {
+            get
+            {
+                return ConfigFactory.GetValue(ConfigKey.MinimizeToTray, false);
+            }
+            set
+            {
+                ConfigFactory.SetValue(ConfigKey.MinimizeToTray, value);
+            }
+        }
+
+        private bool _registerState;
+
+        public SolidColorBrush RegisterStateColor
+        {
+            get
+            {
+                return _registerState ? Brushes.Green : Brushes.Red;
+            }
+        }
+
+        public string RegisterStateText
+        {
+            get
+            {
+                return _registerState ? Constant.RegisterStateSuccess : Constant.RegisterStateFail;
+            }
+        }
+
+        private static IContainer _container;
+        public ConfigDrawerViewModel(IContainer container)
+        {
+            _container = container;
+        }
+
+        public void SwitchDrawer()
+        {
+            if (_drawerSwitch)
+            {
+                Off();
+            }
+            else
+            {
+                On();
+            }
+        }
+
+        public void SetVolume(int _volume)
+        {
+            SoundPlayUtil.ChangeVolume(_volume);
+            ConfigFactory.SetValue(ConfigKey.Volume, _volume);
+        }
+
+        public void UnregisterPluginAndDelete()
+        {
+            RegisterBase.Instance.TryUnRegister();
+            UpdateRegisterState();
+        }
+
+        public void UpdateRegisterState()
+        {
+            _registerState = RegisterBase.Instance.GetRegisterStatus();
+            NotifyOfPropertyChange(nameof(RegisterStateColor));
+            NotifyOfPropertyChange(nameof(RegisterStateText));
+        }
+
+        public void On()
+        {
+            DrawerSwitch = true;
+        }
+
+        public void Off()
+        {
+            DrawerSwitch = false;
+        }
+    }
+}

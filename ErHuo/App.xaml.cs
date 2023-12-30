@@ -1,4 +1,8 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System;
+using System.Windows;
+using Hardcodet.Wpf.TaskbarNotification;
+using ErHuo.Plugins;
 
 namespace ErHuo
 {

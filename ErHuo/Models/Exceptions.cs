@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ErHuo.Models
 {
 
-    public class KeyException: Exception
+    public class KeyException : Exception
     {
         public KeyException(string message) : base(message) { }
     }
@@ -15,5 +15,10 @@ namespace ErHuo.Models
     public class WindowBindingException : Exception
     {
         public WindowBindingException(string message) : base(message) { }
+    }
+
+    public class ServiceConfigException : Exception
+    {
+        public ServiceConfigException(string message) : base(message) { }
     }
 }

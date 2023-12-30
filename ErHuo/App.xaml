@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ErHuo"
              xmlns:utils="clr-namespace:ErHuo.Utilities"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:s="https://github.com/canton7/Stylet"
-             ShutdownMode="OnMainWindowClose">
-
+             xmlns:tb="http://www.hardcodet.net/taskbar">
     <Application.Resources>
         <ResourceDictionary>
             <utils:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
@@ -15,10 +15,10 @@
                         <local:Bootstrapper/>
                     </s:ApplicationLoader.Bootstrapper>
                 </s:ApplicationLoader>
-                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
-                <ResourceDictionary Source="Resources/ResourseDictionary.xaml"/>
+                <hc:Theme Name="HandyTheme"/>
+                <ResourceDictionary Source="Properties/ResourceDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
+
 </Application>

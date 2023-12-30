@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ErHuo.Models
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct CursorPoint
     {
         public int x;
@@ -16,6 +16,15 @@ namespace ErHuo.Models
         {
             this.x = x;
             this.y = y;
+        }
+        public override string ToString()
+        {
+            if (x == -1 && y == -1) return "无效点";
+            return "( " + x + " , " + y + " )";
+        }
+        public bool IsValid()
+        {
+            return (x != -1 || y != -1);
         }
     };
 }

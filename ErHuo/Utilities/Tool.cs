@@ -1,33 +1,14 @@
-﻿using HandyControl.Controls;
+﻿using ErHuo.Models;
+using ErHuo.Properties;
 using System;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Threading;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Windows.Data;
+using System.Xml.Linq;
 
 namespace ErHuo.Utilities
 {
-
-    public static class GetPointClass
-    {
-        public static Point point;
-        //public static OpSoft op = Instances.Op;
-        public static void Get_Point()
-        {
-
-            //lw.BindWindow(-1);
-            //SystemSounds.Hand.Play();
-            //if (lw.WaitKey(4, 0) != -1)
-            //{
-            //    SystemSounds.Hand.Play();
-            //    point = Control.MousePosition;
-            //}
-            //lw.UnBindWindow();
-        }
-
-
-    }
-
     public class InverseBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -43,31 +24,9 @@ namespace ErHuo.Utilities
 
     public static class Tool
     {
-        private static ThreadStart threadstart;
-        private static Thread ToolThread;
-        private static bool Process = false;
-
-        public static Point GetPoint()
-        {
-            return new Point();
-            //threadstart = new ThreadStart(GetPointClass.Get_Point);
-            //ToolThread = new Thread(threadstart);
-            //ToolThread.SetApartmentState(ApartmentState.STA);
-            //Process = true;
-            //ToolThread.Start();
-            //ToolThread.Join();
-            //Process = false;
-            //return GetPointClass.point;
-        }
-
-        public static bool isProcess()
-        {
-            return Process;
-        }
-
         public static int VKStringtoInt(string s)
         {
-            if(s == null || s == string.Empty)
+            if (s == null || s == string.Empty)
                 return 70;
             return (int)Enum.Parse(typeof(VK), s);
         }
@@ -77,40 +36,122 @@ namespace ErHuo.Utilities
             return Enum.GetName(typeof(VK), n);
         }
 
+        public static void Log(string logString)
+        {
+            string file = Path.Combine(Constant.BasePath, "log.txt");
+            FileStream fs;
+            StreamWriter sw;
+            if (File.Exists(file))
+            {
+                fs = new FileStream(file, FileMode.Append, FileAccess.Write);
+            }
+            else
+            {
+                fs = new FileStream(file, FileMode.Create, FileAccess.Write);
+            }
+            sw = new StreamWriter(fs);
+            sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + "   ---   " + logString);
+            sw.Close();
+        }
+
+        public static void Restart()
+        {
+            ProcessStartInfo Info = new ProcessStartInfo
+            {
+                Arguments = "/C choice /C Y /N /D Y /T 1 & START \"\" \"" + Assembly.GetEntryAssembly().Location + "\"",
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                FileName = "cmd.exe"
+            };
+            Process.Start(Info);
+            Process.GetCurrentProcess().Kill();
+        }
+
+    }
+
+    public static class FileManager
+    {
+        public static string FindLocalFile(string name)
+        {
+            if (!Directory.Exists(Constant.ResourceDirPath))
+            {
+                return null;
+            }
+            string targetPath = Path.Combine(Constant.ResourceDirPath, name);
+            return File.Exists(targetPath) ? targetPath : null;
+        }
+        public static string SaveBytesToLocal(byte[] data, string name)
+        {
+            string resourceBasePath = CreateResourceBaseDir();
+            string localPath = Path.Combine(resourceBasePath, name);
+            SaveBytes(data, localPath);
+            return localPath;
+        }
+
+        public static string SaveBytesToTemp(byte[] data, string extension)
+        {
+            string tempPath = Path.Combine(Path.GetTempPath(), Path.ChangeExtension(Guid.NewGuid().ToString(), extension));
+            SaveBytes(data, tempPath);
+            return tempPath;
+        }
+
+        public static void SaveBytes(byte[] data, string path)
+        {
+            try
+            {
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    fs.Write(data, 0, data.Length);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        public static string CreateResourceBaseDir()
+        {
+            string resourceBasePath = Constant.ResourceDirPath;
+            if (!Directory.Exists(resourceBasePath))
+            {
+                Directory.CreateDirectory(resourceBasePath);
+            }
+            return resourceBasePath;
+        }
     }
 
     public static class KeyManager
     {
-        public static string KeyStart
+        public static EKey KeyStart
         {
             get
             {
-                return ConfigFactory.GetValue("KeyStart", "F1");
+                return ConfigFactory.GetValue(ConfigKey.KeyStart, new EKey("F1"));
             }
             set
             {
-                ConfigFactory.SetValue("KeyStart", value);
+                ConfigFactory.SetValue(ConfigKey.KeyStart, value);
             }
         }
-        public static string KeyStop
+        public static EKey KeyStop
         {
             get
             {
-                return ConfigFactory.GetValue("KeyStop", "F1");
+                return ConfigFactory.GetValue(ConfigKey.KeyStop, new EKey("F1"));
             }
             set
             {
-                ConfigFactory.SetValue("KeyStop", value);
+                ConfigFactory.SetValue(ConfigKey.KeyStop, value);
             }
         }
-       
 
-        public static void SetKey(string keystart, string keystop)
+        public static void SetKey(EKey keystart, EKey keystop)
         {
             KeyStart = keystart;
             KeyStop = keystop;
         }
 
-        
+
     }
 }

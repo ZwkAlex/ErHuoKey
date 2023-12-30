@@ -1,59 +1,58 @@
 ﻿using ErHuo.Models;
-using ErHuo.Plugin;
-using ErHuo.Utilities;
-using HandyControl.Controls;
-using lw;
-using System;
-using System.Collections.Generic;
-using System.Configuration.Internal;
-using System.Linq;
-using System.Text;
+using ErHuo.Plugins;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Windows;
 
 namespace ErHuo.Service
 {
     public abstract class IService
     {
-        public ConfigSheet config; 
-        public static P p = Instances.P;
+        public ConfigSheet config;
+        public P p;
         public CancellationToken Token;
-        private bool Bind_Window(int hwnd, string display="normal", string mouse="normal", string keyboard="normal", int mode=1)
+
+        public IService(CancellationToken Token)
         {
-            p.Init();
-            p.UnBindWindow(); 
+            this.Token = Token;
+            p = new P();
+        }
+        ~IService() => p.Dispose();
+
+        private bool Bind_Window(int hwnd, string display = "normal", string mouse = "normal", string keyboard = "normal", int mode = 1)
+        {
+            p.UnBindWindow();
             if (hwnd != 0)
             {
-                int bind_result = p.BindWindow(hwnd, display, mouse, keyboard, mode);
-                return bind_result == 1;
+                return p.BindWindow(hwnd, display, mouse, keyboard, mode);
             }
             else
             {
-                p.BindWindow(-1);
+                return p.BindWindow(-1);
             }
-            return true;
-
         }
         public void StartService()
         {
-            if(Token == null || !Token.CanBeCanceled)
+            if (Token == null || !Token.CanBeCanceled)
             {
-                Token = new CancellationToken();
+                throw new WindowBindingException("意外情况：未正确设置CancelToken");
             }
-            bool bind_result = Bind_Window((int)config.WindowInfo.hWnd, config.Display, config.Mouse, config.Keyboard, config.Mode);
+            bool bind_result = Bind_Window(config.WindowInfo.hWnd, config.Display, config.Mouse, config.Keyboard, config.Mode);
             if (!bind_result)
             {
                 throw new WindowBindingException("绑定窗口：" + config.WindowInfo.szWindowName + " 失败");
             }
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Application.Current.MainWindow.WindowState = WindowState.Minimized;
+            });
             Service();
         }
         public void StopService()
         {
-        }
-
-        public void SetCancellationToken(CancellationToken Token)
-        {
-            this.Token = Token;
+            //Application.Current.Dispatcher.Invoke(() => {
+            //    Application.Current.MainWindow.Show();
+            //    Application.Current.MainWindow.WindowState = WindowState.Normal;
+            //});
         }
 
         public abstract void Service();

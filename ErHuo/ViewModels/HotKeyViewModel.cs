@@ -1,73 +1,76 @@
 ﻿using ErHuo.Models;
-using ErHuo.Service;
 using ErHuo.Utilities;
 using HandyControl.Controls;
-using HandyControl.Tools;
-using Newtonsoft.Json.Linq;
 using Stylet;
-using StyletIoC;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using KeyboardHook = ErHuo.Utilities.KeyboardHook;
 using IContainer = StyletIoC.IContainer;
 using System.Threading;
-using lw;
+using HandyControl.Data;
+using Newtonsoft.Json.Linq;
+using System.Windows.Media;
+using System.Windows;
 
 namespace ErHuo.ViewModels
 {
-    public class HotKeyViewModel: PropertyChangedBase
+    public class HotKeyViewModel : PropertyChangedBase
     {
         private RunningState runningState;
-        private int _keyCodeStart;
-        private string _keyStart = KeyManager.KeyStart;
+        private EKey _keyStart = KeyManager.KeyStart;
+        private string _keyStartName = KeyManager.KeyStart.Name;
         public static CancellationTokenSource cts;
-        public Tab CurrentTab {  get; set; }
-        public string KeyStart
+        public Tab CurrentTab { get; set; }
+        public string KeyStartName
         {
             get
             {
-                _keyCodeStart = Tool.VKStringtoInt(_keyStart);
-                return _keyStart;
+                return _keyStartName;
             }
             set
             {
-                _keyCodeStart = Tool.VKStringtoInt(value);
-                SetAndNotify(ref _keyStart, value);
+                if (string.IsNullOrEmpty(value))
+                {
+                    value = _keyStartName;
+                }
+                else
+                {
+                    _keyStart = EKey.GetEKeyFromName(value);
+                }
+                SetAndNotify(ref _keyStartName, value);
             }
         }
-        private int _keyCodeStop;
-        private string _keyStop = KeyManager.KeyStop;
-        public string KeyStop
+        private EKey _keyStop = KeyManager.KeyStop;
+        private string _keyStopName = KeyManager.KeyStop.Name;
+        public string KeyStopName
         {
             get
             {
-                _keyCodeStop = Tool.VKStringtoInt(_keyStop);
-                return _keyStop;
+                return _keyStopName;
             }
             set
             {
-                _keyCodeStop = Tool.VKStringtoInt(value);
-                _keyStop = value;
+                if (string.IsNullOrEmpty(value))
+                {
+                    value = _keyStopName;
+                }
+                else
+                {
+                    _keyStop = EKey.GetEKeyFromName(value);
+                }
+                SetAndNotify(ref _keyStopName, value);
             }
         }
         private bool _modify;
         public bool ModifyKey
         {
-            get=> _modify;
+            get => _modify;
             set
             {
-                if(_modify !=  value)
-                {
-                    SetAndNotify(ref _modify, value);
-                }
+                SetAndNotify(ref _modify, value);
             }
-                
+
         }
 
         private bool _idle = true;
@@ -78,16 +81,51 @@ namespace ErHuo.ViewModels
             {
                 SetAndNotify(ref _idle, value);
             }
+
         }
-        private static IContainer _contrainer;
-        public HotKeyViewModel(IContainer contrainer)
+
+        public string WaitButtonText
         {
-            _contrainer = contrainer;
+            get
+            {
+                if (_busy)
+                {
+                    return Constant.WaitButtonTextBusy;
+                }
+                else
+                {
+                    return Constant.WaitButtonTextStart;
+                }
+            }
+        }
+
+
+        private int _busyLock = 0;
+
+        private bool _busy = false;
+        public bool Busy
+        {
+            get => _busy;
+            set
+            {
+                SetAndNotify(ref _busy, value);
+                NotifyOfPropertyChange(nameof(WaitButtonText));
+            }
+        }
+
+        private static IContainer _container;
+        public HotKeyViewModel(IContainer container)
+        {
+            _container = container;
             runningState = RunningState.Instance;
             runningState.IdleChanged += RunningState_IdleChanged;
-            ModifyKey = !CheckKey(KeyStart) || !CheckKey(KeyStop);
+
+            SoundPlayUtil.ChangeVolume(ConfigFactory.GetValue(ConfigKey.Volume, 20));
+
             Instances.KeyboardHook.KeyUpEvent -= KeyUpEventHandler;
             Instances.KeyboardHook.KeyUpEvent += KeyUpEventHandler;
+
+            ModifyKey = !CheckKeyInList(_keyStart) || !CheckKeyInList(_keyStop);
             if (!ModifyKey)
             {
                 Instances.KeyboardHook.Start();
@@ -96,20 +134,22 @@ namespace ErHuo.ViewModels
 
         public void KeyConfigAction()
         {
-            if (!ModifyKey) 
+            if (!ModifyKey)
             {
-                if (!CheckKey(KeyStart) || !CheckKey(KeyStop))
+                if (!CheckKeyInList(_keyStart) || !CheckKeyInList(_keyStop))
                 {
                     ModifyKey = true;
-                    Growl.Info("无效设置");
+                    Growl.Info(new GrowlInfo() { WaitTime = 2, Message = "无效设置", ShowDateTime = false });
+                    KeyStartName = KeyManager.KeyStart.Name;
+                    KeyStopName = KeyManager.KeyStop.Name;
                     return;
                 }
                 KeyManager.SetKey(_keyStart, _keyStop);
-                Instances.KeyboardHook.Start();
+                DequeueBusy();
             }
             else
             {
-                Instances.KeyboardHook.Stop();
+                QueueBusy();
             }
         }
 
@@ -118,9 +158,9 @@ namespace ErHuo.ViewModels
             int keyCode = (int)e.KeyCode;
             if (!_modify)
             {
-                if(keyCode == _keyCodeStart)
+                if (keyCode == _keyStart.Code)
                 {
-                    if(_keyCodeStart != _keyCodeStop)
+                    if (_keyStart.Code != _keyStop.Code)
                     {
                         Start();
                     }
@@ -129,7 +169,7 @@ namespace ErHuo.ViewModels
                         Switch();
                     }
                 }
-                else if(keyCode == _keyCodeStop)
+                else if (keyCode == _keyStop.Code)
                 {
                     Stop();
                 }
@@ -150,8 +190,8 @@ namespace ErHuo.ViewModels
 
         private void Start()
         {
-            Idle = false;
             runningState.SetIdle(false);
+            Instances.ConfigDrawerViewModel.Off();
             cts = new CancellationTokenSource();
             CancellationToken Token = cts.Token;
             if (false)
@@ -168,9 +208,9 @@ namespace ErHuo.ViewModels
                 t.SetApartmentState(ApartmentState.STA);
                 t.Start(Token);
             }
-
+            SoundPlayUtil.PlayStartSound();
         }
-        
+
         private void StartService(object Token)
         {
             try
@@ -179,45 +219,56 @@ namespace ErHuo.ViewModels
                 {
                     Instances.NormalKeyViewModel.Start((CancellationToken)Token);
                 }
+                else if (CurrentTab == Tab.Fishing)
+                {
+                    Instances.FishingViewModel.Start((CancellationToken)Token);
+                }
             }
             catch (Exception e)
             {
-                if (e is WindowBindingException || e is KeyException)
+                if (e is WindowBindingException || e is KeyException || e is ServiceConfigException)
                 {
                     Growl.Warning(e.Message);
-                    Stop();
                 }
                 else
                 {
                     throw e;
                 }
             }
+            finally
+            {
+                Stop();
+            }
         }
 
         private void Stop()
         {
-            if(!Idle || !runningState.GetIdle())
+            if (!runningState.GetIdle())
             {
-                Idle = true;
                 runningState.SetIdle(true);
                 cts.Cancel();
                 cts.Dispose();
-                //if (CurrentTab == Tab.NormalKey)
-                //{
-                //    Instances.NormalKeyViewModel.Stop();
-                //}
+                if (CurrentTab == Tab.NormalKey)
+                {
+                    Instances.NormalKeyViewModel.Stop();
+                }
+                else
+                {
+                    Instances.FishingViewModel.Stop();
+                }
+                SoundPlayUtil.PlayStopSound();
             }
         }
 
 
-        public bool CheckKey(String key)
+        public bool CheckKeyInList(EKey key)
         {
-            List<KeyEvent> keylist = ConfigFactory.GetListValue<KeyEvent>("KeyList");
-            if (key == String.Empty || key == null)
+            List<KeyEvent> keylist = ConfigFactory.GetListValue<KeyEvent>(ConfigKey.KeyList);
+            if (key == null)
                 return false;
-            foreach(KeyEvent k in keylist)
+            foreach (KeyEvent k in keylist)
             {
-                if(k.Key == KeyStart || k.Key == KeyStop)
+                if (k.IsSame(key))
                 {
                     return false;
                 }
@@ -229,5 +280,30 @@ namespace ErHuo.ViewModels
         {
             Idle = e;
         }
+
+        public void QueueBusy()
+        {
+            _busyLock += 1;
+            if (_busyLock == 1)
+            {
+                Busy = true;
+                Instances.KeyboardHook.Stop();
+            }
+        }
+
+        public void DequeueBusy()
+        {
+            _busyLock -= 1;
+            if (_busyLock < 0)
+            {
+                _busyLock = 0;
+            }
+            if (_busyLock == 0)
+            {
+                Busy = false;
+                Instances.KeyboardHook.Start();
+            }
+        }
+
     }
 }

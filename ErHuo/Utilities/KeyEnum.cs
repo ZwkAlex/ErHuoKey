@@ -1,24 +1,17 @@
-﻿namespace ErHuo
+﻿using System.Collections.Generic;
+
+namespace ErHuo
 {
-
-    public enum STATUS : int
+    public enum Plugin : int
     {
-        PAUSE = 0,
-        START = 1,
-        STOP = 2
+        LW,
+        OP,
     }
-    public enum DriveCode : int
-    {
-        no = 0,
-        lw = 1,
-        ts = 2,
-        normal = 3
 
-    }
-    public enum Tab
+    public enum Tab : int
     {
-        NormalKey,
-        OtherKey,
+        NormalKey = 0,
+        Fishing = 1,
     }
     public enum VK : int
     {

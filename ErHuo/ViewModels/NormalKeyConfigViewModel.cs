@@ -1,21 +1,26 @@
 ﻿using ErHuo.Models;
-using ErHuo.Plugin;
+using ErHuo.Plugins;
 using ErHuo.Utilities;
 using HandyControl.Controls;
+using HandyControl.Data;
+using Newtonsoft.Json.Linq;
 using Stylet;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using static ErHuo.Utilities.HwndUtil;
+using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace ErHuo.ViewModels
 {
@@ -25,90 +30,78 @@ namespace ErHuo.ViewModels
         {
             get
             {
-                return ConfigFactory.GetValue("Frequency", 50);
+                return ConfigFactory.GetValue(ConfigKey.Frequency, 50);
             }
             set
             {
-                ConfigFactory.SetValue("Frequency", value);
+                ConfigFactory.SetValue(ConfigKey.Frequency, value);
             }
         }
         public int KeyMode
         {
             get
             {
-                return ConfigFactory.GetValue("KeyMode", 0);
+                return ConfigFactory.GetValue(ConfigKey.KeyMode, 0);
             }
             set
             {
-                ConfigFactory.SetValue("KeyMode", value);
+                ConfigFactory.SetValue(ConfigKey.KeyMode, value);
             }
         }
 
-        public double Volume
+
+        private string _keyAddName;
+        public string KeyAddName
+        {
+            get => _keyAddName;
+            set { SetAndNotify(ref _keyAddName, value); }
+        }
+
+
+        private static readonly WindowInfo DEFAULT_WINDOWINFO = new WindowInfo(0, "无（前台模式）");
+        public string CurrentWindowTitle
         {
             get
             {
-                return ConfigFactory.GetValue("Volume", 0.2);
-            }
-            set
-            {
-                ConfigFactory.SetValue("Volume", value);
-            }
-        }
-
-        private string _keyadd = String.Empty;
-        public string KeyAdd
-        {
-            get => _keyadd;
-            set
-            {
-                if (_keyadd != value)
+                string _currentWindowTitle = _currentWindow.szWindowName;
+                if (CurrentWindow.Equals(DEFAULT_WINDOWINFO))
                 {
-                    SetAndNotify(ref _keyadd, value);
+                    _currentWindowTitle = DEFAULT_WINDOWINFO.szWindowName;
                 }
+                string title = _currentWindowTitle;
+                if (title.Length > 20)
+                {
+                    title = title.Substring(0, 20);
+                    title = title.PadRight(23, '.');
+                }
+                return title;
             }
-
         }
-
-        public WindowInfo CurrentSelectedWindow
+        private WindowInfo _currentWindow = DEFAULT_WINDOWINFO;
+        public WindowInfo CurrentWindow
         {
             get
             {
-                if(windowInfoList != null && _windowIndex >= 0 && _windowIndex < windowInfoList.Count) {
-                    return windowInfoList[_windowIndex];
-                }
-                return new WindowInfo(0, "无");
-            }
-        }
-        private List<WindowInfo> windowInfoList;
-        private List<string> windowList;
-        public List<string> WindowList
-        {
-            get
-            {
-                if (windowList == null)
-                {
-                    windowList = GetAPPList();
-                }
-                return windowList;
+                return _currentWindow;
             }
             set
             {
-                SetAndNotify(ref windowList, value);
+                SetAndNotify(ref _currentWindow, value);
+                NotifyOfPropertyChange(nameof(CurrentWindowTitle));
             }
         }
-        private int _windowIndex = 0;
-        public int WindowIndex
+
+
+        private bool _waitKey = false;
+        public bool WaitKey
         {
-            get { return _windowIndex; }
+            get { return _waitKey; }
             set
             {
-                if (_windowIndex != value)
-                {
-                    SetAndNotify(ref _windowIndex, value);
-                }
+                SetAndNotify(ref _waitKey, value);
             }
         }
+
 
         public ObservableCollection<KeyEvent> _keyList;
 
@@ -128,41 +121,23 @@ namespace ErHuo.ViewModels
                 SetAndNotify(ref _keyList, value);
             }
         }
-
-        public List<string> GetAPPList()
+        private IWindowManager _windowManager;
+        public NormalKeyConfigViewModel(IWindowManager windowManager)
         {
-            List<string> _windowList = new List<string>();
-            try
-            {
-                windowInfoList = GetAllDesktopWindows();
-                foreach (WindowInfo win in windowInfoList)
-                {
-                    _windowList.Add(win.szWindowName);
-                }
-            }
-            catch
-            {
-                Growl.Info("获取窗口列表失败，可能被杀毒软件拦截，后台按键功能将不可用。");
-            }
-            return _windowList;
+            _windowManager = windowManager;
         }
-        public void UpdateAPPList()
-        {
-            WindowList = GetAPPList();
-            WindowIndex = 0;
-        }    
 
-        public bool CheckKey(string k)
+        public bool CheckKey(EKey k)
         {
-            if (k == null || k.Equals(""))
+            if (k == null)
                 return false;
-            if (k == KeyManager.KeyStart || k == KeyManager.KeyStop)
+            if (k.IsSame(KeyManager.KeyStart) || k.IsSame(KeyManager.KeyStop))
                 return false;
             if (_keyList != null && _keyList.Count != 0)
             {
                 foreach (var key in _keyList)
                 {
-                    if (key.Key == k)
+                    if (key.IsSame(k))
                     {
                         return false;
                     }
@@ -184,23 +159,21 @@ namespace ErHuo.ViewModels
         #region event handler
         public void AddKey()
         {
-            try
+            if (_keyAddName == null)
             {
-                if (CheckKey(KeyAdd))
-                {
-                    KeyEvent newKey = new KeyEvent(KeyAdd);
-                    _keyList.Add(newKey);
-                }
-                else
-                {
-                    Growl.Info("按键添加失败：检查是否与开启按键与结束按键冲突");
-                }
-                KeyAdd = "";
+                Growl.Info(new GrowlInfo() { WaitTime = 2, Message = "请在上方输入要添加的按键。", ShowDateTime = false });
+                return;
             }
-            catch
+            EKey _keyAdd = EKey.GetEKeyFromName(_keyAddName);
+            if (CheckKey(_keyAdd))
             {
-                Growl.Info("key-isactivate 匹配发生错误");
+                _keyList.Add(new KeyEvent(_keyAdd));
             }
+            else
+            {
+                Growl.Info(new GrowlInfo() { WaitTime = 2, Message = "按键添加失败：检查是否与开启热键与结束热键冲突。", ShowDateTime = false });
+            }
+            KeyAddName = "";
         }
 
         public void DeleteKey(string keydelete)
@@ -214,9 +187,23 @@ namespace ErHuo.ViewModels
                 }
             }
         }
-        public void WindowSelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        public void ClickItem(string parameter)
         {
-            Growl.Info(CurrentSelectedWindow.szWindowName.ToString());
+            foreach (var key in _keyList)
+            {
+                if (key.Key.Equals(parameter))
+                {
+                    if (key.Activate)
+                    {
+                        key.Activate = false;
+                    }
+                    else
+                    {
+                        key.Activate = true;
+                    }
+                }
+            }
         }
 
         public void ContentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -237,32 +224,66 @@ namespace ErHuo.ViewModels
                     item.PropertyChanged += KeyEventPropertyChanged;
                 }
             }
-            ConfigFactory.SetValue("KeyList", new List<KeyEvent>(_keyList));
+            ConfigFactory.SetValue(ConfigKey.KeyList, new List<KeyEvent>(_keyList));
         }
 
         public void KeyEventPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            ConfigFactory.SetValue("KeyList", new List<KeyEvent>(_keyList));
+            ConfigFactory.SetValue(ConfigKey.KeyList, new List<KeyEvent>(_keyList));
         }
 
         public void FindWindow()
         {
-            P p = Instances.P;
-
-            if(p.WaitKey(4, 30000) != -1)
+            P p = new P();
+            bool isFirstInform = ConfigFactory.GetValue(ConfigKey.IsFirstInformFindWindow, true);
+            if (isFirstInform)
+            {
+                ConfigFactory.SetValue(ConfigKey.IsFirstInformFindWindow, false);
+                MessageBox.Info("鼠标移动至目标窗口后按***鼠标中键***");
+            }
+            WaitKey = true;
+            Instances.HotKeyViewModel.QueueBusy();
+            TopMostViewModel topMostViewModel = Instances.TopMostViewModel;
+            _windowManager.ShowWindow(topMostViewModel);
+            topMostViewModel.ShowCursorLocationAndWindowTitle("正在选择窗口", 30000);
+            if (p.WaitKey(4, 30000) != -1)
             {
                 WindowInfo windowInfo = p.GetMousePointWindow();
                 Growl.Info(windowInfo.szWindowName);
-                CurrentSelectedWindow = windowInfo;
+                CurrentWindow = windowInfo;
+            }
+            topMostViewModel.RequestClose();
+            WaitKey = false;
+            Instances.HotKeyViewModel.DequeueBusy();
+            p.Dispose();
+        }
+
+        public void ResetWindow()
+        {
+            CurrentWindow = DEFAULT_WINDOWINFO;
+        }
+
+        public void KeyModeSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (KeyMode == 0)
+            {
+                Growl.Info(new GrowlInfo()
+                {
+                    WaitTime = 2,
+                    Message = "顺序模式：一次按一个按键，顺序按下。",
+                    ShowDateTime = false
+                });
+            }
+            else if (KeyMode == 1)
+            {
+                Growl.Info(new GrowlInfo()
+                {
+                    WaitTime = 2,
+                    Message = "连发模式：一次按一组按键，同时按下。",
+                    ShowDateTime = false
+                });
             }
         }
-
-        public void MouseUp(object sender, MouseEventArgs e)
-        {
-            CursorPoint c = CursorUtil.doGetCursorPos();
-            Growl.Info("keyup" + c.x + "," + c.y);
-        }
-
 
         #endregion
 

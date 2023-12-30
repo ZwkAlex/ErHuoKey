@@ -1,28 +1,32 @@
-﻿using System;
+﻿using ErHuo.Models;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace ErHuo
 {
-    public class KeyEvent : INotifyPropertyChanged
+    public class KeyEvent : EKey, INotifyPropertyChanged
     {
-        public string Key { get; set; }
-        public int Code { get; set; }
 
         private bool _activate = false;
         public bool Activate
         {
-            get => _activate; 
+            get => _activate;
             set { _activate = value; OnPropertyChanged(); }
-        } 
+        }
 
-        public KeyEvent(string key, int code =-1, bool activate=false)
+        public KeyEvent() : base()
         {
-            Key = key;
-            if (code == -1)
-                Code = (int)Enum.Parse(typeof(VK), key);
-            else
-                Code = code;
+
+        }
+        public KeyEvent(EKey ekey) : base(ekey.Key, ekey.Code, ekey.Name)
+        {
+
+        }
+
+        public KeyEvent(string key, int code = -1, bool activate = false) : base(key, code)
+        {
             Activate = activate;
         }
 

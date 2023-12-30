@@ -1,4 +1,4 @@
-﻿using ErHuo.Plugin;
+﻿using ErHuo.Plugins;
 using ErHuo.ViewModels;
 using Stylet;
 using StyletIoC;
@@ -12,21 +12,25 @@ namespace ErHuo.Utilities
 {
     public static class Instances
     {
-        public static P P {  get; private set; }
         public static KeyboardHook KeyboardHook { get; set; }
         public static NormalKeyViewModel NormalKeyViewModel { get; private set; }
-        public static OtherViewModel OtherViewModel { get; private set; }
-        //public static HotKeyViewModel HotKeyViewModel { get; private set; }
-        //public static NormalKeyConfigViewModel NormalKeyConfigViewModel { get; private set; }
+        public static FishingViewModel FishingViewModel { get; private set; }
+        public static TopMostViewModel TopMostViewModel { get; private set; }
+        public static ConfigDrawerViewModel ConfigDrawerViewModel { get; private set; }
+        public static HotKeyViewModel HotKeyViewModel { get; private set; }
+        public static TaskbarViewModel TaskbarViewModel { get; private set; }
+        public static NoClientAreaViewModel NoClientAreaViewModel { get; private set; }
 
         public static void Instantiate(IContainer container)
         {
-            P = new P();
             KeyboardHook = new KeyboardHook();
             NormalKeyViewModel = container.Get<NormalKeyViewModel>();
-            OtherViewModel = container.Get<OtherViewModel>();
-            //HotKeyViewModel = container.Get<HotKeyViewModel>();
-            //NormalKeyConfigViewModel = container.Get<NormalKeyConfigViewModel>();
+            FishingViewModel = container.Get<FishingViewModel>();
+            TopMostViewModel = container.Get<TopMostViewModel>();
+            ConfigDrawerViewModel = container.Get<ConfigDrawerViewModel>();
+            HotKeyViewModel = container.Get<HotKeyViewModel>();
+            TaskbarViewModel = container.Get<TaskbarViewModel>();
+            NoClientAreaViewModel = container.Get<NoClientAreaViewModel>();
         }
     }
 }

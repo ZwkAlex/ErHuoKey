@@ -1,22 +1,39 @@
-﻿using ErHuo.Service;
+﻿using ErHuo.Models;
+using ErHuo.Service;
 using ErHuo.Utilities;
+using ErHuo.Views;
+using HandyControl.Controls;
 using Stylet;
 using StyletIoC;
 using System;
+using System.Windows;
 using System.Windows.Controls;
-
-
+using System.Windows.Input;
+using Window = HandyControl.Controls.Window;
+using TabControl = System.Windows.Controls.TabControl;
 
 namespace ErHuo.ViewModels
 {
     public class MainViewModel : Conductor<Screen>.Collection.OneActive
     {
         private Tab currentTab;
-        public HotKeyViewModel HotKeyViewModel { get; set; } 
+        public HotKeyViewModel HotKeyViewModel { get; set; }
+        public NoClientAreaViewModel NoClientAreaViewModel { get; set; }
+        public ConfigDrawerViewModel ConfigDrawerViewModel { get; set; }
+        public TaskbarViewModel TaskbarViewModel { get; set; }
 
+        private bool _drawerSwitch = false;
+        public bool DrawerSwitch
+        {
+            get { return _drawerSwitch; }
+            set { SetAndNotify(ref _drawerSwitch, value); }
+        }
         public MainViewModel(IContainer container)
         {
-            HotKeyViewModel = container.Get<HotKeyViewModel>();
+            HotKeyViewModel = Instances.HotKeyViewModel;
+            NoClientAreaViewModel = Instances.NoClientAreaViewModel;
+            ConfigDrawerViewModel = Instances.ConfigDrawerViewModel;
+            TaskbarViewModel = Instances.TaskbarViewModel;
         }
         protected override void OnViewLoaded()
         {
@@ -26,23 +43,28 @@ namespace ErHuo.ViewModels
         private void InitViewModels()
         {
             Items.Add(Instances.NormalKeyViewModel);
-            Items.Add(Instances.OtherViewModel);
+            Items.Add(Instances.FishingViewModel);
 
             ActiveItem = Instances.NormalKeyViewModel;
         }
-        
+
+        public void Test()
+        {
+            DrawerSwitch = true;
+        }
+
         public void TabSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Type currentActivate = ActiveItem?.GetType();
-            if(currentActivate != null)
+            if (ActiveItem != null)
             {
-                if (currentActivate == typeof(NormalKeyViewModel))
+                if (ActiveItem is NormalKeyViewModel)
                 {
                     currentTab = Tab.NormalKey;
                 }
-                else if (currentActivate == typeof(OtherViewModel))
+                else if (ActiveItem is FishingViewModel)
                 {
-                    currentTab = Tab.OtherKey;
+                    currentTab = Tab.Fishing;
+                    ((FrameworkElement)sender).Focus();
                 }
             }
             else
@@ -50,6 +72,40 @@ namespace ErHuo.ViewModels
                 currentTab = Tab.NormalKey;
             }
             HotKeyViewModel.CurrentTab = currentTab;
+        }
+
+        public void WindowMouseDown(FrameworkElement focusHolder)
+        {
+            focusHolder.Focus();
+        }
+
+        public void WindowVisiblityChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(bool)e.NewValue)
+            {
+                Instances.TaskbarViewModel.Show();
+            }
+            else
+            {
+                Instances.TaskbarViewModel.Hide();
+            }
+        }
+
+
+        public void WindowStateChanged(object sender, EventArgs e)
+        {
+            if (((Window)sender).WindowState == WindowState.Minimized && !RunningState.Instance.GetIdle())
+            {
+                if (ConfigFactory.GetValue(ConfigKey.MinimizeToTray, false))
+                {
+                    Application.Current.MainWindow.Hide();
+                }
+            }
+        }
+
+        public void WindowClosing(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 }

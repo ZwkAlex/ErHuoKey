@@ -19,7 +19,7 @@ namespace ErHuo.ViewModels
 {
     public class NormalKeyViewModel : Screen
     {
-        private NormalKeyService normalKeyService;
+        private NormalKeyService _normalKeyService;
         private readonly IContainer _container;
         public NormalKeyConfigViewModel NormalKeyConfig { get; set; }
 
@@ -27,8 +27,7 @@ namespace ErHuo.ViewModels
         {
             _container = container;
             NormalKeyConfig = container.Get<NormalKeyConfigViewModel>();
-            normalKeyService = new NormalKeyService();
-            DisplayName = "循环按键";
+            DisplayName = Constant.NormalKeyTabTitle;
         }
 
         public NormalKeyConfigSheet GetConfig()
@@ -36,7 +35,7 @@ namespace ErHuo.ViewModels
             List<KeyEvent> keylist = new List<KeyEvent>(NormalKeyConfig.KeyList);
             int frequency = NormalKeyConfig.Frequency;
             int keymode = NormalKeyConfig.KeyMode;
-            WindowInfo windowInfo = NormalKeyConfig.CurrentSelectedWindow;
+            WindowInfo windowInfo = NormalKeyConfig.CurrentWindow;
             NormalKeyConfigSheet config = new NormalKeyConfigSheet(keylist, frequency, keymode, windowInfo);
             return config;
         }
@@ -51,16 +50,21 @@ namespace ErHuo.ViewModels
             NormalKeyConfig.DeleteKey(deletekey);
         }
 
+        public void ClickItem(string parameter)
+        {
+            NormalKeyConfig.ClickItem(parameter);
+        }
+
         public void Start(CancellationToken Token)
         {
-            normalKeyService.UpdateConfigSheet(GetConfig());
-            normalKeyService.SetCancellationToken(Token);
-            normalKeyService.StartService();
+            NormalKeyConfigSheet _config = GetConfig();
+            _normalKeyService = new NormalKeyService(_config, Token);
+            _normalKeyService.StartService();
         }
 
         public void Stop()
         {
-            normalKeyService.StopService();
+            _normalKeyService?.StopService();
         }
     }
 

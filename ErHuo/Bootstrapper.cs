@@ -1,21 +1,26 @@
-﻿using ErHuo.Plugin;
+﻿using ErHuo.Plugins;
 using ErHuo.Utilities;
 using ErHuo.ViewModels;
 using Stylet;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
+using System.Windows;
 
 namespace ErHuo
 {
     public class Bootstrapper : Bootstrapper<MainViewModel>
     {
+        private static Mutex mutex;
         protected override void OnStart()
         {
+            mutex = new Mutex(true, "ErHuoService");
+            if (!mutex.WaitOne(0, false))
+            {
+                MessageBox.Show("程序已经在运行！", "提示");
+                throw new Exception();
+            }
             ConfigFactory.LoadConfigFile();
+            RegisterBase.Instance.TryRegister();
         }
         protected override void Configure()
         {

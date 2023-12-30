@@ -1,5 +1,5 @@
 ﻿using ErHuo.Models;
-using ErHuo.Plugin;
+using ErHuo.Plugins;
 using ErHuo.Utilities;
 using HandyControl.Controls;
 using Newtonsoft.Json.Linq;
@@ -14,10 +14,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ErHuo.Service
 {
-    public class NormalKeyService: IService
+    public class NormalKeyService : IService
     {
-        
-        public void UpdateConfigSheet(NormalKeyConfigSheet _config)
+        public NormalKeyService(NormalKeyConfigSheet _config, CancellationToken Token) : base(Token)
         {
             config = _config;
         }
@@ -25,7 +24,8 @@ namespace ErHuo.Service
         public override void Service()
         {
             NormalKeyConfigSheet _config = (NormalKeyConfigSheet)config;
-            try {
+            try
+            {
                 while (!Token.IsCancellationRequested)
                 {
                     foreach (KeyEvent key in _config.Keylist)
@@ -33,25 +33,32 @@ namespace ErHuo.Service
                         Token.ThrowIfCancellationRequested();
                         if (key.Activate)
                         {
-                            int result = p.KeyPress(key.Code);
-                            if (result == 0)
+                            if (p.KeyPress(key.Code))
                             {
                                 throw new KeyException("Key Press Failed");
                             }
+                            if (_config.KeyMode == 0)
+                            {
+                                Thread.Sleep(_config.Frequency);
+                            }
                         }
+                    }
+                    if (_config.KeyMode == 1)
+                    {
                         Thread.Sleep(_config.Frequency);
                     }
                 }
-            }catch (OperationCanceledException)
+            }
+            catch (OperationCanceledException)
             {
                 return;
             }
         }
     }
 
-    public class NormalKeyConfigSheet: ConfigSheet
+    public class NormalKeyConfigSheet : ConfigSheet
     {
-        public List<KeyEvent> Keylist {  get; set; }
+        public List<KeyEvent> Keylist { get; set; }
         public int Frequency { get; set; }
         public int KeyMode { get; set; }
         public NormalKeyConfigSheet(List<KeyEvent> keylist, int frequency, int keyMode, WindowInfo windowInfo)
