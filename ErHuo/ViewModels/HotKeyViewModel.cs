@@ -12,6 +12,7 @@ using HandyControl.Data;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media;
 using System.Windows;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace ErHuo.ViewModels
 {
@@ -69,6 +70,14 @@ namespace ErHuo.ViewModels
             set
             {
                 SetAndNotify(ref _modify, value);
+                if (value)
+                {
+                    QueueBusy();
+                }
+                else
+                {
+                    DequeueBusy();
+                }
             }
 
         }
@@ -122,13 +131,17 @@ namespace ErHuo.ViewModels
 
             SoundPlayUtil.ChangeVolume(ConfigFactory.GetValue(ConfigKey.Volume, 20));
 
-            Instances.KeyboardHook.KeyUpEvent -= KeyUpEventHandler;
-            Instances.KeyboardHook.KeyUpEvent += KeyUpEventHandler;
+            Instances.GlobalHook.KeyUpEvent -= KeyUpEventHandler;
+            Instances.GlobalHook.KeyUpEvent += KeyUpEventHandler;
+            Instances.GlobalHook.MouseUp -= MouseUpEventHandler;
+            Instances.GlobalHook.MouseUp += MouseUpEventHandler;
+            Instances.GlobalHook.MouseWheel -= MouseWheelEventHandler;
+            Instances.GlobalHook.MouseWheel += MouseWheelEventHandler;
 
-            ModifyKey = !CheckKeyInList(_keyStart) || !CheckKeyInList(_keyStop);
+            ModifyKey = !IsKeyValid(_keyStart) || !IsKeyValid(_keyStop);
             if (!ModifyKey)
             {
-                Instances.KeyboardHook.Start();
+                Instances.GlobalHook.Start();
             }
         }
 
@@ -136,26 +149,64 @@ namespace ErHuo.ViewModels
         {
             if (!ModifyKey)
             {
-                if (!CheckKeyInList(_keyStart) || !CheckKeyInList(_keyStop))
+                if (!IsKeyValid(_keyStart) || !IsKeyValid(_keyStop))
                 {
                     ModifyKey = true;
-                    Growl.Info(new GrowlInfo() { WaitTime = 2, Message = "无效设置", ShowDateTime = false });
+                    Growl.Info(new GrowlInfo() { WaitTime = 2, Message = Constant.StartStopKeySetWarning, ShowDateTime = false });
                     KeyStartName = KeyManager.KeyStart.Name;
                     KeyStopName = KeyManager.KeyStop.Name;
-                    return;
                 }
-                KeyManager.SetKey(_keyStart, _keyStop);
-                DequeueBusy();
-            }
-            else
-            {
-                QueueBusy();
+                else
+                {
+                    KeyManager.SetKey(_keyStart, _keyStop);
+                }
             }
         }
 
         private void KeyUpEventHandler(object sender, KeyEventArgs e)
         {
             int keyCode = (int)e.KeyCode;
+            SwitchByKeyCode(keyCode);
+        }
+
+        private void MouseUpEventHandler(object sender, MouseEventArgs e)
+        {
+            int keyCode;
+            if (e.Button == MouseButtons.XButton1)
+            {
+                keyCode = (int)VK.XBUTTON1;
+            }
+            else if (e.Button == MouseButtons.XButton2) 
+            { 
+                keyCode = (int)VK.XBUTTON2;
+            }
+            else if (e.Button == MouseButtons.Middle)
+            {
+                keyCode = (int)VK.MBUTTON;
+            }
+            else
+            {
+                keyCode = -1;
+            }
+            SwitchByKeyCode(keyCode);
+        }
+
+        private void MouseWheelEventHandler(object sender, MouseEventArgs e)
+        {
+            int keyCode;
+            if (e.Delta / Math.Abs(e.Delta) == 1)
+            {
+                keyCode = (int)VK.SCROLL_UP;
+            }
+            else 
+            {
+                keyCode = (int)VK.SCROLL_DOWN;
+            }
+            SwitchByKeyCode(keyCode);
+        }
+
+        private void SwitchByKeyCode(int keyCode)
+        {
             if (!_modify)
             {
                 if (keyCode == _keyStart.Code)
@@ -188,8 +239,10 @@ namespace ErHuo.ViewModels
             }
         }
 
-        private void Start()
+        public void Start()
         {
+            if (!runningState.GetIdle() || Busy)
+                return;
             runningState.SetIdle(false);
             Instances.ConfigDrawerViewModel.Off();
             cts = new CancellationTokenSource();
@@ -241,7 +294,7 @@ namespace ErHuo.ViewModels
             }
         }
 
-        private void Stop()
+        public void Stop()
         {
             if (!runningState.GetIdle())
             {
@@ -261,7 +314,7 @@ namespace ErHuo.ViewModels
         }
 
 
-        public bool CheckKeyInList(EKey key)
+        public bool IsKeyValid(EKey key)
         {
             List<KeyEvent> keylist = ConfigFactory.GetListValue<KeyEvent>(ConfigKey.KeyList);
             if (key == null)
@@ -273,7 +326,7 @@ namespace ErHuo.ViewModels
                     return false;
                 }
             }
-            return true;
+            return key.Code != (int)VK.LBUTTON && key.Code != (int)VK.RBUTTON;
         }
 
         private void RunningState_IdleChanged(object sender, bool e)
@@ -287,7 +340,7 @@ namespace ErHuo.ViewModels
             if (_busyLock == 1)
             {
                 Busy = true;
-                Instances.KeyboardHook.Stop();
+                Instances.GlobalHook.Stop();
             }
         }
 
@@ -301,7 +354,7 @@ namespace ErHuo.ViewModels
             if (_busyLock == 0)
             {
                 Busy = false;
-                Instances.KeyboardHook.Start();
+                Instances.GlobalHook.Start();
             }
         }
 

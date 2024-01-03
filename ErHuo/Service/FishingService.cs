@@ -12,10 +12,8 @@ namespace ErHuo.Service
 {
     public class FishingService : IService
     {
-        public FishingService(FishingConfigSheet _config, CancellationToken Token) : base(Token)
+        public FishingService(ConfigSheet config, CancellationToken Token) : base(config, Token)
         {
-            _config.WindowInfo = p.FindWindowJX3();
-            config = _config;
         }
 
         public override void Service()
@@ -41,8 +39,8 @@ namespace ErHuo.Service
                         Thread.Sleep(5000);
                         p.KeyPress(_config.KeyCollect.Code);
                     }
+                    Thread.Sleep(500);
                 }
-                Thread.Sleep(1000);
             }
         }
 
@@ -62,8 +60,9 @@ namespace ErHuo.Service
         public CursorPoint FishingReviveUpperLeft { get; set; }
         public CursorPoint FishingReviveBottomRight { get; set; }
 
-        public FishingConfigSheet(EKey keyFishingRelease, EKey keyFishingFinish, EKey keyCollect, bool fishingRevive, CursorPoint fishingNoticePoint, CursorPoint fishingInjuredPoint, CursorPoint fishingRevivePoint)
+        public FishingConfigSheet(WindowInfo JX3, EKey keyFishingRelease, EKey keyFishingFinish, EKey keyCollect, bool fishingRevive, CursorPoint fishingNoticePoint, CursorPoint fishingInjuredPoint, CursorPoint fishingRevivePoint)
         {
+            WindowInfo = JX3;
             KeyFishingRelease = keyFishingRelease;
             KeyFishingFinish = keyFishingFinish;
             KeyCollect = keyCollect;

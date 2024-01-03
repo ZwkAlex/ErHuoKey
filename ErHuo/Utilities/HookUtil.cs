@@ -1,23 +1,36 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using MouseWheelEventArgs = System.Windows.Input.MouseWheelEventArgs;
 
 namespace ErHuo.Utilities
 {
     /// <summary>
     /// 键盘钩子    
     /// </summary>
-    public class KeyboardHook
+    /// 
+
+
+    public class GlobalHook
     {
         public event KeyEventHandler KeyDownEvent;
         public event KeyPressEventHandler KeyPressEvent;
         public event KeyEventHandler KeyUpEvent;
 
-        public delegate int HookProc(int nCode, int wParam, IntPtr lParam);
+        public event MouseEventHandler MouseDown;
+        public event MouseEventHandler MouseUp;
+        public event MouseEventHandler MouseWheel;
+
+        public delegate int HookProc(int nCode, IntPtr wParam, IntPtr lParam);
         static int hKeyboardHook = 0; //声明键盘钩子处理的初始值
+        static int hMouseHook = 0;
         //值在Microsoft SDK的Winuser.h里查询
+
+        public const int WH_MOUSE_LL = 14;
+
         public const int WH_KEYBOARD_LL = 13;   //线程键盘钩子监听鼠标消息设为2，全局键盘监听鼠标消息设为13
         HookProc KeyboardHookProcedure; //声明KeyboardHookProcedure作为HookProc类型
+        HookProc MouseHookProcedure;
         //键盘结构
         [StructLayout(LayoutKind.Sequential)]
         public class KeyboardHookStruct
@@ -28,6 +41,38 @@ namespace ErHuo.Utilities
             public int time; // 指定的时间戳记的这个讯息
             public int dwExtraInfo; // 指定额外信息相关的信息
         }
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        public class MouseHookStruct
+        {
+            public POINT pt; // 鼠标位置
+            public int hWnd;
+            public int wHitTestCode;
+            public int dwExtraInfo;
+        }
+
+        /// <summary>
+        /// 鼠标位置结构
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        public class POINT
+        {
+            public int x;
+            public int y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MSLLHOOKSTRUCT
+        {
+            public POINT pt;
+            public int mouseData;
+            public int flags;
+            public int time;
+            public UIntPtr dwExtraInfo;
+        }
+
+
         //使用此功能，安装了一个钩子
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern int SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hInstance, int threadId);
@@ -40,7 +85,7 @@ namespace ErHuo.Utilities
 
         //使用此功能，通过信息钩子继续下一个钩子
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern int CallNextHookEx(int idHook, int nCode, int wParam, IntPtr lParam);
+        public static extern int CallNextHookEx(int idHook, int nCode, IntPtr wParam, IntPtr lParam);
 
         // 取得当前线程编号（线程钩子需要用到）
         [DllImport("kernel32.dll")]
@@ -79,19 +124,33 @@ namespace ErHuo.Utilities
                     throw new Exception("安装键盘钩子失败");
                 }
             }
+
+            //if (hMouseHook == 0)
+            //{
+            //    MouseHookProcedure = new HookProc(MouseHookProc);
+            //    hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProcedure, GetModuleHandle(System.Diagnostics.Process.GetCurrentProcess().MainModule.ModuleName), 0);
+            //    if (hMouseHook == 0)
+            //    {
+            //        Stop();
+            //        throw new Exception("安装鼠标钩子失败");
+            //    }
+            //}
         }
         public void Stop()
         {
-            bool retKeyboard = true;
-
-
             if (hKeyboardHook != 0)
             {
-                retKeyboard = UnhookWindowsHookEx(hKeyboardHook);
+                bool retKeyboard = UnhookWindowsHookEx(hKeyboardHook);
                 hKeyboardHook = 0;
+                if (!retKeyboard) throw new Exception("卸载钩子失败！");
             }
 
-            if (!retKeyboard) throw new Exception("卸载钩子失败！");
+            if (hMouseHook != 0)
+            {
+                bool retMouse = UnhookWindowsHookEx(hMouseHook);
+                hMouseHook = 0;
+                if (!retMouse) throw new Exception("卸载钩子失败！");
+            }
         }
         //ToAscii职能的转换指定的虚拟键码和键盘状态的相应字符或字符
         [DllImport("user32")]
@@ -109,19 +168,33 @@ namespace ErHuo.Utilities
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         private static extern short GetKeyState(int vKey);
 
+
         private const int WM_KEYDOWN = 0x100;//KEYDOWN
         private const int WM_KEYUP = 0x101;//KEYUP
         private const int WM_SYSKEYDOWN = 0x104;//SYSKEYDOWN
         private const int WM_SYSKEYUP = 0x105;//SYSKEYUP
 
-        private int KeyboardHookProc(int nCode, int wParam, IntPtr lParam)
+
+        public const int WM_MOUSEMOVE = 0x200; // 鼠标移动
+        public const int WM_LBUTTONDOWN = 0x201;// 鼠标左键按下
+        public const int WM_RBUTTONDOWN = 0x204;// 鼠标右键按下
+        public const int WM_MBUTTONDOWN = 0x207;// 鼠标中键按下
+        public const int WM_XBUTTONDOWN = 0x020B;// 鼠标侧键按下
+        public const int WM_LBUTTONUP = 0x202;// 鼠标左键抬起
+        public const int WM_RBUTTONUP = 0x205;// 鼠标右键抬起
+        public const int WM_MBUTTONUP = 0x208;// 鼠标中键抬起
+        public const int WM_XBUTTONUP = 0x020C;// 鼠标侧键抬起
+        public const int WM_MOUSEWHEEL = 0x020A;// 鼠标侧键抬起
+
+        private int KeyboardHookProc(int nCode, IntPtr wParam, IntPtr lParam)
         {
             // 侦听键盘事件
             if (nCode >= 0 && (KeyDownEvent != null || KeyUpEvent != null || KeyPressEvent != null))
             {
+                int msg = (int)wParam;
                 KeyboardHookStruct MyKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
                 // raise KeyDown
-                if (KeyDownEvent != null && (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN))
+                if (KeyDownEvent != null && (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN))
                 {
                     Keys keyData = (Keys)MyKeyboardHookStruct.vkCode;
                     KeyEventArgs e = new KeyEventArgs(keyData);
@@ -129,7 +202,7 @@ namespace ErHuo.Utilities
                 }
 
                 //键盘按下
-                if (KeyPressEvent != null && wParam == WM_KEYDOWN)
+                else if (KeyPressEvent != null && msg == WM_KEYDOWN)
                 {
                     byte[] keyState = new byte[256];
                     GetKeyboardState(keyState);
@@ -143,7 +216,7 @@ namespace ErHuo.Utilities
                 }
 
                 // 键盘抬起
-                if (KeyUpEvent != null && (wParam == WM_KEYUP || wParam == WM_SYSKEYUP))
+                else if (KeyUpEvent != null && (msg == WM_KEYUP || msg == WM_SYSKEYUP))
                 {
                     Keys keyData = (Keys)MyKeyboardHookStruct.vkCode;
                     KeyEventArgs e = new KeyEventArgs(keyData);
@@ -155,9 +228,67 @@ namespace ErHuo.Utilities
             //如果返回0或调用CallNextHookEx函数则消息出了这个钩子继续往下传递，也就是传给消息真正的接受者
             return CallNextHookEx(hKeyboardHook, nCode, wParam, lParam);
         }
-        ~KeyboardHook()
-        {
-            Stop();
+
+        private int MouseHookProc(int nCode, IntPtr wParam, IntPtr lParam)
+        {   
+            int msg = (int)wParam;
+            if (nCode < 0 || msg == WM_MOUSEMOVE) { return 0; }
+            if (nCode >= 0)
+            {
+                MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                MouseEventArgs e;
+
+                switch (msg)
+                {
+                    case WM_LBUTTONDOWN:
+                        e = new MouseEventArgs(MouseButtons.Left, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
+                        MouseDown?.Invoke(this, e);
+                        break;
+                    case WM_RBUTTONDOWN:
+                        e = new MouseEventArgs(MouseButtons.Right, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
+                        MouseDown?.Invoke(this, e);
+                        break;
+                    case WM_MBUTTONDOWN:
+                        e = new MouseEventArgs(MouseButtons.Middle, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
+                        MouseDown?.Invoke(this, e);
+                        break;
+                    case WM_XBUTTONDOWN:
+                        e = new MouseEventArgs(MouseButtons.XButton1, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
+                        MouseDown?.Invoke(this, e);
+                        break;
+                    case WM_LBUTTONUP:
+                        e = new MouseEventArgs(MouseButtons.Left, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
+                        MouseUp?.Invoke(this, e);
+                        break;
+                    case WM_RBUTTONUP:
+                        e = new MouseEventArgs(MouseButtons.Right, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
+                        MouseUp?.Invoke(this, e);
+                        break;
+                    case WM_MBUTTONUP:
+                        e = new MouseEventArgs(MouseButtons.Middle, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
+                        MouseUp?.Invoke(this, e);
+                        break;
+                    case WM_XBUTTONUP:
+                        e = new MouseEventArgs(MouseButtons.XButton1, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
+                        MouseUp?.Invoke(this, e);
+                        break;
+                    case WM_MOUSEWHEEL:
+                        int delta = ((short)((uint)hookStruct.mouseData >> 16));
+                        e = new MouseEventArgs(MouseButtons.None, 1, hookStruct.pt.x, hookStruct.pt.y, delta);
+                        MouseWheel?.Invoke(this, e);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return CallNextHookEx(hMouseHook, nCode, wParam, lParam);
         }
+
+        //~GlobalHook()
+        //{
+        //    Stop();
+        //}
     }
+
 }

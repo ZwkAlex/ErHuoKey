@@ -69,7 +69,7 @@
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="20" Text="停止按键" Foreground="{DynamicResource TextIconBrush}"/>
                         </Border>
                     </hc:StatusSwitchElement.CheckedElement>
-                    <Border  Width="150" Height="75" Style="{StaticResource BgChangeWhenDisable}"  CornerRadius="10">
+                    <Border Width="150" Height="75" Style="{StaticResource BgChangeWhenDisable}"  CornerRadius="10">
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Text="{Binding WaitButtonText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="{DynamicResource TextIconBrush}"/>
                     </Border>
                 </ToggleButton>

@@ -12,7 +12,7 @@ namespace ErHuo.Utilities
 {
     public static class Instances
     {
-        public static KeyboardHook KeyboardHook { get; set; }
+        public static GlobalHook GlobalHook { get; set; }
         public static NormalKeyViewModel NormalKeyViewModel { get; private set; }
         public static FishingViewModel FishingViewModel { get; private set; }
         public static TopMostViewModel TopMostViewModel { get; private set; }
@@ -23,7 +23,7 @@ namespace ErHuo.Utilities
 
         public static void Instantiate(IContainer container)
         {
-            KeyboardHook = new KeyboardHook();
+            GlobalHook = new GlobalHook();
             NormalKeyViewModel = container.Get<NormalKeyViewModel>();
             FishingViewModel = container.Get<FishingViewModel>();
             TopMostViewModel = container.Get<TopMostViewModel>();

@@ -16,9 +16,8 @@ namespace ErHuo.Service
 {
     public class NormalKeyService : IService
     {
-        public NormalKeyService(NormalKeyConfigSheet _config, CancellationToken Token) : base(Token)
+        public NormalKeyService(NormalKeyConfigSheet config, CancellationToken Token) : base(config,Token)
         {
-            config = _config;
         }
 
         public override void Service()
@@ -33,10 +32,51 @@ namespace ErHuo.Service
                         Token.ThrowIfCancellationRequested();
                         if (key.Activate)
                         {
-                            if (p.KeyPress(key.Code))
+                            bool result = false;
+                            if (CheckKeyIsMouse(key))
+                            {
+                                if (key.Code == (int)VK.LBUTTON)
+                                {
+                                    result = p.LeftClick();
+                                }
+                                else if (key.Code == (int)VK.RBUTTON)
+                                {
+                                    result = p.RightClick();
+                                }
+                                else if (key.Code == (int)VK.MBUTTON)
+                                {
+                                    result = p.MiddleClick();
+                                }
+                                else if (key.Code == (int)VK.XBUTTON1)
+                                {
+                                    result = p.KeyPress((int)VK.XBUTTON1);
+                                }
+                                else if (key.Code == (int)VK.XBUTTON2)
+                                {
+                                    result = p.KeyPress((int)VK.XBUTTON2);
+                                }
+                                else if (key.Code == (int)VK.SCROLL_UP)
+                                {
+                                    result = p.WheelDown();
+                                }
+                                else if (key.Code == (int)VK.SCROLL_DOWN)
+                                {
+                                    result = p.WheelUp();
+                                }
+                                else
+                                {
+                                    throw new NotImplementedException();
+                                }
+                            }
+                            else
+                            {
+                                result = p.KeyPress(key.Code);
+                            }
+                            if (!result)
                             {
                                 throw new KeyException("Key Press Failed");
                             }
+
                             if (_config.KeyMode == 0)
                             {
                                 Thread.Sleep(_config.Frequency);
@@ -53,6 +93,11 @@ namespace ErHuo.Service
             {
                 return;
             }
+        }
+
+        public bool CheckKeyIsMouse(EKey key)
+        {
+            return key.Code == (int)VK.LBUTTON || key.Code == (int)VK.RBUTTON || key.Code == (int)VK.MBUTTON || key.Code == (int)VK.XBUTTON1 || key.Code == (int)VK.XBUTTON2 || key.Code == (int)VK.SCROLL_UP || key.Code == (int)VK.SCROLL_DOWN;
         }
     }
 

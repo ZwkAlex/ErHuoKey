@@ -11,6 +11,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Window = HandyControl.Controls.Window;
 using TabControl = System.Windows.Controls.TabControl;
+using IContainer = StyletIoC.IContainer;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using HandyControl.Themes;
+using System.Windows.Media;
 
 namespace ErHuo.ViewModels
 {
@@ -60,11 +65,13 @@ namespace ErHuo.ViewModels
                 if (ActiveItem is NormalKeyViewModel)
                 {
                     currentTab = Tab.NormalKey;
+                    JX3WindowFinder.Stop();
                 }
                 else if (ActiveItem is FishingViewModel)
                 {
                     currentTab = Tab.Fishing;
                     ((FrameworkElement)sender).Focus();
+                    JX3WindowFinder.Start();
                 }
             }
             else
@@ -103,9 +110,15 @@ namespace ErHuo.ViewModels
             }
         }
 
-        public void WindowClosing(object sender, EventArgs e)
+        public void WindowClosing(object sender, CancelEventArgs e)
         {
-            Environment.Exit(0);
+            e.Cancel = true;
+            Task.Run(() =>
+            {
+                Instances.GlobalHook.Stop();
+                Instances.HotKeyViewModel.Stop();
+                Environment.Exit(0);
+            });
         }
     }
 }

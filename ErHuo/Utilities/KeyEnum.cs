@@ -506,6 +506,14 @@ namespace ErHuo
         ///<summary>
         ///NUM LOCK key
         ///</summary>
+        ///
+
+        ///<summary>
+        ///Custom Key Code
+        /// </summary>
+        SCROLL_UP = 0x8E,
+        SCROLL_DOWN = 0x8F,
+
         NUMLOCK = 0x90,
         ///<summary>
         ///SCROLL LOCK key

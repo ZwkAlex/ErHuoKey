@@ -10,7 +10,7 @@
            d:DesignHeight="500" d:DesignWidth="800"
            d:DataContext="{d:DesignInstance {x:Type vm:ConfigDrawerViewModel}}">
     <hc:Drawer ShowMask="True" MaskCanClose="True" ShowMode="Cover" IsOpen="{Binding DrawerSwitch}">
-        <Border Background="WhiteSmoke" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
+        <Border Background="{DynamicResource SecondaryRegionBrush}" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
             <StackPanel>
                 <Grid Margin="20 15">
                     <TextBlock Text="更多设置" Style="{StaticResource TextBlockLargeBold}" HorizontalAlignment="Left"/>
@@ -28,6 +28,15 @@
                             <Label Style="{StaticResource LabelPrimary}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
                         </hc:PreviewSlider.PreviewContent>
                     </hc:PreviewSlider>
+                </Grid>
+                <hc:Divider Margin="20 0" LineStrokeThickness="1"/>
+                <Grid Margin="20 15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="找点等待超时（秒）" Style="{StaticResource TextBlockDefault}" FontSize="18" HorizontalAlignment="Left"/>
+                    <hc:NumericUpDown Margin="20 0 0 0" Grid.Column="1" Increment="5" Minimum="10" Maximum="50" FontSize="16" Value="{Binding WaitKeyTimeout}"/>
                 </Grid>
                 <hc:Divider Margin="20 0" LineStrokeThickness="1"/>
                 <Grid Margin="20 15">
@@ -54,6 +63,15 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="运行时最小化至托盘" Style="{StaticResource TextBlockDefault}" FontSize="18" HorizontalAlignment="Left"/>
                     <ToggleButton Grid.Column="1" HorizontalAlignment="Right" IsChecked="{Binding MinimizeToTray}" Style="{StaticResource ToggleButtonSwitch}"/>
+                </Grid>
+                <hc:Divider Margin="20 0" LineStrokeThickness="1"/>
+                <Grid Margin="20 15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="夜间模式" Style="{StaticResource TextBlockDefault}" FontSize="18" HorizontalAlignment="Left"/>
+                    <ToggleButton Grid.Column="1" HorizontalAlignment="Right" IsChecked="{Binding DarkTheme}" Style="{StaticResource ToggleButtonSwitch}"/>
                 </Grid>
                 <hc:Divider Margin="20 0" LineStrokeThickness="1"/>
             </StackPanel>

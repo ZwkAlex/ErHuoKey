@@ -1,9 +1,12 @@
 ﻿using ErHuo.Models;
 using ErHuo.Plugins;
+using ErHuo.Properties;
 using ErHuo.Service;
 using ErHuo.Utilities;
 using HandyControl.Controls;
 using HandyControl.Data;
+using HandyControl.Themes;
+using HandyControl.Tools;
 using Newtonsoft.Json.Linq;
 using Stylet;
 using StyletIoC;
@@ -14,7 +17,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ErHuo.ViewModels
 {
@@ -163,6 +168,36 @@ namespace ErHuo.ViewModels
                 NotifyOfPropertyChange(nameof(FishingRevivePointText));
             }
         }
+        private WindowInfo _jx3;
+        public WindowInfo JX3
+        {
+            get
+            {
+                return _jx3;
+            }
+            set
+            {
+                _jx3 = value;
+                NotifyOfPropertyChange(nameof(JX3WindowStateText));
+                NotifyOfPropertyChange(nameof(JX3WindowStateColor));
+            }
+        }
+        public string JX3WindowStateText
+        {
+            get
+            {
+                return JX3.hWnd == 0 ? "未检测到": "已检测到";
+            }
+        }
+
+        public SolidColorBrush JX3WindowStateColor
+        {
+            get
+            {
+                return JX3.hWnd == 0 ? Brushes.Red : Brushes.Green;
+            }
+        }
+
         public string FishingRevivePointText
         {
             get
@@ -182,6 +217,7 @@ namespace ErHuo.ViewModels
         public FishingConfigSheet GetConfig()
         {
             FishingConfigSheet config = new FishingConfigSheet(
+                JX3: _jx3,
                 keyFishingRelease: _keyFishingRelease,
                 keyFishingFinish: _keyFishingFinish,
                 keyCollect: _keyCollect,
@@ -218,7 +254,7 @@ namespace ErHuo.ViewModels
             FishingConfigSheet config = GetConfig();
             if (!CheckConfig(config))
             {
-                throw new ServiceConfigException("错误的设置，请进行钓鱼上钩提示点选取");
+                throw new ServiceConfigException(Constant.FishingBadConfig);
             }
             _fishingService = new FishingService(config, Token);
             _fishingService.StartService();
@@ -231,12 +267,18 @@ namespace ErHuo.ViewModels
 
         public void GetPoint(string param)
         {
-            P p = new P();
             TopMostViewModel topMostViewModel = Instances.TopMostViewModel;
+            if (topMostViewModel.IsRuning())
+            {
+                Growl.Info(Constant.FindPointUnfinish);
+                return;
+            }
+            P p = new P();
             Instances.HotKeyViewModel.QueueBusy();
             _windowManager.ShowWindow(topMostViewModel);
-            topMostViewModel.ShowCursorLocation("正在等待找点完成", 300000, xpadding: 200, ypadding: 100);
-            if (p.WaitKey(4, 30000) != -1)
+            int timeout = ConfigFactory.GetValue(ConfigKey.WaitKeyTimeout, 30000);
+            topMostViewModel.ShowCursorLocation("正在等待找点完成", timeout, xpadding: 200, ypadding: 100);
+            if (p.WaitKey(4, timeout) != -1)
             {
                 CursorPoint cursorPoint = CursorUtil.doGetCursorPos();
                 if (param == "Notice")

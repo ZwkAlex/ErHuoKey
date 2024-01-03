@@ -56,9 +56,19 @@ namespace ErHuo.Utilities
 
         public const string NormalKeyTabTitle = "基础按键";
 
+        public const string StartStopKeySetWarning = "无效设置，不能设置为左键或右键，并且不能与基础按键中的设置一致。";
+
+        public const string AddKeyEmptyWarning = "请输入要添加的按键。";
+
+        public const string AddKeyFailWarning = "按键添加失败：检查是否已经添加或与开启热键与结束热键冲突。";
+
         public const string FishingTabTitle = "钓鱼";
 
         public const string FishingKeySetError = "此设置***无法*** 设为空 或者 与开始热键及停止热键相同";
+
+        public const string FindPointUnfinish = "上一次找点未结束";
+
+        public const string FishingBadConfig = "错误的设置，请进行钓鱼上钩提示点选取";
 
         public static readonly Dictionary<string, int> LwKeyMode = new Dictionary<string, int>() { { "normal", 0 }, { "windows", 1 } };
 
@@ -113,6 +123,13 @@ namespace ErHuo.Utilities
             {"OEM_MINUS", "-" },
             {"OEM_PLUS", "=" },
 
+            {"LBUTTON", "左键" },
+            {"RBUTTON", "右键" },
+            {"MBUTTON", "中键" },
+            {"XBUTTON1", "侧键1" },
+            {"XBUTTON2", "侧键2" },
+            {"SCROLL_UP", "上滑滚轮" },
+            {"SCROLL_DOWN", "下滑滚轮" },
         };
 
         public static readonly Dictionary<string, string> KeyNameTranslate = KeyTranslate.ToDictionary((i) => i.Value, (i) => i.Key);
@@ -156,6 +173,10 @@ namespace ErHuo.Utilities
         public const string ConfigNeverOpen = "ConfigNeverOpen";
 
         public const string Plugin = "Plugin";
+
+        public const string WaitKeyTimeout = "WaitKeyTimeout";
+
+        public const string DarkTheme = "DarkTheme";
     }
 
 }

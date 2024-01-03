@@ -80,17 +80,27 @@ namespace ErHuo.ViewModels
             Title = title;
         }
 
+        public bool IsRuning()
+        {
+            return cts != null;
+        }
+
         public void ChangeDescription(string description)
         {
             Description = description;
         }
 
-        public void ShowCursorLocationAndWindowTitle(string title, int timeout = 30000)
+        private void PrepareWindow(string title, int timeout)
         {
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
             CancelTask();
             ChangeTitle(title);
-            cts = new CancellationTokenSource(timeout);
+            cts = new CancellationTokenSource(timeout); 
+        }
+
+        public void ShowCursorLocationAndWindowTitle(string title, int timeout = 30000)
+        {
+            PrepareWindow(title, timeout);
             Thread t = new Thread(() =>
             {
                 P _p = new P();
@@ -119,10 +129,7 @@ namespace ErHuo.ViewModels
 
         public void ShowCursorLocation(string title, int timeout = 30000, int xpadding = 50, int ypadding = 50)
         {
-            Application.Current.MainWindow.WindowState = WindowState.Minimized;
-            CancelTask();
-            ChangeTitle(title);
-            cts = new CancellationTokenSource(timeout);
+            PrepareWindow(title, timeout);
             Thread t = new Thread(() =>
             {
                 P _p = new P();

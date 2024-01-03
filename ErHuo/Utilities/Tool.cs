@@ -1,10 +1,16 @@
 ﻿using ErHuo.Models;
+using ErHuo.Plugins;
 using ErHuo.Properties;
+using HandyControl.Themes;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
+using System.Windows;
 using System.Windows.Data;
+using System.Windows.Threading;
 using System.Xml.Linq;
 
 namespace ErHuo.Utilities
@@ -54,6 +60,18 @@ namespace ErHuo.Utilities
             sw.Close();
         }
 
+        public static void EnableDarkTheme(bool enable)
+        {
+            if (enable)
+            {
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
+            }
+            else
+            {
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
+            }
+        }
+
         public static void Restart()
         {
             ProcessStartInfo Info = new ProcessStartInfo
@@ -65,6 +83,51 @@ namespace ErHuo.Utilities
             };
             Process.Start(Info);
             Process.GetCurrentProcess().Kill();
+        }
+
+    }
+
+    public static class JX3WindowFinder
+    {
+        private static CancellationTokenSource cts;
+        private static Thread thread;
+
+        public static void Start()
+        {
+            cts = new CancellationTokenSource();
+            thread = new Thread(() =>
+            {
+                P p = new P();
+                try {
+                    while (!cts.IsCancellationRequested)
+                    {
+                        WindowInfo jx3 = p.FindWindowJX3();
+                        Application.Current.Dispatcher.Invoke(() => {
+                            Instances.FishingViewModel.JX3 = jx3;
+                        });
+                        Thread.Sleep(500);
+                    }
+                }catch (OperationCanceledException)
+                {
+
+                }
+                finally
+                {
+                    cts = null;
+                    thread.Join();
+                    p.Dispose();
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+        } 
+
+        public static void Stop()
+        {
+            if (cts != null && cts.Token.CanBeCanceled)
+            {
+                cts.Cancel();
+            }
         }
 
     }

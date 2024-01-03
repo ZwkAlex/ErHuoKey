@@ -22,6 +22,7 @@
         AllowsTransparency ="True"
         ShowInTaskbar="False"
         Opacity="0.75"
+        hc:ThemeManager.RequestedTheme="Light"
         Closed="{s:Action CancelTask}">
     <StackPanel HorizontalAlignment="Stretch" >
         <TextBlock  Margin="10"

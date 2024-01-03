@@ -161,7 +161,7 @@ namespace ErHuo.ViewModels
         {
             if (_keyAddName == null)
             {
-                Growl.Info(new GrowlInfo() { WaitTime = 2, Message = "请在上方输入要添加的按键。", ShowDateTime = false });
+                Growl.Info(new GrowlInfo() { WaitTime = 2, Message = Constant.AddKeyEmptyWarning, ShowDateTime = false });
                 return;
             }
             EKey _keyAdd = EKey.GetEKeyFromName(_keyAddName);
@@ -171,7 +171,7 @@ namespace ErHuo.ViewModels
             }
             else
             {
-                Growl.Info(new GrowlInfo() { WaitTime = 2, Message = "按键添加失败：检查是否与开启热键与结束热键冲突。", ShowDateTime = false });
+                Growl.Info(new GrowlInfo() { WaitTime = 2, Message = Constant.AddKeyFailWarning, ShowDateTime = false });
             }
             KeyAddName = "";
         }
@@ -234,19 +234,25 @@ namespace ErHuo.ViewModels
 
         public void FindWindow()
         {
-            P p = new P();
+            TopMostViewModel topMostViewModel = Instances.TopMostViewModel;
+            if (topMostViewModel.IsRuning())
+            {
+                Growl.Info(Constant.FindPointUnfinish);
+                return;
+            }
             bool isFirstInform = ConfigFactory.GetValue(ConfigKey.IsFirstInformFindWindow, true);
             if (isFirstInform)
             {
                 ConfigFactory.SetValue(ConfigKey.IsFirstInformFindWindow, false);
                 MessageBox.Info("鼠标移动至目标窗口后按***鼠标中键***");
             }
+            P p = new P();
             WaitKey = true;
             Instances.HotKeyViewModel.QueueBusy();
-            TopMostViewModel topMostViewModel = Instances.TopMostViewModel;
             _windowManager.ShowWindow(topMostViewModel);
-            topMostViewModel.ShowCursorLocationAndWindowTitle("正在选择窗口", 30000);
-            if (p.WaitKey(4, 30000) != -1)
+            int timeout = ConfigFactory.GetValue(ConfigKey.WaitKeyTimeout, 30000);
+            topMostViewModel.ShowCursorLocationAndWindowTitle("正在选择窗口", timeout);
+            if (p.WaitKey(4, timeout) != -1)
             {
                 WindowInfo windowInfo = p.GetMousePointWindow();
                 Growl.Info(windowInfo.szWindowName);

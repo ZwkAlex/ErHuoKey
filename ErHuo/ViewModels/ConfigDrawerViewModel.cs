@@ -1,5 +1,6 @@
 ﻿using ErHuo.Plugins;
 using ErHuo.Utilities;
+using HandyControl.Themes;
 using Newtonsoft.Json.Linq;
 using Stylet;
 using StyletIoC;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace ErHuo.ViewModels
@@ -54,6 +56,35 @@ namespace ErHuo.ViewModels
                 ConfigFactory.SetValue(ConfigKey.MinimizeToTray, value);
             }
         }
+
+
+        public int WaitKeyTimeout
+        {
+            get
+            {
+                return ConfigFactory.GetValue(ConfigKey.WaitKeyTimeout, 30000) / 1000;
+            }
+            set
+            {
+                ConfigFactory.SetValue(ConfigKey.WaitKeyTimeout, value * 1000);
+            }
+        }
+
+
+        public bool DarkTheme
+        {
+            get
+            {
+                bool enable = ConfigFactory.GetValue(ConfigKey.DarkTheme, false);
+                Tool.EnableDarkTheme(enable);
+                return enable;
+            }
+            set
+            {
+                ConfigFactory.SetValue(ConfigKey.DarkTheme, value);
+            }
+        }
+
 
         private bool _registerState;
 

@@ -35,7 +35,7 @@
             <StackPanel VerticalAlignment="Top"/>
         </ScrollViewer>
         <DockPanel>
-            <TabControl
+            <hc:TabControl
             Focusable="True"
             DockPanel.Dock="Top"
             Height="500"
@@ -55,7 +55,7 @@
                         IsTabStop="False" />
                     </DataTemplate>
                 </TabControl.ContentTemplate>
-            </TabControl>
+            </hc:TabControl>
             <ContentControl s:View.Model="{Binding HotKeyViewModel}"  DockPanel.Dock="Bottom"/>
         </DockPanel>
         <ContentControl s:View.Model= "{Binding ConfigDrawerViewModel}"/>

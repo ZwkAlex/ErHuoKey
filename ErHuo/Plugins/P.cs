@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 //using opLib;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Windows;
@@ -106,6 +107,34 @@ namespace ErHuo.Plugins
             return result != null && result != 0;
         }
 
+        public bool RightClick()
+        {
+            int? result;
+            result = lw?.RightClick();
+            return result != null && result != 0;
+        }
+
+        public bool MiddleClick()
+        {
+            int? result;
+            result = lw?.MiddleClick();
+            return result != null && result != 0;
+        }
+
+        public bool WheelDown()
+        {
+            int? result;
+            result = lw?.WheelDown();
+            return result != null && result != 0;
+        }
+
+        public bool WheelUp()
+        {
+            int? result;
+            result = lw?.WheelUp();
+            return result != null && result != 0;
+        }
+
         public bool MoveTo(CursorPoint cursorPoint)
         {
             int? result;
@@ -120,16 +149,16 @@ namespace ErHuo.Plugins
 
         public CursorPoint FindPic(int x1, int y1, int x2, int y2, string picPath, double sim)
         {
-            int? result;
-            result = lw?.FindPic(x1, y1, x2, y2, picname: picPath, sim: Convert.ToSingle(sim));
-            if (result == 1)
+            if (File.Exists(picPath))
             {
-                return new CursorPoint(lw?.x() ?? -1, lw?.y() ?? -1);
+                int? result;
+                result = lw?.FindPic(x1, y1, x2, y2, picname: picPath, sim: Convert.ToSingle(sim));
+                if (result == 1)
+                {
+                    return new CursorPoint(lw?.x() ?? -1, lw?.y() ?? -1);
+                }
             }
-            else
-            {
-                return new CursorPoint(-1, -1);
-            }
+            return new CursorPoint(-1, -1);
         }
 
         public bool Capture(CursorPoint point1, CursorPoint point2, string picPath)

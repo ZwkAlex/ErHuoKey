@@ -15,7 +15,8 @@
                         <local:Bootstrapper/>
                     </s:ApplicationLoader.Bootstrapper>
                 </s:ApplicationLoader>
-                <hc:Theme Name="HandyTheme"/>
+                <hc:ThemeResources/>
+                <hc:Theme/>
                 <ResourceDictionary Source="Properties/ResourceDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

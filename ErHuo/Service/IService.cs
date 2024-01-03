@@ -11,8 +11,9 @@ namespace ErHuo.Service
         public P p;
         public CancellationToken Token;
 
-        public IService(CancellationToken Token)
+        public IService(ConfigSheet config, CancellationToken Token)
         {
+            this.config = config;
             this.Token = Token;
             p = new P();
         }
@@ -49,6 +50,7 @@ namespace ErHuo.Service
         }
         public void StopService()
         {
+            p.UnBindWindow();
             //Application.Current.Dispatcher.Invoke(() => {
             //    Application.Current.MainWindow.Show();
             //    Application.Current.MainWindow.WindowState = WindowState.Normal;
