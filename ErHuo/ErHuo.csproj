@@ -342,7 +342,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Controls\JX3DetectTextBlock.cs" />
     <Compile Include="Controls\KeyTextBox.cs" />
+    <Compile Include="Controls\StateTextBlock.cs" />
     <Compile Include="Models\EKey.cs" />
     <Compile Include="Utilities\Constant.cs" />
     <Compile Include="Models\Exceptions.cs" />
@@ -357,10 +359,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Service\ConfigSheet.cs" />
-    <Compile Include="Service\FishingService.cs" />
-    <Compile Include="Service\IService.cs" />
-    <Compile Include="Service\NormalKeyService.cs" />
+    <Compile Include="Services\ConfigSheet.cs" />
+    <Compile Include="Services\FishingService.cs" />
+    <Compile Include="Services\IService.cs" />
+    <Compile Include="Services\NormalKeyService.cs" />
     <Compile Include="Utilities\ConfigFactory.cs" />
     <Compile Include="Utilities\Instances.cs" />
     <Compile Include="Utilities\CursorUtil.cs" />

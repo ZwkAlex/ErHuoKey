@@ -159,7 +159,7 @@ namespace ErHuo.ViewModels
         #region event handler
         public void AddKey()
         {
-            if (_keyAddName == null)
+            if (string.IsNullOrEmpty(_keyAddName))
             {
                 Growl.Info(new GrowlInfo() { WaitTime = 2, Message = Constant.AddKeyEmptyWarning, ShowDateTime = false });
                 return;

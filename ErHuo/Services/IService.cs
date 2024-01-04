@@ -3,7 +3,7 @@ using ErHuo.Plugins;
 using System.Threading;
 using System.Windows;
 
-namespace ErHuo.Service
+namespace ErHuo.Services
 {
     public abstract class IService
     {

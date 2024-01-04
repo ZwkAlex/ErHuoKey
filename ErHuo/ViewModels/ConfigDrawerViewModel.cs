@@ -26,7 +26,7 @@ namespace ErHuo.ViewModels
                 SetAndNotify(ref _drawerSwitch, value);
                 if (value)
                 {
-                    UpdateRegisterState();
+                    RegisterState = RegisterBase.Instance.GetRegisterStatus();
                 }
             }
         }
@@ -88,20 +88,10 @@ namespace ErHuo.ViewModels
 
         private bool _registerState;
 
-        public SolidColorBrush RegisterStateColor
+        public bool RegisterState
         {
-            get
-            {
-                return _registerState ? Brushes.Green : Brushes.Red;
-            }
-        }
-
-        public string RegisterStateText
-        {
-            get
-            {
-                return _registerState ? Constant.RegisterStateSuccess : Constant.RegisterStateFail;
-            }
+            get { return _registerState; } 
+            set { SetAndNotify(ref _registerState, value); }
         }
 
         private static IContainer _container;
@@ -131,14 +121,7 @@ namespace ErHuo.ViewModels
         public void UnregisterPluginAndDelete()
         {
             RegisterBase.Instance.TryUnRegister();
-            UpdateRegisterState();
-        }
-
-        public void UpdateRegisterState()
-        {
-            _registerState = RegisterBase.Instance.GetRegisterStatus();
-            NotifyOfPropertyChange(nameof(RegisterStateColor));
-            NotifyOfPropertyChange(nameof(RegisterStateText));
+            RegisterState = RegisterBase.Instance.GetRegisterStatus();
         }
 
         public void On()

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using static ErHuo.Utilities.HwndUtil;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace ErHuo.Service
+namespace ErHuo.Services
 {
     public class NormalKeyService : IService
     {

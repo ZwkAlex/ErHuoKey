@@ -42,7 +42,7 @@ namespace ErHuo.Plugins
             }
             else
             {
-                result = lw?.BindWindow(hwnd, Constant.LwKeyMode[dispaly], Constant.LwKeyMode[mouse], Constant.LwKeyMode[keyboard]);
+                result = lw?.BindWindow(hwnd, Constant.LwKeyMode[dispaly], Constant.LwKeyMode[mouse], Constant.LwKeyMode[keyboard], mode);
             }
 
             return result != null && result != 0;

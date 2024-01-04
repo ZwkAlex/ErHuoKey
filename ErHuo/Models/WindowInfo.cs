@@ -20,5 +20,9 @@ namespace ErHuo.Models
             this.hWnd = hWnd;
             this.szWindowName = szWindowName;
         }
+        public bool IsValid()
+        {
+            return hWnd > 0;
+        }
     }
 }

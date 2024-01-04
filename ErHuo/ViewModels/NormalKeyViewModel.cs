@@ -8,7 +8,7 @@ using IContainer = StyletIoC.IContainer;
 using ErHuo.Utilities;
 using System;
 using HandyControl.Controls;
-using ErHuo.Service;
+using ErHuo.Services;
 using static ErHuo.Utilities.HwndUtil;
 using System.Collections.Generic;
 using System.IO.Ports;

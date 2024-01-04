@@ -94,6 +94,10 @@ namespace ErHuo.Utilities
 
         public static void Start()
         {
+            if (cts != null)
+            {
+                return;
+            }
             cts = new CancellationTokenSource();
             thread = new Thread(() =>
             {
@@ -114,7 +118,7 @@ namespace ErHuo.Utilities
                 finally
                 {
                     cts = null;
-                    thread.Join();
+                    thread.Abort();
                     p.Dispose();
                 }
             });

@@ -27,11 +27,10 @@
             <Grid Grid.Row="0" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="检查剑三窗口:" Margin="0 0 20 0" HorizontalAlignment="Right" Style="{StaticResource TextBlockSubTitle}"/>
-                <TextBlock Grid.Column="1" Text="{Binding JX3WindowStateText}" Margin="0 0 20 0" HorizontalAlignment="Left" Style="{StaticResource TextBlockSubTitle}" Foreground="{Binding JX3WindowStateColor}"/>
+                <control:JX3DetectTextBlock Grid.Column="1" Margin="0 0 20 0" HorizontalAlignment="Left" Style="{StaticResource TextBlockSubTitle}" JX3Window="{Binding JX3}" />
             </Grid>
             <Grid Grid.Row="1" >
                 <Grid.ColumnDefinitions>

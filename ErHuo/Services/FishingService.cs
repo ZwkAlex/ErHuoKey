@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace ErHuo.Service
+namespace ErHuo.Services
 {
     public class FishingService : IService
     {

@@ -5,18 +5,19 @@
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
            xmlns:vm="clr-namespace:ErHuo.ViewModels" 
            xmlns:hc="https://handyorg.github.io/handycontrol"
+           xmlns:control="clr-namespace:ErHuo.Controls"
            mc:Ignorable="d" 
            xmlns:s="https://github.com/canton7/Stylet"
            d:DesignHeight="500" d:DesignWidth="800"
            d:DataContext="{d:DesignInstance {x:Type vm:ConfigDrawerViewModel}}">
     <hc:Drawer ShowMask="True" MaskCanClose="True" ShowMode="Cover" IsOpen="{Binding DrawerSwitch}">
-        <Border Background="{DynamicResource SecondaryRegionBrush}" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
+        <Border Background="{DynamicResource DefaultBrush}" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
             <StackPanel>
                 <Grid Margin="20 15">
                     <TextBlock Text="更多设置" Style="{StaticResource TextBlockLargeBold}" HorizontalAlignment="Left"/>
                     <Button Width="50" Height="50" Cursor="Hand" Command="hc:ControlCommands.Close" HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextBrush}" Style="{StaticResource ButtonIcon}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"/>
                 </Grid>
-                <hc:Divider Margin="5 0" LineStrokeThickness="3"/>
+                <hc:Divider Margin="5 0" LineStrokeThickness="2"/>
                 <Grid Margin="20 15">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -45,7 +46,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="当前插件状态" Style="{StaticResource TextBlockDefault}" FontSize="18" HorizontalAlignment="Left"/>
-                    <TextBlock Grid.Column="1" Text="{Binding RegisterStateText}" Style="{StaticResource TextBlockDefault}" FontSize="18" Foreground="{Binding RegisterStateColor}" HorizontalAlignment="Right" Margin="8 0 8 0"/>
+                    <control:StateTextBlock Grid.Column="1" Style="{StaticResource TextBlockDefault}" State="{Binding RegisterState}" FontSize="18" HorizontalAlignment="Right" Margin="8 0 8 0"/>
                 </Grid>
                 <Grid Margin="20 15">
                     <Grid.ColumnDefinitions>
@@ -53,7 +54,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="卸载插件" Style="{StaticResource TextBlockDefault}" FontSize="18" HorizontalAlignment="Left"/>
-                    <Button Grid.Column="1" HorizontalAlignment="Right"  Content="清理" hc:IconElement.Geometry="{StaticResource DeleteGeometry}" s:View.ActionTarget="{Binding ConfigDrawerViewModel}" Command="{s:Action UnregisterPluginAndDelete}"/>
+                    <Button Grid.Column="1" HorizontalAlignment="Right"  Content="卸载" hc:IconElement.Geometry="{StaticResource DeleteGeometry}" s:View.ActionTarget="{Binding ConfigDrawerViewModel}" Command="{s:Action UnregisterPluginAndDelete}"/>
                 </Grid>
                 <hc:Divider Margin="20 0" LineStrokeThickness="1"/>
                 <Grid Margin="20 15">

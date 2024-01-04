@@ -18,10 +18,11 @@ namespace ErHuo.ViewModels
 {
     public class HotKeyViewModel : PropertyChangedBase
     {
-        private RunningState runningState;
+        private readonly RunningState runningState;
         private EKey _keyStart = KeyManager.KeyStart;
         private string _keyStartName = KeyManager.KeyStart.Name;
         public static CancellationTokenSource cts;
+        private Thread t;
         public Tab CurrentTab { get; set; }
         public string KeyStartName
         {
@@ -244,24 +245,12 @@ namespace ErHuo.ViewModels
             if (!runningState.GetIdle() || Busy)
                 return;
             runningState.SetIdle(false);
+            SoundPlayUtil.PlayStartSound();
             Instances.ConfigDrawerViewModel.Off();
             cts = new CancellationTokenSource();
-            CancellationToken Token = cts.Token;
-            if (false)
-            {
-                Task task = Task.Run(() =>
-                {
-                    StartService(Token);
-                },
-                Token);
-            }
-            else
-            {
-                Thread t = new Thread(new ParameterizedThreadStart(StartService));
-                t.SetApartmentState(ApartmentState.STA);
-                t.Start(Token);
-            }
-            SoundPlayUtil.PlayStartSound();
+            t = new Thread(new ParameterizedThreadStart(StartService));
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start(cts.Token);
         }
 
         private void StartService(object Token)
@@ -290,17 +279,6 @@ namespace ErHuo.ViewModels
             }
             finally
             {
-                Stop();
-            }
-        }
-
-        public void Stop()
-        {
-            if (!runningState.GetIdle())
-            {
-                runningState.SetIdle(true);
-                cts.Cancel();
-                cts.Dispose();
                 if (CurrentTab == Tab.NormalKey)
                 {
                     Instances.NormalKeyViewModel.Stop();
@@ -309,10 +287,25 @@ namespace ErHuo.ViewModels
                 {
                     Instances.FishingViewModel.Stop();
                 }
-                SoundPlayUtil.PlayStopSound();
+                if (!runningState.GetIdle())
+                {
+                    runningState.SetIdle(true);
+                    SoundPlayUtil.PlayStopSound();
+                }
+                Stop();
             }
         }
 
+        public void Stop()
+        {
+           if (cts != null && cts.Token.CanBeCanceled)
+           {
+                cts.Cancel();
+                cts.Dispose();
+                cts = null;
+                t.Abort();
+           }
+        }
 
         public bool IsKeyValid(EKey key)
         {

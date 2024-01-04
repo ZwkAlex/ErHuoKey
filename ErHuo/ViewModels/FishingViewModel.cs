@@ -1,7 +1,7 @@
 ﻿using ErHuo.Models;
 using ErHuo.Plugins;
 using ErHuo.Properties;
-using ErHuo.Service;
+using ErHuo.Services;
 using ErHuo.Utilities;
 using HandyControl.Controls;
 using HandyControl.Data;
@@ -177,26 +177,10 @@ namespace ErHuo.ViewModels
             }
             set
             {
-                _jx3 = value;
-                NotifyOfPropertyChange(nameof(JX3WindowStateText));
-                NotifyOfPropertyChange(nameof(JX3WindowStateColor));
-            }
-        }
-        public string JX3WindowStateText
-        {
-            get
-            {
-                return JX3.hWnd == 0 ? "未检测到": "已检测到";
+                SetAndNotify(ref _jx3, value);
             }
         }
 
-        public SolidColorBrush JX3WindowStateColor
-        {
-            get
-            {
-                return JX3.hWnd == 0 ? Brushes.Red : Brushes.Green;
-            }
-        }
 
         public string FishingRevivePointText
         {
