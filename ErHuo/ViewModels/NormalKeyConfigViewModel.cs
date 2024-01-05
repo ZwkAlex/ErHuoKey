@@ -34,6 +34,7 @@ namespace ErHuo.ViewModels
             }
             set
             {
+                value = Math.Max(value, 20);
                 ConfigFactory.SetValue(ConfigKey.Frequency, value);
             }
         }
@@ -244,7 +245,7 @@ namespace ErHuo.ViewModels
             if (isFirstInform)
             {
                 ConfigFactory.SetValue(ConfigKey.IsFirstInformFindWindow, false);
-                MessageBox.Info("鼠标移动至目标窗口后按***鼠标中键***");
+                MessageBox.Info(Constant.NormalKeyFirstInform);
             }
             P p = new P();
             WaitKey = true;

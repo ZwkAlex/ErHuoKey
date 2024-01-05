@@ -142,7 +142,7 @@ namespace ErHuo.ViewModels
                     {
                         CursorPoint cursor = CursorUtil.doGetCursorPos();
                         ChangeDescription("鼠标位置：" + cursor.ToString());
-                        ImageBytes = _p.CaptureToBuffer(cursor.x - xpadding, cursor.y - ypadding, cursor.x + xpadding, cursor.y + ypadding);
+                        ImageBytes = _p.CaptureToBytes(cursor.x - xpadding, cursor.y - ypadding, cursor.x + xpadding, cursor.y + ypadding);
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             PreviewImage = (BitmapSource)new ImageSourceConverter().ConvertFrom(ImageBytes);

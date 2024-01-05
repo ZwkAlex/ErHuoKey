@@ -1,10 +1,10 @@
 ﻿using ErHuo.Models;
 using ErHuo.Utilities;
-using lw;
+//using lw;
 using Newtonsoft.Json.Linq;
-
 //using opLib;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -24,16 +24,10 @@ namespace ErHuo.Plugins
 
         public P()
         {
-            try
-            {
-                lw = new lwsoft();
-            }
-            catch
-            {
-                lw = null;
-            }
+            lw = LwFactory.GetNew();
+            lw.SetSimMode(1);
         }
-        public bool BindWindow(int hwnd, string dispaly = "normal", string mouse = "windows", string keyboard = "windows", int mode = 0)
+        public bool BindWindow(int hwnd, string dispaly = "normal", string mouse = "windows", string keyboard = "windows", int added = 0, int mode = 0)
         {
             int? result;
             if (hwnd == -1)
@@ -42,7 +36,7 @@ namespace ErHuo.Plugins
             }
             else
             {
-                result = lw?.BindWindow(hwnd, Constant.LwKeyMode[dispaly], Constant.LwKeyMode[mouse], Constant.LwKeyMode[keyboard], mode);
+                result = lw?.BindWindow(hwnd, Constant.LwKeyMode[dispaly], Constant.LwKeyMode[mouse], Constant.LwKeyMode[keyboard], added, mode);
             }
 
             return result != null && result != 0;
@@ -174,7 +168,7 @@ namespace ErHuo.Plugins
         }
 
 
-        public byte[] CaptureToBuffer(int x1, int y1, int x2, int y2)
+        public byte[] CaptureToBytes(int x1, int y1, int x2, int y2)
         {
             if (lw == null)
             {

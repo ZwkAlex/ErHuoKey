@@ -201,7 +201,7 @@ namespace ErHuo.ViewModels
         public FishingConfigSheet GetConfig()
         {
             FishingConfigSheet config = new FishingConfigSheet(
-                JX3: _jx3,
+                JX3: new WindowInfo(),
                 keyFishingRelease: _keyFishingRelease,
                 keyFishingFinish: _keyFishingFinish,
                 keyCollect: _keyCollect,

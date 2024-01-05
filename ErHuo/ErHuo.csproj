@@ -346,6 +346,7 @@
     <Compile Include="Controls\KeyTextBox.cs" />
     <Compile Include="Controls\StateTextBlock.cs" />
     <Compile Include="Models\EKey.cs" />
+    <Compile Include="Plugins\lwsoft.cs" />
     <Compile Include="Utilities\Constant.cs" />
     <Compile Include="Models\Exceptions.cs" />
     <Compile Include="Models\CursorPoint.cs" />
@@ -487,15 +488,6 @@
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="lw">
-      <Guid>{71175991-9B59-42EA-B712-9ADF3319AC18}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="opLib">
       <Guid>{66B9C175-82F2-45E9-AF86-58AD5DED5ADC}</Guid>
       <VersionMajor>1</VersionMajor>

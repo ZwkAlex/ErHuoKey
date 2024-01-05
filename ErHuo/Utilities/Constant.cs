@@ -30,7 +30,7 @@ namespace ErHuo.Utilities
 
         public const string FishingReviveFile = "FishingRevive.bmp";
 
-        public const string JX3 = "剑侠情缘";
+        public const string JX3 = "剑网三";
 
         public const string WaitButtonTextStart = "开始按键";
 
@@ -57,6 +57,8 @@ namespace ErHuo.Utilities
         public const string NormalKeyTabTitle = "基础按键";
 
         public const string StartStopKeySetWarning = "无效设置，不能设置为左键或右键，并且不能与基础按键中的设置一致。";
+
+        public const string NormalKeyFirstInform = "鼠标移动至目标窗口后按***鼠标中键*** 注意：后台功能对***绝大多数游戏***无效,请使用前台功能。";
 
         public const string AddKeyEmptyWarning = "请输入要添加的按键。";
 
