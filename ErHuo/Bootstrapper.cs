@@ -21,7 +21,6 @@ namespace ErHuo
             }
             ConfigFactory.LoadConfigFile();
             Tool.EnableDarkTheme(ConfigFactory.GetValue(ConfigKey.DarkTheme, false));
-            RegisterBase.Instance.TryRegister();
         }
         protected override void Configure()
         {

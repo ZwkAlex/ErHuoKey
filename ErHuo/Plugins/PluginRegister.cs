@@ -11,11 +11,11 @@ using System.Windows.Forms;
 namespace ErHuo.Plugins
 {
 
-    public abstract class RegisterBase
+    public abstract class IRegister
     {
         private static string _registerKey;
-        private static RegisterBase _instance;
-        public static RegisterBase Instance
+        private static IRegister _instance;
+        public static IRegister Instance
         {
             get
             {
@@ -44,19 +44,29 @@ namespace ErHuo.Plugins
                 if (MessageBox.Show(Constant.RegisterMessage, Constant.RegisterTitle, MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
                     Register();
+                    try
+                    {
+                        P p = new P();
+                    }
+                    catch(Exception e)
+                    {
+                        MessageBox.Show(e.Message, Constant.RegisterFailMessage);
+                    }
                 }
                 else
                 {
                     MessageBox.Show(Constant.CancelRegisterMessage, Constant.RegisterTitle);
                 }
             }
+            RegisterState.Instance.SetReg(GetRegisterStatus());
         }
 
         public void TryUnRegister()
         {
             if (MessageBox.Show(Constant.UnRegisterMessage, Constant.UnRegisterTitle, MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                if (!GetRegisterStatus() || UnRegister())
+                UnRegister();
+                if (!GetRegisterStatus())
                 {
                     MessageBox.Show(Constant.UnRegisterSuccess, Constant.UnRegisterTitle);
                 }
@@ -65,6 +75,7 @@ namespace ErHuo.Plugins
                     MessageBox.Show(Constant.UnRegisterFail, Constant.UnRegisterTitle);
                 }
             }
+            RegisterState.Instance.SetReg(GetRegisterStatus());
         }
 
         public void ExtractDLL(byte[] byDll, string name)
@@ -98,11 +109,11 @@ namespace ErHuo.Plugins
             return GetRegisterStatus(_registerKey);
         }
 
-        public abstract bool Register();
-        public abstract bool UnRegister();
+        public abstract void Register();
+        public abstract void UnRegister();
     }
 
-    public class LWRegister : RegisterBase
+    public class LWRegister : IRegister
     {
         private const string LwFileName = "lw.dll";
         [DllImport(LwFileName)]
@@ -112,19 +123,16 @@ namespace ErHuo.Plugins
         [DllImport(LwFileName)]
         static extern bool DllCanUnloadNow();
 
-        public override bool Register()
+        public override void Register()
         {
             ExtractDLL(Properties.Resources.lw, LwFileName);
-            int result = DllRegisterServer();
-            return result == 1;
+            DllRegisterServer();
         }
 
-        public override bool UnRegister()
+        public override void UnRegister()
         {
             ExtractDLL(Properties.Resources.lw, LwFileName);
             DllUnregisterServer();
-            return true;
-            //return CanUnload() && (DllUnregisterServer() == 1);
         }
 
         public bool CanUnload()
@@ -133,7 +141,7 @@ namespace ErHuo.Plugins
         }
     }
 
-    public class OPRegister : RegisterBase
+    public class OPRegister : IRegister
     {
         private const string OPFileName = "op_x86.dll";
         [DllImport(OPFileName)]
@@ -142,18 +150,16 @@ namespace ErHuo.Plugins
         static extern int DllUnregisterServer();
         [DllImport(OPFileName)]
         static extern bool DllCanUnloadNow();
-        public override bool Register()
+        public override void Register()
         {
             //ReleaseDLL(Properties.Resources.op_x86, OPFileName);
-            int result = DllRegisterServer();
-            return result == 1;
+            DllRegisterServer();
         }
 
-        public override bool UnRegister()
+        public override void UnRegister()
         {
             //ReleaseDLL(Properties.Resources.op_x86, OPFileName);
             DllUnregisterServer();
-            return true;
             //return CanUnload() && (DllUnregisterServer() == 1);
         }
 

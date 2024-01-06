@@ -23,13 +23,26 @@ namespace ErHuo.ViewModels
             }
         }
 
-        private SolidColorBrush _configColor = Brushes.Black;
+        private static SolidColorBrush _configDefaultBrush = Brushes.Black;
+
+        private SolidColorBrush _configColor = _configDefaultBrush;
         public SolidColorBrush ConfigColor
         {
             get => _configColor;
             set
             {
                 SetAndNotify(ref _configColor, value);
+            }
+        }
+
+        public SolidColorBrush _configBgColor = Brushes.Transparent;
+
+        public SolidColorBrush ConfigBgColor
+        {
+            get => _configBgColor;
+            set
+            {
+                SetAndNotify(ref _configBgColor, value);
             }
         }
 
@@ -81,7 +94,7 @@ namespace ErHuo.ViewModels
                     }
                     else
                     {
-                        ConfigColor = Brushes.Black;
+                        ConfigColor = _configDefaultBrush;
                         flag = true;
                     }
                     Thread.Sleep(600);
@@ -92,8 +105,7 @@ namespace ErHuo.ViewModels
             {
 
             }
-            ConfigColor = Brushes.Black;
+            ConfigColor = _configDefaultBrush;
         }
-
     }
 }

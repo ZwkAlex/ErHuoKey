@@ -40,11 +40,21 @@ namespace ErHuo.Utilities
 
         public const string RegisterStateFail = "未注册";
 
+        public const string ConfigClearMessage = "将清除当前所有设置，是否确认。";
+
+        public const string ConfigClearTitle = "清除设置";
+
+        public const string ConfigClearSuccessMessage = "清除成功，软件将重启。";
+
+        public const string ConfigClearFailMessage = "清除失败，请手动清除同目录下文件。";
+
         public const string RegisterMessage = "检测到插件***未注册***，即将进行插件注册。点击“确认”接受注册，点击“取消”拒绝注册。";
 
         public const string RegisterTitle = "插件注册";
 
         public const string CancelRegisterMessage = "拒绝注册，按键将无法启动。";
+
+        public const string RegisterFailMessage = "注册失败";
 
         public const string UnRegisterMessage = "卸载插件并删除，卸载完成后将造成按键不可用。";
 

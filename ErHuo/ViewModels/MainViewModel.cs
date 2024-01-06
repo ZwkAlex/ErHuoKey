@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using HandyControl.Themes;
 using System.Windows.Media;
+using ErHuo.Plugins;
 
 namespace ErHuo.ViewModels
 {
@@ -39,6 +40,7 @@ namespace ErHuo.ViewModels
             NoClientAreaViewModel = Instances.NoClientAreaViewModel;
             ConfigDrawerViewModel = Instances.ConfigDrawerViewModel;
             TaskbarViewModel = Instances.TaskbarViewModel;
+            IRegister.Instance.TryRegister();
         }
         protected override void OnViewLoaded()
         {

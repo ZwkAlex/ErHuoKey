@@ -242,21 +242,18 @@ namespace ErHuo.ViewModels
 
         public void Start()
         {
-            if (!runningState.GetIdle() || Busy)
-                return;
-            runningState.SetIdle(false);
-            SoundPlayUtil.PlayStartSound();
-            Instances.ConfigDrawerViewModel.Off();
-            cts = new CancellationTokenSource();
-            t = new Thread(new ParameterizedThreadStart(StartService));
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start(cts.Token);
+            if (runningState.GetIdle() && !Busy)
+            {
+                runningState.SetIdle(false);
+            }
+            
         }
 
-        private void StartService(object Token)
+        private void Service(object Token)
         {
             try
             {
+                throw new WindowBindingException("");
                 if (CurrentTab == Tab.NormalKey)
                 {
                     Instances.NormalKeyViewModel.Start((CancellationToken)Token);
@@ -287,24 +284,13 @@ namespace ErHuo.ViewModels
                 {
                     Instances.FishingViewModel.Stop();
                 }
-                if (!runningState.GetIdle())
-                {
-                    runningState.SetIdle(true);
-                    SoundPlayUtil.PlayStopSound();
-                }
-                Stop();
+                runningState.SetIdle(true);
             }
         }
 
         public void Stop()
         {
-           if (cts != null && cts.Token.CanBeCanceled)
-           {
-                cts.Cancel();
-                cts.Dispose();
-                cts = null;
-                t.Abort();
-           }
+            runningState.SetIdle(true);
         }
 
         public bool IsKeyValid(EKey key)
@@ -325,6 +311,26 @@ namespace ErHuo.ViewModels
         private void RunningState_IdleChanged(object sender, bool e)
         {
             Idle = e;
+            if (!e)
+            {
+                SoundPlayUtil.PlayStartSound();
+                Instances.ConfigDrawerViewModel.Off();
+                cts = new CancellationTokenSource();
+                t = new Thread(new ParameterizedThreadStart(Service));
+                t.SetApartmentState(ApartmentState.STA);
+                t.Start(cts.Token);
+            }
+            else
+            {
+                SoundPlayUtil.PlayStopSound();
+                if (cts != null && cts.Token.CanBeCanceled)
+                {
+                    cts.Cancel();
+                    cts.Dispose();
+                    cts = null;
+                    t.Abort();
+                }
+            }
         }
 
         public void QueueBusy()

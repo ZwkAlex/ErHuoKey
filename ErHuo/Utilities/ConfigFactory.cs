@@ -1,9 +1,11 @@
 ﻿using ErHuo.Models;
+using ErHuo.Plugins;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ObservableCollections;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Documents;
 using System.Windows.Forms;
@@ -120,6 +122,41 @@ namespace ErHuo.Utilities
                 return false;
             }
             return true;
+        }
+
+        public static bool Clear()
+        {
+            try
+            {
+                if (File.Exists(config_file))
+                {
+                    File.Delete(config_file);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+            return true;
+        }
+
+        public static void TryClear()
+        {
+            if (MessageBox.Show(Constant.ConfigClearMessage, Constant.ConfigClearTitle, MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                if (Clear())
+                {
+                    MessageBox.Show(Constant.ConfigClearSuccessMessage);
+                    Application.Restart();
+                    Process.GetCurrentProcess()?.Kill();
+                }
+                else
+                {
+                    MessageBox.Show(Constant.ConfigClearFailMessage);
+                }
+                    
+            }
         }
     }
 }

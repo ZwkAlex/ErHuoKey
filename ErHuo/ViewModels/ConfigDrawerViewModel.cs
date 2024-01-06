@@ -1,4 +1,5 @@
-﻿using ErHuo.Plugins;
+﻿using ErHuo.Models;
+using ErHuo.Plugins;
 using ErHuo.Utilities;
 using HandyControl.Themes;
 using Newtonsoft.Json.Linq;
@@ -24,10 +25,6 @@ namespace ErHuo.ViewModels
             set
             {
                 SetAndNotify(ref _drawerSwitch, value);
-                if (value)
-                {
-                    RegisterState = RegisterBase.Instance.GetRegisterStatus();
-                }
             }
         }
 
@@ -86,18 +83,21 @@ namespace ErHuo.ViewModels
         }
 
 
-        private bool _registerState;
+        private bool _isReg;
 
-        public bool RegisterState
+        public bool IsReg
         {
-            get { return _registerState; } 
-            set { SetAndNotify(ref _registerState, value); }
+            get { return _isReg; } 
+            set { 
+                SetAndNotify(ref _isReg, value); 
+            }
         }
 
         private static IContainer _container;
         public ConfigDrawerViewModel(IContainer container)
         {
             _container = container;
+            RegisterState.Instance.RegisterStateChanged += RegisterChangeHandler;
         }
 
         public void SwitchDrawer()
@@ -120,8 +120,30 @@ namespace ErHuo.ViewModels
 
         public void UnregisterPluginAndDelete()
         {
-            RegisterBase.Instance.TryUnRegister();
-            RegisterState = RegisterBase.Instance.GetRegisterStatus();
+            IRegister.Instance.TryUnRegister();
+        }
+
+        public void RegisterPlugin()
+        {
+            IRegister.Instance.TryRegister();
+        }
+
+        public void ResetConfig()
+        {
+            ConfigFactory.TryClear();
+        }
+
+        private void RegisterChangeHandler(object sender, bool newRegValue)
+        {
+            IsReg = newRegValue;
+            if (newRegValue)
+            {
+                Instances.NoClientAreaViewModel.ConfigBgColor = Brushes.Transparent;
+            }
+            else
+            {
+                Instances.NoClientAreaViewModel.ConfigBgColor = Brushes.Red;
+            }
         }
 
         public void On()

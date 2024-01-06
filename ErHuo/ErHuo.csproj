@@ -346,6 +346,7 @@
     <Compile Include="Controls\KeyTextBox.cs" />
     <Compile Include="Controls\StateTextBlock.cs" />
     <Compile Include="Models\EKey.cs" />
+    <Compile Include="Models\RegisterState.cs" />
     <Compile Include="Plugins\lwsoft.cs" />
     <Compile Include="Utilities\Constant.cs" />
     <Compile Include="Models\Exceptions.cs" />
