@@ -1,4 +1,4 @@
-# ErHuo
+# ErHuoKey
 
 剑网三相关 模拟按键 解放双手 
 
