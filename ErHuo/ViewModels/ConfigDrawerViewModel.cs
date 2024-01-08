@@ -28,7 +28,7 @@ namespace ErHuo.ViewModels
             }
         }
 
-        private int _volume = ConfigFactory.GetValue(ConfigKey.Volume, 20);
+        private int _volume = ConfigFactory.GetValue<int>(ConfigKey.Volume);
         public int Volume
         {
             get
@@ -46,7 +46,7 @@ namespace ErHuo.ViewModels
         {
             get
             {
-                return ConfigFactory.GetValue(ConfigKey.MinimizeToTray, false);
+                return ConfigFactory.GetValue<bool>(ConfigKey.MinimizeToTray);
             }
             set
             {
@@ -59,7 +59,7 @@ namespace ErHuo.ViewModels
         {
             get
             {
-                return ConfigFactory.GetValue(ConfigKey.WaitKeyTimeout, 30000) / 1000;
+                return ConfigFactory.GetValue<int>(ConfigKey.WaitKeyTimeout) / 1000;
             }
             set
             {
@@ -72,7 +72,7 @@ namespace ErHuo.ViewModels
         {
             get
             {
-                bool enable = ConfigFactory.GetValue(ConfigKey.DarkTheme, false);
+                bool enable = ConfigFactory.GetValue<bool>(ConfigKey.DarkTheme);
                 Tool.EnableDarkTheme(enable);
                 return enable;
             }

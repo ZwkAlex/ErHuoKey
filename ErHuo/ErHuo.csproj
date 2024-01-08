@@ -346,6 +346,7 @@
     <Compile Include="Controls\KeyTextBox.cs" />
     <Compile Include="Controls\StateTextBlock.cs" />
     <Compile Include="Models\EKey.cs" />
+    <Compile Include="Models\WindowRect.cs" />
     <Compile Include="Models\RegisterState.cs" />
     <Compile Include="Plugins\lwsoft.cs" />
     <Compile Include="Utilities\Constant.cs" />
@@ -465,8 +466,8 @@
     <EmbeddedResource Include="Resources\stopsound.wav" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Inform2.jpg" />
-    <Resource Include="Resources\Inform1.jpg" />
+    <Resource Include="Resources\FishingRevive.jpg" />
+    <Resource Include="Resources\FishingCollect.jpg" />
     <Resource Include="favicon.ico" />
     <Resource Include="Resources\performer.jpg" />
   </ItemGroup>

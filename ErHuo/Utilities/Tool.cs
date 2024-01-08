@@ -5,11 +5,13 @@ using HandyControl.Themes;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using System.Xml.Linq;
 
@@ -85,6 +87,11 @@ namespace ErHuo.Utilities
             Process.GetCurrentProcess().Kill();
         }
 
+        public static WindowRect GetFullScreenRect()
+        {
+            var screen = System.Windows.Forms.Screen.PrimaryScreen;
+            return new WindowRect(screen.Bounds.Width, screen.Bounds.Height);
+        }
     }
 
     public static class JX3WindowFinder
@@ -147,6 +154,15 @@ namespace ErHuo.Utilities
             string targetPath = Path.Combine(Constant.ResourceDirPath, name);
             return File.Exists(targetPath) ? targetPath : null;
         }
+
+        public static string SaveBitmapToLocal(Bitmap image, string name)
+        {
+            string resourceBasePath = CreateResourceBaseDir();
+            string localPath = Path.Combine(resourceBasePath, name);
+            image.Save(localPath);
+            return localPath;
+        }
+
         public static string SaveBytesToLocal(byte[] data, string name)
         {
             string resourceBasePath = CreateResourceBaseDir();
@@ -194,7 +210,7 @@ namespace ErHuo.Utilities
         {
             get
             {
-                return ConfigFactory.GetValue(ConfigKey.KeyStart, new EKey("F1"));
+                return ConfigFactory.GetValue<EKey>(ConfigKey.KeyStart);
             }
             set
             {
@@ -205,7 +221,7 @@ namespace ErHuo.Utilities
         {
             get
             {
-                return ConfigFactory.GetValue(ConfigKey.KeyStop, new EKey("F1"));
+                return ConfigFactory.GetValue<EKey>(ConfigKey.KeyStop);
             }
             set
             {

@@ -26,7 +26,7 @@ namespace ErHuo.ViewModels
     public class FishingViewModel : Screen
     {
         private readonly IWindowManager _windowManager;
-        private EKey _keyFishingRelease = ConfigFactory.GetValue(ConfigKey.KeyFishingRelease, new EKey("KEY_1"));
+        private EKey _keyFishingRelease = ConfigFactory.GetValue<EKey>(ConfigKey.KeyFishingRelease);
         public string KeyFishingReleaseName
         {
             get
@@ -48,7 +48,7 @@ namespace ErHuo.ViewModels
                 }
             }
         }
-        private EKey _keyFishingFinish = ConfigFactory.GetValue(ConfigKey.KeyFishingFinish, new EKey("KEY_2"));
+        private EKey _keyFishingFinish = ConfigFactory.GetValue<EKey>(ConfigKey.KeyFishingFinish);
         public string KeyFishingFinishName
         {
             get
@@ -70,28 +70,28 @@ namespace ErHuo.ViewModels
                 }
             }
         }
-        private EKey _keyCollect = ConfigFactory.GetValue(ConfigKey.KeyCollect, new EKey("KEY_F"));
-        public string KeyCollectName
-        {
-            get
-            {
-                return _keyCollect.Name;
-            }
-            set
-            {
-                if (!string.IsNullOrEmpty(value) && KeyManager.KeyStart.Key != value && KeyManager.KeyStop.Key != value)
-                {
-                    EKey newKey = EKey.GetEKeyFromName(value);
-                    ConfigFactory.SetValue(ConfigKey.KeyCollect, newKey);
-                    SetAndNotify(ref _keyCollect, newKey);
-                }
-                else
-                {
-                    Growl.Info(new GrowlInfo() { WaitTime = 2, Message = Constant.FishingKeySetError, ShowDateTime = false });
-                    SetAndNotify(ref _keyCollect, _keyCollect);
-                }
-            }
-        }
+        //private EKey _keyCollect = ConfigFactory.GetValue<EKey>(ConfigKey.KeyCollect);
+        //public string KeyCollectName
+        //{
+        //    get
+        //    {
+        //        return _keyCollect.Name;
+        //    }
+        //    set
+        //    {
+        //        if (!string.IsNullOrEmpty(value) && KeyManager.KeyStart.Key != value && KeyManager.KeyStop.Key != value)
+        //        {
+        //            EKey newKey = EKey.GetEKeyFromName(value);
+        //            ConfigFactory.SetValue(ConfigKey.KeyCollect, newKey);
+        //            SetAndNotify(ref _keyCollect, newKey);
+        //        }
+        //        else
+        //        {
+        //            Growl.Info(new GrowlInfo() { WaitTime = 2, Message = Constant.FishingKeySetError, ShowDateTime = false });
+        //            SetAndNotify(ref _keyCollect, _keyCollect);
+        //        }
+        //    }
+        //}
         public Visibility ReviveVisiblity
         {
             get
@@ -104,7 +104,7 @@ namespace ErHuo.ViewModels
         {
             get
             {
-                _fishingRevive = ConfigFactory.GetValue(ConfigKey.FishingRevive, false);
+                _fishingRevive = ConfigFactory.GetValue<bool>(ConfigKey.FishingRevive);
                 NotifyOfPropertyChange(nameof(ReviveVisiblity));
                 return _fishingRevive;
             }
@@ -119,7 +119,7 @@ namespace ErHuo.ViewModels
         {
             get
             {
-                return ConfigFactory.GetValue(ConfigKey.FishingNoticePoint, new CursorPoint());
+                return ConfigFactory.GetValue<CursorPoint>(ConfigKey.FishingNoticePoint);
             }
             set
             {
@@ -139,7 +139,7 @@ namespace ErHuo.ViewModels
         {
             get
             {
-                return ConfigFactory.GetValue(ConfigKey.FishingInjuredPoint, new CursorPoint());
+                return ConfigFactory.GetValue<CursorPoint>(ConfigKey.FishingInjuredPoint);
             }
             set
             {
@@ -160,7 +160,7 @@ namespace ErHuo.ViewModels
         {
             get
             {
-                return ConfigFactory.GetValue(ConfigKey.FishingRevivePoint, new CursorPoint());
+                return ConfigFactory.GetValue<CursorPoint>(ConfigKey.FishingRevivePoint);
             }
             set
             {
@@ -204,7 +204,6 @@ namespace ErHuo.ViewModels
                 JX3: new WindowInfo(),
                 keyFishingRelease: _keyFishingRelease,
                 keyFishingFinish: _keyFishingFinish,
-                keyCollect: _keyCollect,
                 fishingRevive: _fishingRevive,
                 fishingNoticePoint: FishingNoticePoint,
                 fishingInjuredPoint: FishingInjuredPoint,
@@ -260,8 +259,8 @@ namespace ErHuo.ViewModels
             P p = new P();
             Instances.HotKeyViewModel.QueueBusy();
             _windowManager.ShowWindow(topMostViewModel);
-            int timeout = ConfigFactory.GetValue(ConfigKey.WaitKeyTimeout, 30000);
-            topMostViewModel.ShowCursorLocation("正在等待找点完成", timeout, xpadding: 200, ypadding: 100);
+            int timeout = ConfigFactory.GetValue<int>(ConfigKey.WaitKeyTimeout);
+            topMostViewModel.ShowCursorLocation("正在等待找点完成", timeout, xPad: 0.04, yPad: 0.01);
             if (p.WaitKey(4, timeout) != -1)
             {
                 CursorPoint cursorPoint = CursorUtil.doGetCursorPos();

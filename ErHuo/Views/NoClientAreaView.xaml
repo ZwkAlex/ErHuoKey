@@ -25,6 +25,6 @@
             </MenuItem>
         </Menu>
         <hc:Divider Orientation="Vertical" MaxHeight="16"/>
-        <Button HorizontalAlignment="Right" Foreground="{Binding ConfigColor}" Background="{Binding ConfigBgColor}" ToolTip="更多设置" Cursor="Hand" Command="{s:Action OpenDrawer}" Style="{StaticResource ButtonIcon}" hc:IconElement.Geometry="{StaticResource ConfigGeometry}"/>
+        <Button HorizontalAlignment="Right" BorderBrush="{Binding ConfigColor}" Background="{Binding ConfigBgColor}" ToolTip="更多设置" Cursor="Hand" Command="{s:Action OpenDrawer}" Style="{StaticResource ButtonIcon}" hc:IconElement.Geometry="{StaticResource ConfigGeometry}"/>
     </StackPanel>
 </Grid>

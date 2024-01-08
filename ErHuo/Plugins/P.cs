@@ -10,6 +10,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -136,9 +137,9 @@ namespace ErHuo.Plugins
             return result != null && result != 0;
         }
 
-        public CursorPoint FindPic(CursorPoint point1, CursorPoint point2, string picPath, double sim = 0.95)
+        public CursorPoint FindPic(WindowRect rect, string picPath, double sim = 0.90)
         {
-            return FindPic(point1.x, point1.y, point2.x, point2.y, picPath: picPath, sim: Convert.ToSingle(sim));
+            return FindPic(rect.TopLeft.x, rect.TopLeft.y, rect.BottomRight.x, rect.BottomRight.y, picPath: picPath, sim: Convert.ToSingle(sim));
         }
 
         public CursorPoint FindPic(int x1, int y1, int x2, int y2, string picPath, double sim)
@@ -155,9 +156,9 @@ namespace ErHuo.Plugins
             return new CursorPoint(-1, -1);
         }
 
-        public bool Capture(CursorPoint point1, CursorPoint point2, string picPath)
+        public bool Capture(WindowRect rect, string picPath)
         {
-            return Capture(point1.x, point1.y, point2.x, point2.y, picPath);
+            return Capture(rect.TopLeft.x, rect.TopLeft.y, rect.BottomRight.x, rect.BottomRight.y, picPath);
         }
 
         public bool Capture(int x1, int y1, int x2, int y2, string picPath)
@@ -167,6 +168,10 @@ namespace ErHuo.Plugins
             return result != null && result != 0;
         }
 
+        public byte[] CaptureToBytes(WindowRect rect)
+        {
+            return CaptureToBytes(rect.TopLeft.x, rect.TopLeft.y, rect.BottomRight.x, rect.BottomRight.y);
+        }
 
         public byte[] CaptureToBytes(int x1, int y1, int x2, int y2)
         {

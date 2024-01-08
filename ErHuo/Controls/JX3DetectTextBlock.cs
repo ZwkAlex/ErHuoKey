@@ -32,7 +32,7 @@ namespace ErHuo.Controls
         {
             if (jx3.IsValid())
             {
-                Text = "已检测到-" + jx3.szWindowName;
+                Text = "已启动-" + jx3.szWindowName;
                 if (Text.Length >= 15)
                 {
                     Text = Text.Substring(0, 15) + "...";
@@ -41,7 +41,7 @@ namespace ErHuo.Controls
             }
             else
             {
-                Text = "未检测到";
+                Text = "未启动";
                 Foreground = Brushes.Red;
             }
         }

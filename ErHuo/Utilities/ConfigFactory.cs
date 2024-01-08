@@ -58,8 +58,9 @@ namespace ErHuo.Utilities
             return parsed;
         }
 
-        public static T GetValue<T>(string key, T defaultValue)
+        public static T GetValue<T>(string key)
         {
+            var defaultValue = Constant.ConfigDefaultValue[key];
             var typeKey = typeof(T).Name;
             if (config.ContainsKey(key))
             {
@@ -71,19 +72,6 @@ namespace ErHuo.Utilities
             }
             SetValue(key, defaultValue);
             return defaultValue;
-        }
-
-        public static List<T> GetListValue<T>(string key)
-        {
-            var hasValue = config.TryGetValue(key, out var obj);
-            if (hasValue)
-            {
-                return obj;
-            }
-            List<T> emptyValue = new List<T>();
-            SetValue(key, emptyValue);
-            return emptyValue;
-
         }
 
         public static bool SetValue<T>(string key, T value)

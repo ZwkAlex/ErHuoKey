@@ -30,7 +30,7 @@ namespace ErHuo.ViewModels
         {
             get
             {
-                return ConfigFactory.GetValue(ConfigKey.Frequency, 50);
+                return ConfigFactory.GetValue<int>(ConfigKey.Frequency);
             }
             set
             {
@@ -42,7 +42,7 @@ namespace ErHuo.ViewModels
         {
             get
             {
-                return ConfigFactory.GetValue(ConfigKey.KeyMode, 0);
+                return ConfigFactory.GetValue<int>(ConfigKey.KeyMode);
             }
             set
             {
@@ -149,7 +149,7 @@ namespace ErHuo.ViewModels
 
         private List<KeyEvent> InitKeyList()
         {
-            List<KeyEvent> _configlist = ConfigFactory.GetListValue<KeyEvent>("KeyList");
+            List<KeyEvent> _configlist = ConfigFactory.GetValue<List<KeyEvent>>("KeyList");
             foreach (KeyEvent item in _configlist)
             {
                 item.PropertyChanged += KeyEventPropertyChanged;
@@ -241,7 +241,7 @@ namespace ErHuo.ViewModels
                 Growl.Info(Constant.FindPointUnfinish);
                 return;
             }
-            bool isFirstInform = ConfigFactory.GetValue(ConfigKey.IsFirstInformFindWindow, true);
+            bool isFirstInform = ConfigFactory.GetValue<bool>(ConfigKey.IsFirstInformFindWindow);
             if (isFirstInform)
             {
                 ConfigFactory.SetValue(ConfigKey.IsFirstInformFindWindow, false);
@@ -251,7 +251,7 @@ namespace ErHuo.ViewModels
             WaitKey = true;
             Instances.HotKeyViewModel.QueueBusy();
             _windowManager.ShowWindow(topMostViewModel);
-            int timeout = ConfigFactory.GetValue(ConfigKey.WaitKeyTimeout, 30000);
+            int timeout = ConfigFactory.GetValue<int>(ConfigKey.WaitKeyTimeout);
             topMostViewModel.ShowCursorLocationAndWindowTitle("正在选择窗口", timeout);
             if (p.WaitKey(4, timeout) != -1)
             {

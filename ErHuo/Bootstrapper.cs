@@ -20,7 +20,7 @@ namespace ErHuo
                 throw new Exception();
             }
             ConfigFactory.LoadConfigFile();
-            Tool.EnableDarkTheme(ConfigFactory.GetValue(ConfigKey.DarkTheme, false));
+            Tool.EnableDarkTheme(ConfigFactory.GetValue<bool>(ConfigKey.DarkTheme));
         }
         protected override void Configure()
         {

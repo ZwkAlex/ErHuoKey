@@ -23,7 +23,7 @@ namespace ErHuo.ViewModels
             }
         }
 
-        private static SolidColorBrush _configDefaultBrush = Brushes.Black;
+        private static SolidColorBrush _configDefaultBrush = Brushes.Transparent;
 
         private SolidColorBrush _configColor = _configDefaultBrush;
         public SolidColorBrush ConfigColor
@@ -51,7 +51,7 @@ namespace ErHuo.ViewModels
         public NoClientAreaViewModel(IContainer container)
         {
             _container = container;
-            if (ConfigFactory.GetValue(ConfigKey.ConfigNeverOpen, true))
+            if (ConfigFactory.GetValue<bool>(ConfigKey.ConfigNeverOpen))
             {
                 cts = new CancellationTokenSource();
                 Task.Run(() =>

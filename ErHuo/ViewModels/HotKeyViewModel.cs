@@ -130,7 +130,7 @@ namespace ErHuo.ViewModels
             runningState = RunningState.Instance;
             runningState.IdleChanged += RunningState_IdleChanged;
 
-            SoundPlayUtil.ChangeVolume(ConfigFactory.GetValue(ConfigKey.Volume, 20));
+            SoundPlayUtil.ChangeVolume(ConfigFactory.GetValue<int>(ConfigKey.Volume));
 
             Instances.GlobalHook.KeyUpEvent -= KeyUpEventHandler;
             Instances.GlobalHook.KeyUpEvent += KeyUpEventHandler;
@@ -253,7 +253,6 @@ namespace ErHuo.ViewModels
         {
             try
             {
-                throw new WindowBindingException("");
                 if (CurrentTab == Tab.NormalKey)
                 {
                     Instances.NormalKeyViewModel.Start((CancellationToken)Token);
@@ -295,7 +294,7 @@ namespace ErHuo.ViewModels
 
         public bool IsKeyValid(EKey key)
         {
-            List<KeyEvent> keylist = ConfigFactory.GetListValue<KeyEvent>(ConfigKey.KeyList);
+            List<KeyEvent> keylist = ConfigFactory.GetValue<List<KeyEvent>>(ConfigKey.KeyList);
             if (key == null)
                 return false;
             foreach (KeyEvent k in keylist)

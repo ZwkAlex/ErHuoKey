@@ -46,7 +46,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="当前插件状态" Style="{StaticResource TextBlockDefault}" FontSize="18" HorizontalAlignment="Left"/>
-                    <control:StateTextBlock Grid.Column="1" Style="{StaticResource TextBlockDefault}" State="{Binding IsReg, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="18" HorizontalAlignment="Right" Margin="8 0 8 0"/>
+                    <control:StateTextBlock Grid.Column="1" Style="{StaticResource StateTextDefault}" StateValidText="已注册" StateInvalidText="未注册" State="{Binding IsReg, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="18" HorizontalAlignment="Right" Margin="8 0 8 0"/>
                 </Grid>
                 <Grid Margin="20 15">
                     <Grid.ColumnDefinitions>

@@ -21,7 +21,7 @@ namespace ErHuo.Plugins
             {
                 if (_instance == null)
                 {
-                    Plugin plugin = ConfigFactory.GetValue(ConfigKey.Plugin, Plugin.LW);
+                    Plugin plugin = ConfigFactory.GetValue<Plugin>(ConfigKey.Plugin);
                     if (plugin == Plugin.LW)
                     {
                         _instance = new LWRegister();

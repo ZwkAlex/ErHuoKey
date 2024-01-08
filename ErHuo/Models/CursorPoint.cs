@@ -22,6 +22,11 @@ namespace ErHuo.Models
             if (x == -1 && y == -1) return "无效点";
             return "( " + x + " , " + y + " )";
         }
+
+        public string ToStringRelative(WindowRect screen)
+        {
+            return string.Format("( {0:0.00} , {1:0.00} )" , x * 1.0 / screen.W, y * 1.0 / screen.H);
+        }
         public bool IsValid()
         {
             return (x != -1 || y != -1);

@@ -105,7 +105,7 @@ namespace ErHuo.ViewModels
         {
             if (((Window)sender).WindowState == WindowState.Minimized && !RunningState.Instance.GetIdle())
             {
-                if (ConfigFactory.GetValue(ConfigKey.MinimizeToTray, false))
+                if (ConfigFactory.GetValue<bool>(ConfigKey.MinimizeToTray))
                 {
                     Application.Current.MainWindow.Hide();
                 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ErHuo;
+using ErHuo.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,6 +31,8 @@ namespace ErHuo.Utilities
         public const string FishingNoticeFile = "FishingNotice.bmp";
 
         public const string FishingReviveFile = "FishingRevive.bmp";
+
+        public const string FishingCollectFile = "FishingCollect.bmp";
 
         public const string JX3 = "剑网三";
 
@@ -146,6 +150,29 @@ namespace ErHuo.Utilities
 
         public static readonly Dictionary<string, string> KeyNameTranslate = KeyTranslate.ToDictionary((i) => i.Value, (i) => i.Key);
 
+        public static readonly Dictionary<string, dynamic> ConfigDefaultValue = new Dictionary<string, dynamic>()
+        {
+            {"Volume", 20},
+            {"KeyStart",  new EKey("F12")},
+            {"KeyStop",  new EKey("F12")},
+            {"MinimizeToTray",  false},
+            {"KeyFishingRelease",  new EKey("KEY_1")},
+            {"KeyFishingFinish",  new EKey("KEY_1")},
+            {"FishingRevive",  false},
+            {"Frequency",  50},
+            {"KeyMode",  0},
+            {"IsFirstInformFindWindow",  true},
+            {"ConfigNeverOpen",  true},
+            {"Plugin", Plugin.LW},
+            {"WaitKeyTimeout", 30000},
+            {"DarkTheme",  false},
+            {"KeyList",  new List<KeyEvent>()},
+            {"FishingNoticePoint",  new CursorPoint()},
+            {"FishingInjuredPoint",  new CursorPoint()},
+            {"FishingRevivePoint",  new CursorPoint()},
+            {"",  0},
+         };
+
     }
 
     public class ConfigKey
@@ -190,5 +217,4 @@ namespace ErHuo.Utilities
 
         public const string DarkTheme = "DarkTheme";
     }
-
 }

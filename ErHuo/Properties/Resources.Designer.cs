@@ -63,9 +63,9 @@ namespace ErHuo.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        public static System.Drawing.Bitmap Inform1 {
+        public static System.Drawing.Bitmap FishingCollect {
             get {
-                object obj = ResourceManager.GetObject("Inform1", resourceCulture);
+                object obj = ResourceManager.GetObject("FishingCollect", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,19 +73,9 @@ namespace ErHuo.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        public static System.Drawing.Bitmap Inform2 {
+        public static System.Drawing.Bitmap FishingRevive {
             get {
-                object obj = ResourceManager.GetObject("Inform2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
-        public static System.Drawing.Bitmap Inform21 {
-            get {
-                object obj = ResourceManager.GetObject("Inform21", resourceCulture);
+                object obj = ResourceManager.GetObject("FishingRevive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

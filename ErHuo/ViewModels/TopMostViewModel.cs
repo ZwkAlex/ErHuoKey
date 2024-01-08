@@ -127,7 +127,7 @@ namespace ErHuo.ViewModels
             t.Start();
         }
 
-        public void ShowCursorLocation(string title, int timeout = 30000, int xpadding = 50, int ypadding = 50)
+        public void ShowCursorLocation(string title, int timeout = 30000, double xPad = 0.04, double yPad = 0.01)
         {
             PrepareWindow(title, timeout);
             Thread t = new Thread(() =>
@@ -136,13 +136,14 @@ namespace ErHuo.ViewModels
                 ImageVisible = true;
                 string resourceBasePath = FileManager.CreateResourceBaseDir();
                 string capturePath = Path.Combine(resourceBasePath, "capture.bmp");
+                WindowRect _fullScreen = Tool.GetFullScreenRect();
                 try
                 {
                     while (cts != null && !cts.Token.IsCancellationRequested)
                     {
                         CursorPoint cursor = CursorUtil.doGetCursorPos();
-                        ChangeDescription("鼠标位置：" + cursor.ToString());
-                        ImageBytes = _p.CaptureToBytes(cursor.x - xpadding, cursor.y - ypadding, cursor.x + xpadding, cursor.y + ypadding);
+                        ChangeDescription("鼠标位置：" + cursor.ToStringRelative(_fullScreen));
+                        ImageBytes = _p.CaptureToBytes(_fullScreen.SubRect(cursor, xPad, yPad));
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             PreviewImage = (BitmapSource)new ImageSourceConverter().ConvertFrom(ImageBytes);

@@ -12,6 +12,10 @@ namespace ErHuo.Controls
 {
     public class StateTextBlock : TextBlock
     {
+        public static readonly DependencyProperty StateValidTextProperty = DependencyProperty.RegisterAttached(nameof(StateValidText), typeof(object), typeof(StateTextBlock), new PropertyMetadata("True", null));
+
+        public static readonly DependencyProperty StateInvalidTextProperty = DependencyProperty.RegisterAttached(nameof(StateInvalidText), typeof(object), typeof(StateTextBlock), new PropertyMetadata("False", null));
+
         public static readonly DependencyProperty StateProperty = DependencyProperty.RegisterAttached(nameof(State), typeof(object), typeof(StateTextBlock), new PropertyMetadata(false, StatePropertyChanged));
         
         public bool State
@@ -26,17 +30,39 @@ namespace ErHuo.Controls
             }
         }
 
+        public string StateValidText
+        {
+            get
+            {
+                return (string)GetValue(StateValidTextProperty);
+            }
+            set
+            {
+                SetValue (StateValidTextProperty, value);
+            }
+        }
+
+        public string StateInvalidText
+        {
+            get
+            {
+                return (string)GetValue(StateInvalidTextProperty);
+            }
+            set
+            {
+                SetValue (StateInvalidTextProperty, value);
+            }
+        }
+
         private void StatePropertyChanged(bool state)
         {
             if (state)
             {
-                Text = "已激活";
-                Foreground = Brushes.Green;
+                Text = StateValidText;
             }
             else
             {
-                Text = "未激活";
-                Foreground = Brushes.Red;
+                Text = StateInvalidText;
             }
         }
 
