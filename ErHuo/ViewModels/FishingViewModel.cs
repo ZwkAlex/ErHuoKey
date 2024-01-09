@@ -135,24 +135,24 @@ namespace ErHuo.ViewModels
             }
         }
 
-        private CursorPoint FishingInjuredPoint
+        private CursorPoint FishingPoint
         {
             get
             {
-                return ConfigFactory.GetValue<CursorPoint>(ConfigKey.FishingInjuredPoint);
+                return ConfigFactory.GetValue<CursorPoint>(ConfigKey.FishingPoint);
             }
             set
             {
-                ConfigFactory.SetValue(ConfigKey.FishingInjuredPoint, value);
-                NotifyOfPropertyChange(nameof(FishingInjuredPointText));
+                ConfigFactory.SetValue(ConfigKey.FishingPoint, value);
+                NotifyOfPropertyChange(nameof(FishingPointText));
             }
         }
 
-        public string FishingInjuredPointText
+        public string FishingPointText
         {
             get
             {
-                return FishingInjuredPoint.ToString();
+                return FishingPoint.ToString();
             }
         }
 
@@ -206,7 +206,7 @@ namespace ErHuo.ViewModels
                 keyFishingFinish: _keyFishingFinish,
                 fishingRevive: _fishingRevive,
                 fishingNoticePoint: FishingNoticePoint,
-                fishingInjuredPoint: FishingInjuredPoint,
+                fishingPoint: FishingPoint,
                 fishingRevivePoint: FishingRevivePoint
             );
             return config;
@@ -222,13 +222,17 @@ namespace ErHuo.ViewModels
             {
                 return false;
             }
-            if (config.FishingRevive)
+            if (!config.FishingPoint.IsValid() || FileManager.FindLocalFile(Constant.FishingBuffFile) == null)
             {
-                if (!config.FishingRevivePoint.IsValid() || FileManager.FindLocalFile(Constant.FishingReviveFile) == null)
-                {
-                    return false;
-                }
+                return false;
             }
+            //if (config.FishingRevive)
+            //{
+            //    if (!config.FishingRevivePoint.IsValid() || FileManager.FindLocalFile(Constant.FishingReviveFile) == null)
+            //    {
+            //        return false;
+            //    }
+            //}
             return true;
         }
 
@@ -260,7 +264,7 @@ namespace ErHuo.ViewModels
             Instances.HotKeyViewModel.QueueBusy();
             _windowManager.ShowWindow(topMostViewModel);
             int timeout = ConfigFactory.GetValue<int>(ConfigKey.WaitKeyTimeout);
-            topMostViewModel.ShowCursorLocation("正在等待找点完成", timeout, xPad: 0.04, yPad: 0.01);
+            topMostViewModel.ShowCursorLocation("正在等待找点完成", timeout, xPad: 0.005, yPad: 0.01);
             if (p.WaitKey(4, timeout) != -1)
             {
                 CursorPoint cursorPoint = CursorUtil.doGetCursorPos();
@@ -269,10 +273,10 @@ namespace ErHuo.ViewModels
                     FileManager.SaveBytesToLocal(topMostViewModel.ImageBytes, Constant.FishingNoticeFile);
                     FishingNoticePoint = cursorPoint;
                 }
-                else if (param == "Revive")
+                else if (param == "Fishing")
                 {
-                    FileManager.SaveBytesToLocal(topMostViewModel.ImageBytes, Constant.FishingReviveFile);
-                    FishingRevivePoint = cursorPoint;
+                    FileManager.SaveBytesToLocal(topMostViewModel.ImageBytes, Constant.FishingBuffFile);
+                    FishingPoint = cursorPoint;
                 }
             }
             topMostViewModel.RequestClose();

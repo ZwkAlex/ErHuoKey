@@ -30,7 +30,11 @@ namespace ErHuo.Utilities
 
         public const string FishingNoticeFile = "FishingNotice.bmp";
 
-        public const string FishingReviveFile = "FishingRevive.bmp";
+        public const string ReviveEnable = "ReviveEnable.bmp";
+
+        public const string ReviveDisable = "ReviveDisable.bmp";
+
+        public const string FishingBuffFile = "FishingBuffFile.bmp";
 
         public const string FishingCollectFile = "FishingCollect.bmp";
 
@@ -168,7 +172,7 @@ namespace ErHuo.Utilities
             {"DarkTheme",  false},
             {"KeyList",  new List<KeyEvent>()},
             {"FishingNoticePoint",  new CursorPoint()},
-            {"FishingInjuredPoint",  new CursorPoint()},
+            {"FishingPoint",  new CursorPoint()},
             {"FishingRevivePoint",  new CursorPoint()},
             {"",  0},
          };
@@ -196,6 +200,8 @@ namespace ErHuo.Utilities
         public const string FishingNoticePoint = "FishingNoticePoint";
 
         public const string FishingInjuredPoint = "FishingInjuredPoint";
+
+        public const string FishingPoint = "FishingPoint";
 
         public const string FishingRevivePoint = "FishingRevivePoint";
 

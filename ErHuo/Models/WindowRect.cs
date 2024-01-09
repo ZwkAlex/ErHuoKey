@@ -53,5 +53,10 @@ namespace ErHuo.Models
             int y2 = (int)(anchor.y + H * hP);
             return new WindowRect(x1, y1, x2, y2);
         }
+
+        public CursorPoint ReleventPointToAbsolute(double xP, double yP)
+        {
+            return new CursorPoint((int)(W * xP), (int)(H * yP));
+        }
     }
 }

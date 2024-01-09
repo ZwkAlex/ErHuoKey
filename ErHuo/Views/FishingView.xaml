@@ -58,7 +58,18 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Margin="0 0 20 0" Text="上钩提示点:"  VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource TextBlockSubTitle}"/>
+                <TextBlock Grid.Column="0" Margin="0 0 20 0" Text="钓鱼Buff点:" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource TextBlockSubTitle}"/>
+                <TextBlock Grid.Column="1"  Text="{Binding FishingPointText,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBlockSubTitle}"/>
+                <Button Grid.Column="2"  Content="找点" HorizontalAlignment="Stretch" Command="{s:Action GetPoint}" CommandParameter="Fishing"/>
+            </Grid>
+
+            <Grid Margin="0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Margin="0 0 20 0" Text="上钩Buff点:"  VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource TextBlockSubTitle}"/>
                 <TextBlock Grid.Column="1"  Text="{Binding FishingNoticePointText,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBlockSubTitle}"/>
                 <Button Grid.Column="2"  Content="找点" HorizontalAlignment="Stretch" Command="{s:Action GetPoint}" CommandParameter="Notice"/>
             </Grid>
@@ -72,7 +83,7 @@
                 <TextBlock Grid.Column="0" Text="重伤原地疗伤:" Margin="0 0 20 0" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource TextBlockSubTitle}"/>
                 <ToggleButton Grid.Column="1" IsChecked="{Binding FishingRevive}" VerticalAlignment="Center" Style="{StaticResource ToggleButtonSwitch}"/>
             </Grid>
-
+            <!--
             <Grid Margin="0 10" Visibility="{Binding ReviveVisiblity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150"/>
@@ -92,7 +103,7 @@
                 <TextBlock Grid.Column="0" Margin="0 0 20 0" Text="原地起按钮:" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource TextBlockSubTitle}"/>
                 <TextBlock Grid.Column="1"  Text="{Binding FishingRevivePointText,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBlockSubTitle}"/>
                 <Button Grid.Column="2" Content="找点" HorizontalAlignment="Stretch" Command="{s:Action GetPoint}" CommandParameter="Revive"/>
-            </Grid>
+            </Grid>-->
             <Button Content="找点说明" Margin="10" Width="150" Command="{s:Action OpenManual}"/>
         </StackPanel>
     </Border>

@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         xmlns:s="https://github.com/canton7/Stylet"
         ResizeMode="CanMinimize" 
-        Title="找点说明" Height="600" Width="500" WindowStartupLocation="CenterScreen" Background="{DynamicResource RegionBrush}">
+        Title="找点说明" Height="600" Width="800" WindowStartupLocation="CenterScreen" Background="{DynamicResource RegionBrush}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.9*"/>
@@ -15,30 +15,44 @@
         </Grid.RowDefinitions>
         <hc:StepBar Dock="Left" Margin="10 5" Padding="0" StepIndex="4" >
             <hc:StepBarItem Margin="0">
-                <TextBlock MaxWidth="400" Style="{StaticResource TextBlockSubTitle}" Margin="10" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Text="先点击“找点”按钮，打开游戏界面，将鼠标移动至你要找的点位，按一次***鼠标中键***"/>
+                <TextBlock Style="{StaticResource TextBlockSubTitle}" Margin="10" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Text="先点击“找点”按钮，打开游戏界面，将鼠标移动至你要找的点位，按一次***鼠标中键***"/>
             </hc:StepBarItem>
-            <hc:StepBarItem Margin="0">
+            <hc:StepBarItem Height="100" Margin="0" Padding="0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Width="200" Margin="10 0"  Style="{StaticResource TextBlockSubTitle}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Text="钓鱼判定色为黄色系统提示的左方圆圈部分的***背景色***。"/>
-                    <Image Grid.Column="1" MaxWidth="220" Margin="10 0" Source="/Resources/Inform2.jpg" />
+                    <TextBlock Width="200" Margin="10 0"  Style="{StaticResource TextBlockSubTitle}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Text="打开茗伊插件，选择数据订阅"/>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Image Grid.Row="0"  Margin="10 0" Source="/Resources/Manual1.png" />
+                        <Image Grid.Row="1"   Margin="10 0" Source="/Resources/Manual2.png" />
+                    </Grid>
                 </Grid>
             </hc:StepBarItem>
-            <hc:StepBarItem Height="120" Margin="0">
+            <hc:StepBarItem Height="150" Margin="0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Width="200" Margin="10 0"  Style="{StaticResource TextBlockSubTitle}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Text="重伤点位请选择重伤界面小人位置，原地疗伤的点击区域为定点区域。"/>
-                    <Image Grid.Column="1"  MaxWidth="220" Margin="10 0" Source="/Resources/Inform1.jpg" />
+                    <TextBlock Width="200" Margin="10 0"  Style="{StaticResource TextBlockSubTitle}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Text="钓鱼Buff点位建议选择进度条背景色，上钩Buff点位同理"/>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Image Grid.Row="0"   Margin="10 0" Source="/Resources/Manual3.png" />
+                        <Image Grid.Row="1"   Margin="10 0" Source="/Resources/Manual4.png" />
+                    </Grid>
                 </Grid>
             </hc:StepBarItem>
-            <hc:StepBarItem Margin="0" Height="50">
-                <TextBlock MaxWidth="400" Style="{StaticResource TextBlockTitle}" Margin="10" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Text="【找点完成后不要移动窗口位置】"/>
+            <hc:StepBarItem Margin="0" Height="100">
+                <TextBlock Style="{StaticResource TextBlockTitle}" Margin="10" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Text="【找点完成后不要移动窗口位置，建议也不要移动游戏视角】"/>
             </hc:StepBarItem>
         </hc:StepBar>
         <Button Grid.Row="1" FontSize="18" Width="150" Height="40" Style="{StaticResource ButtonPrimary}" hc:BorderElement.CornerRadius="10" Margin="10" Content="关闭" Command="{s:Action Close}"/>
