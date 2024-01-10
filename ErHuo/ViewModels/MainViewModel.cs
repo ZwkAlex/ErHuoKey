@@ -22,7 +22,6 @@ namespace ErHuo.ViewModels
 {
     public class MainViewModel : Conductor<Screen>.Collection.OneActive
     {
-        private Tab currentTab;
         public HotKeyViewModel HotKeyViewModel { get; set; }
         public NoClientAreaViewModel NoClientAreaViewModel { get; set; }
         public ConfigDrawerViewModel ConfigDrawerViewModel { get; set; }
@@ -66,21 +65,20 @@ namespace ErHuo.ViewModels
             {
                 if (ActiveItem is NormalKeyViewModel)
                 {
-                    currentTab = Tab.NormalKey;
+                    TabSelection.Instance.SetCurrentTab(Tab.NormalKey);
                     JX3WindowFinder.Stop();
                 }
                 else if (ActiveItem is FishingViewModel)
                 {
-                    currentTab = Tab.Fishing;
+                    TabSelection.Instance.SetCurrentTab(Tab.Fishing);
                     ((FrameworkElement)sender).Focus();
                     JX3WindowFinder.Start();
                 }
             }
             else
             {
-                currentTab = Tab.NormalKey;
+                TabSelection.Instance.SetCurrentTab(Tab.NormalKey);
             }
-            HotKeyViewModel.CurrentTab = currentTab;
         }
 
         public void WindowMouseDown(FrameworkElement focusHolder)

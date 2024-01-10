@@ -23,7 +23,7 @@ namespace ErHuo.ViewModels
         private string _keyStartName = KeyManager.KeyStart.Name;
         public static CancellationTokenSource cts;
         private Thread t;
-        public Tab CurrentTab { get; set; }
+        private Tab CurrentTab;
         public string KeyStartName
         {
             get
@@ -129,6 +129,7 @@ namespace ErHuo.ViewModels
             _container = container;
             runningState = RunningState.Instance;
             runningState.IdleChanged += RunningState_IdleChanged;
+            TabSelection.Instance.CurrentTabChanged += TabChangedHandler;
 
             SoundPlayUtil.ChangeVolume(ConfigFactory.GetValue<int>(ConfigKey.Volume));
 
@@ -162,6 +163,11 @@ namespace ErHuo.ViewModels
                     KeyManager.SetKey(_keyStart, _keyStop);
                 }
             }
+        }
+
+        public void TabChangedHandler(object sender, Tab e)
+        {
+            CurrentTab = e;
         }
 
         private void KeyUpEventHandler(object sender, KeyEventArgs e)

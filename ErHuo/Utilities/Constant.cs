@@ -16,11 +16,11 @@ namespace ErHuo.Utilities
 
         public static readonly string ConfigFilePath = Path.Combine(BasePath, "config.json");
 
-        public static readonly string ResourceDirPath = Path.Combine(BasePath, "assets");
+        public static readonly string ResourceDirPath = Path.Combine(BasePath, "resource");
 
         public static readonly string AppTtitle = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false).OfType<AssemblyTitleAttribute>().FirstOrDefault().Title;
 
-        public static readonly string Version = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false).OfType<AssemblyDescriptionAttribute>().FirstOrDefault().Description;
+        public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         public static readonly string AppTip = AppTtitle + " ( " + Version + " ) ";
 
@@ -76,7 +76,7 @@ namespace ErHuo.Utilities
 
         public const string StartStopKeySetWarning = "无效设置，不能设置为左键或右键，并且不能与基础按键中的设置一致。";
 
-        public const string NormalKeyFirstInform = "鼠标移动至目标窗口后按***鼠标中键*** 注意：后台功能对***绝大多数游戏***无效,请使用前台功能。";
+        public const string NormalKeyFirstInform = "鼠标移动至目标窗口后按***鼠标中键*** \n注意：后台功能对***绝大多数游戏***无效,请使用前台功能。";
 
         public const string AddKeyEmptyWarning = "请输入要添加的按键。";
 

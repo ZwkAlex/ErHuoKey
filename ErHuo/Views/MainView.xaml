@@ -13,7 +13,7 @@
             d:DataContext="{d:DesignInstance {x:Type vm:MainViewModel}}"
             mc:Ignorable="d"
             Title="贰货按键" 
-            Height="680" 
+            Height="650" 
             Width="480" 
             WindowStartupLocation="CenterScreen"   
             input:InputMethod.IsInputMethodEnabled="False" 
@@ -38,7 +38,7 @@
             <hc:TabControl
             Focusable="True"
             DockPanel.Dock="Top"
-            Height="500"
+            Height="440"
             BorderThickness="0,1,0,0"
             DisplayMemberPath="DisplayName"
             ItemsSource="{Binding Items}"
@@ -56,7 +56,7 @@
                     </DataTemplate>
                 </TabControl.ContentTemplate>
             </hc:TabControl>
-            <ContentControl s:View.Model="{Binding HotKeyViewModel}"  DockPanel.Dock="Bottom"/>
+            <ContentControl  s:View.Model="{Binding HotKeyViewModel}"  DockPanel.Dock="Bottom"/>
         </DockPanel>
         <ContentControl s:View.Model= "{Binding ConfigDrawerViewModel}"/>
         <ContentControl s:View.Model= "{Binding TaskbarViewModel}"/>

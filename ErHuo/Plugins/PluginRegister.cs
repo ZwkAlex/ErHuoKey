@@ -99,9 +99,21 @@ namespace ErHuo.Plugins
         public bool GetRegisterStatus(string clsid)
         {
             RegistryKey root = RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32);
-            string cld = string.Format("\\CLSID\\{0}{1}{2}", "{", clsid, "}");
+            string cld = string.Format("\\CLSID\\{0}{1}{2}\\InProcServer32", "{", clsid, "}");
             RegistryKey comKey = root.OpenSubKey(cld);
-            return comKey != null;
+            if (comKey == null)
+            {
+                return false;
+            }
+            else if (File.Exists(comKey.GetValue("").ToString()))
+            {
+                return true;
+            }
+            else
+            {
+                UnRegister();
+                return false;
+            }
         }
 
         public bool GetRegisterStatus()

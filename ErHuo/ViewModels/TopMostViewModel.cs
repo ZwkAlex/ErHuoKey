@@ -142,7 +142,7 @@ namespace ErHuo.ViewModels
                     while (cts != null && !cts.Token.IsCancellationRequested)
                     {
                         CursorPoint cursor = CursorUtil.doGetCursorPos();
-                        ChangeDescription("鼠标位置：" + cursor.ToStringRelative(_fullScreen));
+                        ChangeDescription("鼠标位置：" + cursor.ToString());
                         ImageBytes = _p.CaptureToBytes(_fullScreen.SubRect(cursor, xPad, yPad));
                         Application.Current.Dispatcher.Invoke(() =>
                         {
