@@ -13,6 +13,7 @@
 
     <Border Margin="5" BorderBrush="{StaticResource SecondaryBorderBrush}" Style="{StaticResource BorderRegion}">
         <StackPanel Margin="30 10 30 10">
+            <!--
             <Grid Margin="0 10" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150"/>
@@ -21,6 +22,7 @@
                 <TextBlock Grid.Column="0" Text="剑三窗口:" Margin="0 0 20 0" HorizontalAlignment="Right" Style="{StaticResource TextBlockSubTitle}"/>
                 <control:JX3DetectTextBlock Grid.Column="1" Margin="0 0 20 0" HorizontalAlignment="Left" Style="{StaticResource TextBlockSubTitle}" JX3Window="{Binding JX3}" />
             </Grid>
+            -->
             <Grid Margin="0 10" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150"/>

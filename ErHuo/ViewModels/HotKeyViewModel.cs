@@ -19,11 +19,13 @@ namespace ErHuo.ViewModels
     public class HotKeyViewModel : PropertyChangedBase
     {
         private readonly RunningState runningState;
-        private EKey _keyStart = KeyManager.KeyStart;
-        private string _keyStartName = KeyManager.KeyStart.Name;
+        private readonly BusyState busyState;
         public static CancellationTokenSource cts;
         private Thread t;
         private Tab CurrentTab;
+
+        private EKey _keyStart = KeyManager.KeyStart;
+        private string _keyStartName = KeyManager.KeyStart.Name;
         public string KeyStartName
         {
             get
@@ -64,6 +66,16 @@ namespace ErHuo.ViewModels
                 SetAndNotify(ref _keyStopName, value);
             }
         }
+
+        public Visibility KeyStopVisiblity
+        {
+            get
+            {
+                return PressToActivate ? Visibility.Hidden : Visibility.Visible;
+            }
+        }
+
+
         private bool _modify;
         public bool ModifyKey
         {
@@ -73,11 +85,11 @@ namespace ErHuo.ViewModels
                 SetAndNotify(ref _modify, value);
                 if (value)
                 {
-                    QueueBusy();
+                    busyState.QueueBusy();
                 }
                 else
                 {
-                    DequeueBusy();
+                    busyState.DequeueBusy();
                 }
             }
 
@@ -109,8 +121,23 @@ namespace ErHuo.ViewModels
             }
         }
 
-
-        private int _busyLock = 0;
+        public bool PressToActivate
+        {
+            get 
+            {
+                return ConfigFactory.GetValue<bool>(ConfigKey.PressToActivate);
+            }
+            set
+            {
+                if (value && (_keyStart.Code == (int)VK.SCROLL_UP || _keyStart.Code == (int)VK.SCROLL_DOWN))
+                {
+                    value = false;
+                    Growl.Info(Constant.PressToActivateError);
+                }
+                ConfigFactory.SetValue(ConfigKey.PressToActivate, value);
+                NotifyOfPropertyChange(nameof(KeyStopVisiblity));
+            }
+        }
 
         private bool _busy = false;
         public bool Busy
@@ -128,15 +155,23 @@ namespace ErHuo.ViewModels
         {
             _container = container;
             runningState = RunningState.Instance;
-            runningState.IdleChanged += RunningState_IdleChanged;
+            busyState = BusyState.Instance;
+            runningState.IdleChanged += RunningStateChangedHandler;
             TabSelection.Instance.CurrentTabChanged += TabChangedHandler;
+            busyState.BusyStateChanged += BusyStateChangedHandler;
 
             SoundPlayUtil.ChangeVolume(ConfigFactory.GetValue<int>(ConfigKey.Volume));
+
+            Instances.GlobalHook.KeyDownEvent -= KeyDownEventHandler;
+            Instances.GlobalHook.KeyDownEvent += KeyDownEventHandler;
+            Instances.GlobalHook.MouseDown -= MouseDownEventHandler;
+            Instances.GlobalHook.MouseDown += MouseDownEventHandler;
 
             Instances.GlobalHook.KeyUpEvent -= KeyUpEventHandler;
             Instances.GlobalHook.KeyUpEvent += KeyUpEventHandler;
             Instances.GlobalHook.MouseUp -= MouseUpEventHandler;
             Instances.GlobalHook.MouseUp += MouseUpEventHandler;
+
             Instances.GlobalHook.MouseWheel -= MouseWheelEventHandler;
             Instances.GlobalHook.MouseWheel += MouseWheelEventHandler;
 
@@ -173,28 +208,26 @@ namespace ErHuo.ViewModels
         private void KeyUpEventHandler(object sender, KeyEventArgs e)
         {
             int keyCode = (int)e.KeyCode;
-            SwitchByKeyCode(keyCode);
+            SwitchByKeyCode(keyCode, PressType.Up);
         }
 
         private void MouseUpEventHandler(object sender, MouseEventArgs e)
         {
             int keyCode;
-            if (e.Button == MouseButtons.XButton1)
-            {
-                keyCode = (int)VK.XBUTTON1;
-            }
-            else if (e.Button == MouseButtons.XButton2) 
-            { 
-                keyCode = (int)VK.XBUTTON2;
-            }
-            else if (e.Button == MouseButtons.Middle)
-            {
-                keyCode = (int)VK.MBUTTON;
-            }
-            else
-            {
-                keyCode = -1;
-            }
+            bool result = Constant.MouseButtonMapper.TryGetValue(e.Button, out keyCode);
+            SwitchByKeyCode(keyCode, PressType.Up);
+        }
+
+        private void KeyDownEventHandler(object sender, KeyEventArgs e)
+        {
+            int keyCode = (int)e.KeyCode;
+            SwitchByKeyCode(keyCode);
+        }
+
+        private void MouseDownEventHandler(object sender, MouseEventArgs e)
+        {
+            int keyCode;
+            bool result = Constant.MouseButtonMapper.TryGetValue(e.Button, out keyCode);
             SwitchByKeyCode(keyCode);
         }
 
@@ -212,24 +245,41 @@ namespace ErHuo.ViewModels
             SwitchByKeyCode(keyCode);
         }
 
-        private void SwitchByKeyCode(int keyCode)
+        private void SwitchByKeyCode(int keyCode, PressType pressType = PressType.Down)
         {
             if (!_modify)
             {
-                if (keyCode == _keyStart.Code)
+                if (PressToActivate)
                 {
-                    if (_keyStart.Code != _keyStop.Code)
+                    if (keyCode == _keyStart.Code)
                     {
-                        Start();
-                    }
-                    else
-                    {
-                        Switch();
+                        if (pressType == PressType.Down)
+                        {
+                            Start();
+                        }
+                        else
+                        {
+                            Stop();
+                        }
                     }
                 }
-                else if (keyCode == _keyStop.Code)
+                else
                 {
-                    Stop();
+                    if (keyCode == _keyStart.Code)
+                    {
+                        if (_keyStart.Code != _keyStop.Code)
+                        {
+                            Start();
+                        }
+                        else
+                        {
+                            Switch();
+                        }
+                    }
+                    else if (keyCode == _keyStop.Code)
+                    {
+                        Stop();
+                    }
                 }
             }
         }
@@ -313,7 +363,7 @@ namespace ErHuo.ViewModels
             return key.Code != (int)VK.LBUTTON && key.Code != (int)VK.RBUTTON;
         }
 
-        private void RunningState_IdleChanged(object sender, bool e)
+        private void RunningStateChangedHandler(object sender, bool e)
         {
             Idle = e;
             if (!e)
@@ -338,27 +388,16 @@ namespace ErHuo.ViewModels
             }
         }
 
-        public void QueueBusy()
+        private void BusyStateChangedHandler(object sender, bool e)
         {
-            _busyLock += 1;
-            if (_busyLock == 1)
-            {
-                Busy = true;
-                Instances.GlobalHook.Stop();
-            }
+            Busy = e;
         }
 
-        public void DequeueBusy()
+        public void ShowTip(string param)
         {
-            _busyLock -= 1;
-            if (_busyLock < 0)
+            if(param == "PressToActivate")
             {
-                _busyLock = 0;
-            }
-            if (_busyLock == 0)
-            {
-                Busy = false;
-                Instances.GlobalHook.Start();
+                Growl.Info(Constant.PressToActivateTip);
             }
         }
 

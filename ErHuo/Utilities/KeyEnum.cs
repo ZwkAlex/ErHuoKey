@@ -2,6 +2,12 @@
 
 namespace ErHuo
 {
+    public enum PressType: int
+    {
+        Down,
+        Up
+    }
+
     public enum Plugin : int
     {
         LW,

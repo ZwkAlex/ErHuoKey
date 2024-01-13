@@ -25,6 +25,8 @@ namespace ErHuo.ViewModels
 {
     public class FishingViewModel : Screen
     {
+        private readonly BusyState busyState = BusyState.Instance;
+
         private readonly IWindowManager _windowManager;
         private EKey _keyFishingRelease = ConfigFactory.GetValue<EKey>(ConfigKey.KeyFishingRelease);
         public string KeyFishingReleaseName
@@ -168,6 +170,15 @@ namespace ErHuo.ViewModels
                 NotifyOfPropertyChange(nameof(FishingRevivePointText));
             }
         }
+
+        public string FishingRevivePointText
+        {
+            get
+            {
+                return FishingRevivePoint.ToString();
+            }
+        }
+
         private WindowInfo _jx3;
         public WindowInfo JX3
         {
@@ -181,14 +192,6 @@ namespace ErHuo.ViewModels
             }
         }
 
-
-        public string FishingRevivePointText
-        {
-            get
-            {
-                return FishingRevivePoint.ToString();
-            }
-        }
 
         private FishingService _fishingService;
 
@@ -261,10 +264,10 @@ namespace ErHuo.ViewModels
                 return;
             }
             P p = new P();
-            Instances.HotKeyViewModel.QueueBusy();
+            busyState.QueueBusy();
             _windowManager.ShowWindow(topMostViewModel);
             int timeout = ConfigFactory.GetValue<int>(ConfigKey.WaitKeyTimeout);
-            topMostViewModel.ShowCursorLocation("正在等待找点完成", timeout, xPad: 0.005, yPad: 0.01);
+            topMostViewModel.ShowCursorLocation("正在等待找点完成", timeout, xPad: 0.005, yPad: 0.007);
             if (p.WaitKey(4, timeout) != -1)
             {
                 CursorPoint cursorPoint = CursorUtil.doGetCursorPos();
@@ -280,7 +283,7 @@ namespace ErHuo.ViewModels
                 }
             }
             topMostViewModel.RequestClose();
-            Instances.HotKeyViewModel.DequeueBusy();
+            busyState.DequeueBusy();
             p.Dispose();
         }
 

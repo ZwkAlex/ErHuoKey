@@ -19,30 +19,39 @@
                 <ColumnDefinition Width="0.55*"/>
                 <ColumnDefinition Width="0.45*"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" Margin="5 0 5 0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="0.35*"/>
-                    <RowDefinition Height="0.35*"/>
-                    <RowDefinition Height="0.3*"/>
-                </Grid.RowDefinitions>
-                <Grid Margin="0 5 0 0" Grid.Row="0">
+            <StackPanel Grid.Column="0" Margin="5 0 5 0">
+                <Grid Margin="10 4" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="开始热键" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10 0 10 0" Style="{StaticResource TextBlockSubTitle}"/>
+                    <TextBlock Grid.Column="0" Text="开始热键" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource TextBlockSubTitle}"/>
                     <control:KeyTextBox  Grid.Column="1"  Text="{Binding KeyStartName}" Margin="10, 0, 10, 0" Style="{StaticResource KeyTextBoxDefault}" IsEnabled="{Binding ModifyKey , Mode=OneWay}"/>
                 </Grid>
 
-                <Grid Margin="0 5 0 0" Grid.Row="1">
+
+                <Grid Margin="10 4"  Visibility="{Binding KeyStopVisiblity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="0.6*"/>
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock  Grid.Column="0" Text="停止热键" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10 0 10 0" Style="{StaticResource TextBlockSubTitle}"/>
+                    <TextBlock  Grid.Column="0" Text="停止热键" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource TextBlockSubTitle}"/>
                     <control:KeyTextBox  Grid.Column="1" Text="{Binding KeyStopName}" Margin="10, 0, 10, 0" VerticalAlignment="Center"  Style="{StaticResource KeyTextBoxDefault}" IsEnabled="{Binding ModifyKey, Mode=OneWay}"/>
                 </Grid>
-                <ToggleButton Margin="0 5 0 0" Grid.Row ="2"  IsChecked="{Binding ModifyKey}" Command="{s:Action KeyConfigAction}" Style="{StaticResource ToggleButtonCustom}" hc:StatusSwitchElement.HideUncheckedElement="True">
+
+                <Grid Margin="10 4" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock  Grid.Column="0" Text="按压启动" VerticalAlignment="Center" HorizontalAlignment="Left"  Style="{StaticResource TextBlockSubTitle}"/>
+                    <Button Grid.Column="1" Command="{s:Action ShowTip}" CommandParameter="PressToActivate" Style="{StaticResource ButtonIcon}" hc:IconElement.Geometry="{StaticResource AskGeometry}" />
+                    <ToggleButton Grid.Column="2" Margin="25 0 0 0" IsChecked="{Binding PressToActivate}" Style="{StaticResource ToggleButtonSwitch}"  IsEnabled="{Binding Idle, Mode=OneWay}"/>
+                </Grid>
+                
+                
+                <ToggleButton Margin="5"  IsChecked="{Binding ModifyKey}" Command="{s:Action KeyConfigAction}" Style="{StaticResource ToggleButtonCustom}" hc:StatusSwitchElement.HideUncheckedElement="True">
                     <hc:StatusSwitchElement.CheckedElement>
                         <Border  Width="100" Height="30" Background="{DynamicResource PrimaryBrush}" CornerRadius="5">
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="16" Text="应用" Foreground="{DynamicResource TextIconBrush}"/>
@@ -52,7 +61,7 @@
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Text="修改" Foreground="{DynamicResource TextIconBrush}"/>
                     </Border>
                 </ToggleButton>
-            </Grid>
+            </StackPanel>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="0.8*"/>

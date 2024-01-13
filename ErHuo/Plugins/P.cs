@@ -137,7 +137,7 @@ namespace ErHuo.Plugins
             return result != null && result != 0;
         }
 
-        public CursorPoint FindPic(WindowRect rect, string picPath, double sim = 0.90)
+        public CursorPoint FindPic(WindowRect rect, string picPath, double sim = 0.80)
         {
             return FindPic(rect.TopLeft.x, rect.TopLeft.y, rect.BottomRight.x, rect.BottomRight.y, picPath: picPath, sim: Convert.ToSingle(sim));
         }

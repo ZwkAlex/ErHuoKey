@@ -21,8 +21,8 @@ namespace ErHuo.Services
         {
             FishingConfigSheet _config = (FishingConfigSheet)config;
             WindowRect _fullRect = Tool.GetFullScreenRect();
-            WindowRect _noticeRect = _fullRect.SubRect(_config.FishingNoticePoint, 0.05, 0.05);
-            WindowRect _fishingRect = _fullRect.SubRect(_config.FishingNoticePoint, 0.05, 0.05);
+            WindowRect _noticeRect = _fullRect.SubRect(_config.FishingNoticePoint, 0.01, 0.014);
+            WindowRect _fishingRect = _fullRect.SubRect(_config.FishingNoticePoint, 0.01, 0.014);
             WindowRect _reviveRect = _fullRect.SubRect(0.47, 0.48, 0.1, 0.02);
             WindowRect _collectRect = _fullRect.SubRect(0.5, 0.6, 0.1, 0.02);
             FileManager.SaveBitmapToLocal(Properties.Resources.FishingCollect, Constant.FishingCollectFile);

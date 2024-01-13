@@ -16,6 +16,7 @@ namespace ErHuo.Controls
 {
     public class KeyTextBox: TextBox
     {
+        private BusyState busyState = BusyState.Instance;
         private bool startEdit = false;
         public KeyTextBox()
         {
@@ -33,11 +34,11 @@ namespace ErHuo.Controls
 
         public void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            Instances.HotKeyViewModel.QueueBusy();
+            busyState.QueueBusy();
         }
         public void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            Instances.HotKeyViewModel.DequeueBusy();
+            busyState.DequeueBusy();
             startEdit = false;
         }
 

@@ -345,6 +345,7 @@
     <Compile Include="Controls\JX3DetectTextBlock.cs" />
     <Compile Include="Controls\KeyTextBox.cs" />
     <Compile Include="Controls\StateTextBlock.cs" />
+    <Compile Include="Models\BusyState.cs" />
     <Compile Include="Models\EKey.cs" />
     <Compile Include="Models\TabSelection.cs" />
     <Compile Include="Models\WindowRect.cs" />

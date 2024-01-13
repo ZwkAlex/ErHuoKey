@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace ErHuo.Utilities
 {
@@ -43,6 +45,10 @@ namespace ErHuo.Utilities
         public const string WaitButtonTextStart = "开始按键";
 
         public const string WaitButtonTextBusy = "修改设置中";
+
+        public const string PressToActivateTip = "按住开始键将启动按键，松开停止，按压启动模式激活后，停止键将失效。";
+
+        public const string PressToActivateError = "开始键为滚轮上滑或下滑时不可设置此项。";
 
         public const string RegisterStateSuccess = "已注册";
 
@@ -159,6 +165,7 @@ namespace ErHuo.Utilities
             {"Volume", 20},
             {"KeyStart",  new EKey("F12")},
             {"KeyStop",  new EKey("F12")},
+            {"PressToActivate",  false},
             {"MinimizeToTray",  false},
             {"KeyFishingRelease",  new EKey("KEY_1")},
             {"KeyFishingFinish",  new EKey("KEY_1")},
@@ -175,8 +182,14 @@ namespace ErHuo.Utilities
             {"FishingPoint",  new CursorPoint()},
             {"FishingRevivePoint",  new CursorPoint()},
             {"",  0},
-         };
+        };
 
+        public static readonly Dictionary<MouseButtons, int> MouseButtonMapper = new Dictionary<MouseButtons, int>()
+        {
+            {MouseButtons.XButton1, (int)VK.XBUTTON1},
+            {MouseButtons.XButton2, (int)VK.XBUTTON2},
+            {MouseButtons.Middle, (int)VK.MBUTTON}
+        };
     }
 
     public class ConfigKey
@@ -222,5 +235,7 @@ namespace ErHuo.Utilities
         public const string WaitKeyTimeout = "WaitKeyTimeout";
 
         public const string DarkTheme = "DarkTheme";
+
+        public const string PressToActivate = "PressToActivate";
     }
 }

@@ -26,6 +26,8 @@ namespace ErHuo.ViewModels
 {
     public class NormalKeyConfigViewModel : PropertyChangedBase
     {
+        private readonly BusyState busyState = BusyState.Instance;
+
         public int Frequency
         {
             get
@@ -34,7 +36,7 @@ namespace ErHuo.ViewModels
             }
             set
             {
-                value = Math.Max(value, 20);
+                value = Math.Max(value, 10);
                 ConfigFactory.SetValue(ConfigKey.Frequency, value);
             }
         }
@@ -249,7 +251,7 @@ namespace ErHuo.ViewModels
             }
             P p = new P();
             WaitKey = true;
-            Instances.HotKeyViewModel.QueueBusy();
+            busyState.QueueBusy();
             _windowManager.ShowWindow(topMostViewModel);
             int timeout = ConfigFactory.GetValue<int>(ConfigKey.WaitKeyTimeout);
             topMostViewModel.ShowCursorLocationAndWindowTitle("正在选择窗口", timeout);
@@ -261,7 +263,7 @@ namespace ErHuo.ViewModels
             }
             topMostViewModel.RequestClose();
             WaitKey = false;
-            Instances.HotKeyViewModel.DequeueBusy();
+            busyState.DequeueBusy();
             p.Dispose();
         }
 

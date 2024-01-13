@@ -125,16 +125,16 @@ namespace ErHuo.Utilities
                 }
             }
 
-            //if (hMouseHook == 0)
-            //{
-            //    MouseHookProcedure = new HookProc(MouseHookProc);
-            //    hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProcedure, GetModuleHandle(System.Diagnostics.Process.GetCurrentProcess().MainModule.ModuleName), 0);
-            //    if (hMouseHook == 0)
-            //    {
-            //        Stop();
-            //        throw new Exception("安装鼠标钩子失败");
-            //    }
-            //}
+            if (hMouseHook == 0)
+            {
+                MouseHookProcedure = new HookProc(MouseHookProc);
+                hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProcedure, GetModuleHandle(System.Diagnostics.Process.GetCurrentProcess().MainModule.ModuleName), 0);
+                if (hMouseHook == 0)
+                {
+                    Stop();
+                    throw new Exception("安装鼠标钩子失败");
+                }
+            }
         }
         public void Stop()
         {
