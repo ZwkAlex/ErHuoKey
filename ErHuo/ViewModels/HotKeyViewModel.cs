@@ -263,7 +263,7 @@ namespace ErHuo.ViewModels
                         }
                     }
                 }
-                else
+                else if (pressType == PressType.Up)
                 {
                     if (keyCode == _keyStart.Code)
                     {

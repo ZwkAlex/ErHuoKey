@@ -125,16 +125,16 @@ namespace ErHuo.Utilities
                 }
             }
 
-            if (hMouseHook == 0)
-            {
-                MouseHookProcedure = new HookProc(MouseHookProc);
-                hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProcedure, GetModuleHandle(System.Diagnostics.Process.GetCurrentProcess().MainModule.ModuleName), 0);
-                if (hMouseHook == 0)
-                {
-                    Stop();
-                    throw new Exception("安装鼠标钩子失败");
-                }
-            }
+            //if (hMouseHook == 0)
+            //{
+            //    MouseHookProcedure = new HookProc(MouseHookProc);
+            //    hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProcedure, GetModuleHandle(System.Diagnostics.Process.GetCurrentProcess().MainModule.ModuleName), 0);
+            //    if (hMouseHook == 0)
+            //    {
+            //        Stop();
+            //        throw new Exception("安装鼠标钩子失败");
+            //    }
+            //}
         }
         public void Stop()
         {
@@ -253,7 +253,7 @@ namespace ErHuo.Utilities
                         MouseDown?.Invoke(this, e);
                         break;
                     case WM_XBUTTONDOWN:
-                        e = new MouseEventArgs(MouseButtons.XButton1, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
+                        e = new MouseEventArgs(hookStruct.mouseData == 131072 ? MouseButtons.XButton1 : MouseButtons.XButton2, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
                         MouseDown?.Invoke(this, e);
                         break;
                     case WM_LBUTTONUP:
@@ -269,11 +269,11 @@ namespace ErHuo.Utilities
                         MouseUp?.Invoke(this, e);
                         break;
                     case WM_XBUTTONUP:
-                        e = new MouseEventArgs(MouseButtons.XButton1, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
+                        e = new MouseEventArgs(hookStruct.mouseData == 131072? MouseButtons.XButton1 : MouseButtons.XButton2, 1, hookStruct.pt.x, hookStruct.pt.y, 0);
                         MouseUp?.Invoke(this, e);
                         break;
                     case WM_MOUSEWHEEL:
-                        int delta = ((short)((uint)hookStruct.mouseData >> 16));
+                        int delta = (short)((uint)hookStruct.mouseData >> 16);
                         e = new MouseEventArgs(MouseButtons.None, 1, hookStruct.pt.x, hookStruct.pt.y, delta);
                         MouseWheel?.Invoke(this, e);
                         break;

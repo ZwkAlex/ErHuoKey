@@ -62,11 +62,11 @@ namespace ErHuo.Controls
             {
                 vkey = VK.MBUTTON;
             }
-            else if (e.ChangedButton == MouseButton.XButton1)
+            else if (e.ChangedButton == MouseButton.XButton2)
             {
                 vkey = VK.XBUTTON1;
             }
-            else if (e.ChangedButton == MouseButton.XButton2)
+            else if (e.ChangedButton == MouseButton.XButton1)
             {
                 vkey = VK.XBUTTON2;
             }
